@@ -1,33 +1,33 @@
 // https://api.instagram.com/v1/users/search?access_token=291933.1fb234f.49bb69d84df4458dafeb45262b722d2a&q=gabe
 var AppComponent = React.createClass({
-    getInitialState: function(){
-        return {
-            inFocus: false,
-            results: [
-                {
-                    image : 'http://imgfave-herokuapp-com.global.ssl.fastly.net/image_cache/142642156144625.jpg',
-                    username : 'Gabe'
-                },
-                {
-                    image : 'http://40.media.tumblr.com/37a9787b9352ba10c2dfc8916813a71f/tumblr_nkth875MO41qjqyo8o1_500.jpg',
-                    username : 'Irvin'
-                }
-            ]
-        };
+  getInitialState: function(){
+    return {
+      inputValue : '',
+      inFocus: false,
+      results: [
+        {
+          image : 'http://imgfave-herokuapp-com.global.ssl.fastly.net/image_cache/142642156144625.jpg',
+          username : 'Gabe'
+        },
+        {
+          image : 'http://40.media.tumblr.com/37a9787b9352ba10c2dfc8916813a71f/tumblr_nkth875MO41qjqyo8o1_500.jpg',
+          username : 'Irvin'
+        }
+      ]
+    };
 
-    },
-
+  },
   loadResultsFromServer: function (query) {
     var appcomponent = this;
     $.ajax({
       url: this.props.endpoint,
       data: {
-        access_token: '291933.1fb234f.49bb69d84df4458dafeb45262b722d2a',
-        q: query
+        access_token: this.props.accessToken,
+        q: query,
+        count: this.props.limit
       },
       dataType: 'jsonp',
       success: function(data) {
-        console.log('data received');
         var renamedData = _.map(data.data, function (result) {
           result.image = result.profile_picture;
           return result;
@@ -37,19 +37,23 @@ var AppComponent = React.createClass({
     });
   },
   componentDidMount: function () {
-    console.log('component rendered');
     this.loadResultsFromServer();
   },
   render: function(){
         return (
             <div>
-                <InputComponent handleChange={this.handleChange} handleFocus={this.handleFocus} handleBlur={this.handleBlur}/>
-                <ResultsComponent data={this.state.results} visible={this.state.inFocus} />
+                <InputComponent handleChange={this.handleChange} handleFocus={this.handleFocus} handleBlur={this.handleBlur} value={this.state.inputValue}/>
+                <ResultsComponent data={this.state.results} visible={this.state.inFocus} handleSelect={this.handleSelect} />
             </div>
         );
     },
+  handleSelect: function(selectedResult) {
+    this.props.onSelect(selectedResult);
+    this.setState({results : [], inputValue : ''});
+  },
     handleChange: function(query) {
       this.loadResultsFromServer(query);
+      this.setState( { inputValue : query } );
     },
     handleFocus: function() {
         this.setState( { inFocus : true } );
@@ -57,8 +61,8 @@ var AppComponent = React.createClass({
     handleBlur: function(event) {
         var self = this;
         window.blurTimeout = setTimeout(function(){
-           self.setState( { inFocus : false } ); 
-        }, 100);
+            self.setState( { inFocus : false } );
+        }, 1000);
     }
 });
 
@@ -71,11 +75,10 @@ var ResultsComponent = React.createClass({
   },
 
   render: function(){
-
+    self = this;
         var resultNodes = this.props.data.map(function(result){
-            //console.log(result);
             return (
-                <Result image={result.image}>
+                <Result image={result.image} handleSelect={self.props.handleSelect} data={result}>
                     {result.username}
                 </Result>
             );
@@ -99,11 +102,14 @@ var ResultsComponent = React.createClass({
 
 
 var Result = React.createClass({
-
+  handleSelect: function (event) {
+    console.log('clicked');
+    this.props.handleSelect(this.props.data);
+  },
   render: function(){
 
     return (
-        <li className="clearfix">
+        <li className="clearfix" onClick={this.handleSelect}>
             <img src={this.props.image}/>
             <div>{this.props.children}</div>
         </li>
@@ -113,7 +119,6 @@ var Result = React.createClass({
 
 
 var InputComponent = React.createClass({
-
     handleChange: function(event){
         this.props.handleChange(event.target.value);
     },
@@ -125,12 +130,56 @@ var InputComponent = React.createClass({
     },
     render: function(){
         return (
-            <input type="text" className="input-typeahead" value={this.props.name} onChange={this.handleChange} onFocus={this.handleFocus} onBlur={this.handleBlur}/>
+            <input type="text" className="input-typeahead" value={this.props.value} onChange={this.handleChange} onFocus={this.handleFocus} onBlur={this.handleBlur}/>
         );
     }
 });
 
+var GridComponent = React.createClass({
+
+    render: function(){
+
+        var resultNodes = this.props.data.map(function(result){
+            return (
+                <img src={result.image} />
+            );
+        });
+
+        return (
+            <div>
+                {resultNodes}
+            </div>
+        );
+    }
+});
+
+function processResult(result) {
+  console.log('process result called');
+  console.log(result);
+
+    var endpoint = "https://api.instagram.com/v1/users/" + result.id + "/media/recent";
+
+    $.ajax({
+      url: endpoint,
+      data: {
+        access_token: "291933.1fb234f.49bb69d84df4458dafeb45262b722d2a",
+        count: 1
+      },
+      dataType: 'jsonp',
+      success: function(data) {
+        var imageUrls = _.map(data.data, function (result) {
+          result.image = result.images.low_resolution.url;
+          return result;
+        });
+        React.render(
+          <GridComponent data={imageUrls} accessToken="291933.1fb234f.49bb69d84df4458dafeb45262b722d2a"/>,
+          document.getElementById('grid')
+        );
+      }
+    });
+}
+
 React.render(
-  <AppComponent endpoint="https://api.instagram.com/v1/users/search" />,
+  <AppComponent endpoint="https://api.instagram.com/v1/users/search" accessToken="291933.1fb234f.49bb69d84df4458dafeb45262b722d2a" onSelect={processResult} limit={10}/>,
   document.getElementById('mount-point')
 );
