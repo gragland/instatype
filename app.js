@@ -48,13 +48,21 @@ var AppComponent = React.createClass({
     handleFocus: function() {
         this.setState( { inFocus : true } );
     },
-    handleBlur: function() {
-        this.setState( { inFocus : false } );
+    handleBlur: function(event) {
+        var self = this;
+        window.blurTimeout = setTimeout(function(){
+            self.setState( { inFocus : false } ); 
+        }, 300);
     }
 });
 
 
 var ResultsComponent = React.createClass({
+
+  handleResultsClick: function(event){
+    //console.log('results click');
+    clearTimeout(window.blurTimeout);
+  },
 
   render: function(){
 
@@ -73,7 +81,7 @@ var ResultsComponent = React.createClass({
         console.log(resultsClass);
 
         return (
-            <ul className={resultsClass}>
+            <ul className={resultsClass} onClick={this.handleResultsClick}>
                 {resultNodes}
             </ul>
         );
@@ -87,9 +95,9 @@ var Result = React.createClass({
 
     return (
         <li>
-        <img width="30" src={this.props.image}/>
-        {this.props.children}
-      </li>
+            <img src={this.props.image}/>
+            {this.props.children}
+        </li>
     );
   }
 });
@@ -101,10 +109,10 @@ var InputComponent = React.createClass({
         this.props.handleChange(event.target.value);
     },
     handleFocus: function(event){
-        this.props.handleFocus();
+        this.props.handleFocus(event);
     },
     handleBlur: function(event){
-        this.props.handleBlur();
+        this.props.handleBlur(event);
     },
     render: function(){
         return (

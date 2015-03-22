@@ -8,16 +8,34 @@ body{
     font-size: 12px;
 }
 
-.input-typeahead {
+#mount-point{
     width: 500px;
+}
+
+.input-typeahead {
+    width: 100%;
+    margin: 0;
     font-size: 1.5em;
     padding-left: 0.5em;
     line-height: 2em;
 }
 
-.results{}
+.results{
+    width: 100%;
+    margin-top: 0;
+    border: 1px solid #ccc;
+    border-top: none;
+}
 
 .results.hide{
     display: none;
 }
 
+.results > li{
+
+}
+
+.results > li > img{
+    width: 30px;
+    height: 30px;
+}
