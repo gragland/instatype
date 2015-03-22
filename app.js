@@ -22,7 +22,8 @@ var AppComponent = React.createClass({
       url: this.props.endpoint,
       data: {
         access_token: this.props.accessToken,
-        q: query
+        q: query,
+        count: this.props.limit
       },
       dataType: 'jsonp',
       success: function(data) {
@@ -58,7 +59,7 @@ var AppComponent = React.createClass({
         var self = this;
         window.blurTimeout = setTimeout(function(){
             self.setState( { inFocus : false } );
-        }, 100);
+        }, 1000);
     }
 });
 
@@ -137,6 +138,6 @@ function processResult(result) {
 }
 
 React.render(
-  <AppComponent endpoint="https://api.instagram.com/v1/users/search" accessToken="291933.1fb234f.49bb69d84df4458dafeb45262b722d2a" onSelect={processResult}/>,
+  <AppComponent endpoint="https://api.instagram.com/v1/users/search" accessToken="291933.1fb234f.49bb69d84df4458dafeb45262b722d2a" onSelect={processResult} limit={10}/>,
   document.getElementById('mount-point')
 );
