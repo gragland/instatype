@@ -1,0 +1,23 @@
+* {
+  box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+}
+
+body{
+    font-size: 12px;
+}
+
+.input-typeahead {
+    width: 500px;
+    font-size: 1.5em;
+    padding-left: 0.5em;
+    line-height: 2em;
+}
+
+.results{}
+
+.results.hide{
+    display: none;
+}
+
