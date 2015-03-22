@@ -6,18 +6,74 @@
 
 body{
     font-size: 12px;
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    padding: 0;
+    margin: 0;
+}
+
+#navbar{
+    padding: 2em;
+    border-bottom: 1px solid #ccc;
+}
+
+#mount-point{
+    width: 600px;
 }
 
 .input-typeahead {
-    width: 500px;
+    width: 100%;
+    margin: 0;
     font-size: 1.5em;
     padding-left: 0.5em;
     line-height: 2em;
 }
 
-.results{}
+ul.results{
+    background-color: #fff;
+    position: absolute;
+    width: 600px;
+    margin-top: 0;
+    padding: 1.5em;
+    border: 1px solid #ccc;
+    border-top: none;
+    list-style-type: none;
+}
 
-.results.hide{
+ul.results.hide, ul.results.empty{
     display: none;
 }
 
+ul.results > li{
+    line-height: 4em;
+    padding: 0.3em 0;
+    position: relative;
+}
+
+ul.results > li > img{
+    /*display: inline-block;*/
+    float: left;
+    width: 4em;
+    height: 4em;
+}
+
+ul.results > li > div{
+    /*display:inline-block;*/
+     float: left;
+    padding-left: 0.5em;
+    font-size: 2em;
+
+}
+
+.clearfix:after {
+     visibility: hidden;
+     display: block;
+     font-size: 0;
+     content: " ";
+     clear: both;
+     height: 0;
+     }
+.clearfix { display: inline-block; }
+/* start commented backslash hack \*/
+* html .clearfix { height: 1%; }
+.clearfix { display: block; }
+/* close commented backslash hack */
