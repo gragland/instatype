@@ -1,33 +1,31 @@
 // https://api.instagram.com/v1/users/search?access_token=291933.1fb234f.49bb69d84df4458dafeb45262b722d2a&q=gabe
 var AppComponent = React.createClass({
-    getInitialState: function(){
-        return {
-            inFocus: false,
-            results: [
-                {
-                    image : 'http://imgfave-herokuapp-com.global.ssl.fastly.net/image_cache/142642156144625.jpg',
-                    username : 'Gabe'
-                },
-                {
-                    image : 'http://40.media.tumblr.com/37a9787b9352ba10c2dfc8916813a71f/tumblr_nkth875MO41qjqyo8o1_500.jpg',
-                    username : 'Irvin'
-                }
-            ]
-        };
+  getInitialState: function(){
+    return {
+      inFocus: false,
+      results: [
+        {
+          image : 'http://imgfave-herokuapp-com.global.ssl.fastly.net/image_cache/142642156144625.jpg',
+          username : 'Gabe'
+        },
+        {
+          image : 'http://40.media.tumblr.com/37a9787b9352ba10c2dfc8916813a71f/tumblr_nkth875MO41qjqyo8o1_500.jpg',
+          username : 'Irvin'
+        }
+      ]
+    };
 
-    },
-
+  },
   loadResultsFromServer: function (query) {
     var appcomponent = this;
     $.ajax({
       url: this.props.endpoint,
       data: {
-        access_token: '291933.1fb234f.49bb69d84df4458dafeb45262b722d2a',
+        access_token: this.props.accessToken,
         q: query
       },
       dataType: 'jsonp',
       success: function(data) {
-        console.log('data received');
         var renamedData = _.map(data.data, function (result) {
           result.image = result.profile_picture;
           return result;
@@ -37,17 +35,19 @@ var AppComponent = React.createClass({
     });
   },
   componentDidMount: function () {
-    console.log('component rendered');
     this.loadResultsFromServer();
   },
   render: function(){
         return (
             <div>
                 <InputComponent handleChange={this.handleChange} handleFocus={this.handleFocus} handleBlur={this.handleBlur}/>
-                <ResultsComponent data={this.state.results} visible={this.state.inFocus} />
+                <ResultsComponent data={this.state.results} visible={this.state.inFocus} handleSelect={this.handleSelect} />
             </div>
         );
     },
+  handleSelect: function(selectedResult) {
+    this.props.onSelect(selectedResult);
+  },
     handleChange: function(query) {
       this.loadResultsFromServer(query);
     },
@@ -63,11 +63,10 @@ var AppComponent = React.createClass({
 var ResultsComponent = React.createClass({
 
   render: function(){
-
+    self = this;
         var resultNodes = this.props.data.map(function(result){
-            //console.log(result);
             return (
-                <Result image={result.image}>
+                <Result image={result.image} handleSelect={self.props.handleSelect} data={result}>
                     {result.username}
                 </Result>
             );
@@ -88,11 +87,14 @@ var ResultsComponent = React.createClass({
 
 
 var Result = React.createClass({
-
+  handleSelect: function (event) {
+    console.log('clicked');
+    this.props.handleSelect(this.props.data);
+  },
   render: function(){
 
     return (
-        <li>
+        <li onClick={this.handleSelect}>
         <img width="30" src={this.props.image}/>
         {this.props.children}
       </li>
@@ -102,7 +104,6 @@ var Result = React.createClass({
 
 
 var InputComponent = React.createClass({
-
     handleChange: function(event){
         this.props.handleChange(event.target.value);
     },
@@ -119,7 +120,12 @@ var InputComponent = React.createClass({
     }
 });
 
+function processResult(result) {
+  console.log('process result called');
+  console.log(result);
+}
+
 React.render(
-  <AppComponent endpoint="https://api.instagram.com/v1/users/search" />,
+  <AppComponent endpoint="https://api.instagram.com/v1/users/search" accessToken="291933.1fb234f.49bb69d84df4458dafeb45262b722d2a" onSelect={processResult}/>,
   document.getElementById('mount-point')
 );
