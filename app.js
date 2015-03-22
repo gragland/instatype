@@ -45,8 +45,17 @@ var AppComponent = React.createClass({
     this.setState({results : [], inputValue : ''});
   },
     handleChange: function(query) {
-      this.loadResultsFromServer(query);
+
+      var self = this;
+
+      clearTimeout(window.loadResultsTimeout);
+      
       this.setState( { inputValue : query } );
+
+      window.loadResultsTimeout = setTimeout(function(){
+        self.loadResultsFromServer(query);
+      }, 500);
+      
     },
     handleFocus: function() {
         this.setState( { inFocus : true } );
