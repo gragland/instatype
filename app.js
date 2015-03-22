@@ -153,7 +153,7 @@ function processResult(result) {
     $.ajax({
       url: endpoint,
       data: {
-        access_token: window.instagramClientId,
+        client_id: window.instagramClientId,
         count: 20
       },
       dataType: 'jsonp',
