@@ -76,6 +76,7 @@ ul.results > li > div{
 }
 
 #grid img{
+    float: left;
     width: 25%;
 }
 
