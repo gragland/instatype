@@ -128,7 +128,7 @@ var InputComponent = React.createClass({
         this.props.handleFocus(event);
     },
     handleBlur: function(event){
-        //this.props.handleBlur(event);
+        this.props.handleBlur(event);
     },
     render: function(){
         return (
