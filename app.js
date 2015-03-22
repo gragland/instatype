@@ -140,9 +140,7 @@ var GridComponent = React.createClass({
     render: function(){
 
         var resultNodes = this.props.data.map(function(result){
-            return (
-                <img src={result.image} />
-            );
+            return (<img src={result.image} />);
         });
 
         return (
