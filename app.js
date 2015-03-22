@@ -57,7 +57,7 @@ var AppComponent = React.createClass({
     handleBlur: function(event) {
         var self = this;
         window.blurTimeout = setTimeout(function(){
-            self.setState( { inFocus : false } ); 
+           self.setState( { inFocus : false } ); 
         }, 100);
     }
 });
