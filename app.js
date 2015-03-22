@@ -1,4 +1,6 @@
-// https://api.instagram.com/v1/users/search?access_token=291933.1fb234f.49bb69d84df4458dafeb45262b722d2a&q=gabe
+window.instagramClientId = '02d26cb819954ba7b5c3c072a885759f';
+
+
 var AppComponent = React.createClass({
   getInitialState: function(){
     return {
@@ -22,7 +24,7 @@ var AppComponent = React.createClass({
     $.ajax({
       url: this.props.endpoint,
       data: {
-        access_token: this.props.accessToken,
+        client_id: this.props.clientId,
         q: query,
         count: this.props.limit
       },
@@ -160,7 +162,7 @@ function processResult(result) {
     $.ajax({
       url: endpoint,
       data: {
-        access_token: "291933.1fb234f.49bb69d84df4458dafeb45262b722d2a",
+        access_token: window.instagramClientId,
         count: 20
       },
       dataType: 'jsonp',
@@ -170,7 +172,7 @@ function processResult(result) {
           return result;
         });
         React.render(
-          <GridComponent data={imageUrls} accessToken="291933.1fb234f.49bb69d84df4458dafeb45262b722d2a"/>,
+          <GridComponent data={imageUrls} clientId="02d26cb819954ba7b5c3c072a885759f"/>,
           document.getElementById('grid')
         );
       }
@@ -178,6 +180,6 @@ function processResult(result) {
 }
 
 React.render(
-  <AppComponent endpoint="https://api.instagram.com/v1/users/search" accessToken="291933.1fb234f.49bb69d84df4458dafeb45262b722d2a" onSelect={processResult} limit={10}/>,
+  <AppComponent endpoint="https://api.instagram.com/v1/users/search" clientId={window.instagramClientId} onSelect={processResult} limit={10}/>,
   document.getElementById('mount-point')
 );
