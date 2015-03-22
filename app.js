@@ -58,7 +58,7 @@ var AppComponent = React.createClass({
         var self = this;
         window.blurTimeout = setTimeout(function(){
             self.setState( { inFocus : false } ); 
-        }, 300);
+        }, 100);
     }
 });
 
@@ -81,8 +81,11 @@ var ResultsComponent = React.createClass({
             );
         });
 
-        // Best way to hide/show results?
         var resultsClass = (this.props.visible === true ? 'results show' : 'results hide');
+
+        // If no results give .empty class
+        if (resultNodes.length === 0)
+            resultsClass += ' empty';
 
         console.log(resultsClass);
 
@@ -100,9 +103,9 @@ var Result = React.createClass({
   render: function(){
 
     return (
-        <li>
+        <li className="clearfix">
             <img src={this.props.image}/>
-            {this.props.children}
+            <div>{this.props.children}</div>
         </li>
     );
   }
