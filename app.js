@@ -6,16 +6,7 @@ var AppComponent = React.createClass({
     return {
       inputValue : '',
       inFocus: false,
-      results: [
-        {
-          image : 'http://imgfave-herokuapp-com.global.ssl.fastly.net/image_cache/142642156144625.jpg',
-          username : 'Gabe'
-        },
-        {
-          image : 'http://40.media.tumblr.com/37a9787b9352ba10c2dfc8916813a71f/tumblr_nkth875MO41qjqyo8o1_500.jpg',
-          username : 'Irvin'
-        }
-      ]
+      results: []
     };
 
   },
