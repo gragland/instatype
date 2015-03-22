@@ -18,21 +18,27 @@ var AppComponent = React.createClass({
     },
 
   loadResultsFromServer: function (query) {
+    var appcomponent = this;
     $.ajax({
       url: this.props.endpoint,
-      dataType: 'json',
+      data: {
+        access_token: '291933.1fb234f.49bb69d84df4458dafeb45262b722d2a',
+        q: query
+      },
+      dataType: 'jsonp',
       success: function(data) {
         console.log('data received');
         var renamedData = _.map(data.data, function (result) {
           result.image = result.profile_picture;
+          return result;
         });
-        this.setState({results: renamedData});
+        appcomponent.setState({results: renamedData});
       }
     });
   },
   componentDidMount: function () {
     console.log('component rendered');
-    //this.loadResultsFromServer();
+    this.loadResultsFromServer();
   },
   render: function(){
         return (
@@ -42,8 +48,8 @@ var AppComponent = React.createClass({
             </div>
         );
     },
-    handleChange: function(data) {
-        this.setState( { results : data } );
+    handleChange: function(query) {
+      this.loadResultsFromServer(query);
     },
     handleFocus: function() {
         this.setState( { inFocus : true } );
@@ -114,6 +120,6 @@ var InputComponent = React.createClass({
 });
 
 React.render(
-  <AppComponent endpoint="https://api.instagram.com/v1/users/search?access_token=291933.1fb234f.49bb69d84df4458dafeb45262b722d2a&q=gabe" />,
+  <AppComponent endpoint="https://api.instagram.com/v1/users/search" />,
   document.getElementById('mount-point')
 );
