@@ -163,7 +163,7 @@ function processResult(result) {
       url: endpoint,
       data: {
         access_token: "291933.1fb234f.49bb69d84df4458dafeb45262b722d2a",
-        count: 1
+        count: 20
       },
       dataType: 'jsonp',
       success: function(data) {

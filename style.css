@@ -75,6 +75,10 @@ ul.results > li > div{
 
 }
 
+#grid img{
+    width: 25%;
+}
+
 .clearfix:after {
      visibility: hidden;
      display: block;
