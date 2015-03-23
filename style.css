@@ -24,7 +24,7 @@ h1{
     background-color: #F9FDFF;
 }
 
-#mount-point{
+#app{
     margin-left: 2em;
     display: block;
     float:left;
@@ -101,7 +101,7 @@ ul.results > li > div{
 
 
 @media all and (max-width: 927px) {
-    #mount-point {
+    #app {
         margin-left: 0;
         margin-top: 1.2em;
     }
