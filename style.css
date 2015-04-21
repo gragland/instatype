@@ -19,23 +19,22 @@ h1{
 }
 
 #navbar{
-    padding: 2em;
+    padding: 2em 2.2em;
     border-bottom: 1px solid #ccc;
     background-color: #F9FDFF;
 }
 
 #app{
     position: relative;
-    margin-left: 2em;
     display: block;
     float:left;
-    width: 600px;
+    width: 100%;
 }
 
 .input-typeahead {
     width: 100%;
     margin: 0;
-    font-size: 1.5em;
+    font-size: 2em;
     padding-left: 0.5em;
     line-height: 2em;
 }
@@ -46,7 +45,6 @@ ul.results{
     width: 100%;
     margin-top: 0;
     padding: 0;
-    /*padding: 1.5em;*/
     border: 1px solid #ccc;
     border-top: none;
     list-style-type: none;
@@ -67,14 +65,12 @@ ul.results > li:hover{
 }
 
 ul.results > li > img{
-    /*display: inline-block;*/
     float: left;
     width: 4em;
     height: 4em;
 }
 
 ul.results > li > div{
-    /*display:inline-block;*/
      float: left;
     padding-left: 0.5em;
     font-size: 2em;
@@ -100,21 +96,3 @@ ul.results > li > div{
 .clearfix { display: block; }
 /* close commented backslash hack */
 
-
-@media all and (max-width: 820px) {
-    h1 { 
-        float: none;
-    }
-
-    #app {
-        float: none;
-        margin-left: 0;
-        margin-top: 1.2em;
-    }
-}
-
-@media all and (max-width: 648px) {
-    #app {
-        width:100%;
-    }
-}
