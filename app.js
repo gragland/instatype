@@ -87,7 +87,7 @@ var AppComponent = React.createClass({
       var self = this;
       window.blurTimeout = setTimeout(function(){
           self.setState( { inFocus : false } );
-      }, 200);
+      }, 400);
   }
 });
 
