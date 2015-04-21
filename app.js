@@ -4,8 +4,9 @@ window.instagramClientId = '02d26cb819954ba7b5c3c072a885759f';
 var AppComponent = React.createClass({
   getInitialState: function(){
     return {
+      placeholder: 'Search instagram users',
       inputValue : '',
-      inFocus: false,
+      inFocus: false, 
       results: []
     };
 
@@ -21,8 +22,11 @@ var AppComponent = React.createClass({
       },
       dataType: 'jsonp',
       success: function(data) {
+        // Set image and name values
+        // TODO: Allow passing in location of values in server data (such as result.profile_picture) as prop of component
         var renamedData = _.map(data.data, function (result) {
           result.image = result.profile_picture;
+          result.name = result.username;
           return result;
         });
         appcomponent.setState({results: renamedData});
@@ -35,7 +39,7 @@ var AppComponent = React.createClass({
   render: function(){
     return (
       <div>
-          <InputComponent handleChange={this.handleChange} handleFocus={this.handleFocus} handleBlur={this.handleBlur} value={this.state.inputValue}/>
+          <InputComponent placeholder={this.state.placeholder} handleChange={this.handleChange} handleFocus={this.handleFocus} handleBlur={this.handleBlur} value={this.state.inputValue}/>
           <ResultsComponent data={this.state.results} visible={this.state.inFocus} handleSelect={this.handleSelect} />
       </div>
     );
@@ -80,7 +84,7 @@ var ResultsComponent = React.createClass({
       var resultNodes = this.props.data.map(function(result){
         return (
           <Result image={result.image} handleSelect={self.props.handleSelect} data={result}>
-              {result.username}
+              {result.name}
           </Result>
         );
       });
@@ -128,7 +132,7 @@ var InputComponent = React.createClass({
     },
     render: function(){
       return (
-          <input type="text" className="input-typeahead" value={this.props.value} onChange={this.handleChange} onFocus={this.handleFocus} onBlur={this.handleBlur}/>
+          <input type="text" placeholder={this.props.placeholder} className="input-typeahead" value={this.props.value} onChange={this.handleChange} onFocus={this.handleFocus} onBlur={this.handleBlur}/>
       );
     }
 });
@@ -148,6 +152,7 @@ var GridComponent = React.createClass({
   }
 });
 
+/* Callback function when dropdown item is selected */
 function processResult(result) {
 
   var endpoint = "https://api.instagram.com/v1/users/" + result.id + "/media/recent";
@@ -160,12 +165,12 @@ function processResult(result) {
     },
     dataType: 'jsonp',
     success: function(data) {
-      var imageUrls = _.map(data.data, function (result) {
+      var gridItems = _.map(data.data, function (result) {
         result.image = result.images.low_resolution.url;
         return result;
       });
       React.render(
-        <GridComponent data={imageUrls} />,
+        <GridComponent data={gridItems} />,
         document.getElementById('grid')
       );
     }
