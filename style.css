@@ -27,7 +27,6 @@ h1{
 #app{
     position: relative;
     display: block;
-    float:left;
     width: 100%;
 }
 
@@ -86,6 +85,7 @@ ul.results > li > div{
     width: 25%;
 }
 
+
 .clearfix:after {
      visibility: hidden;
      display: block;
@@ -93,7 +93,7 @@ ul.results > li > div{
      content: " ";
      clear: both;
      height: 0;
-     }
+}
 .clearfix { display: inline-block; }
 /* start commented backslash hack \*/
 * html .clearfix { height: 1%; }

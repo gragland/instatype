@@ -1,10 +1,9 @@
 window.instagramClientId = '02d26cb819954ba7b5c3c072a885759f';
 
-
 var AppComponent = React.createClass({
   getInitialState: function(){
     return {
-      inputValue : '',
+      inputValue: '',
       inFocus: false, 
       results: []
     };
@@ -12,12 +11,15 @@ var AppComponent = React.createClass({
   },
   getDefaultProps: function() {
     return {
+      limit: 10,
       placeholder: 'Search instagram users',
-      thumbStyle : 'circle'
+      thumbStyle : 'square'
     };
   },
   propTypes: {
-    thumbStyle: React.PropTypes.oneOf(['circle', 'square']),
+    limit: React.PropTypes.number,
+    placeholder: React.PropTypes.string,
+    thumbStyle: React.PropTypes.oneOf(['circle', 'square'])
   },
   loadResultsFromServer: function (query) {
     var appcomponent = this;
@@ -91,7 +93,7 @@ var ResultsComponent = React.createClass({
     self = this;
       var resultNodes = this.props.data.map(function(result){
         return (
-          <Result image={result.image} handleSelect={self.props.handleSelect} data={result}>
+          <Result image={result.image} handleSelect={self.props.handleSelect} data={result} key={result.id}>
               {result.name}
           </Result>
         );
@@ -129,7 +131,6 @@ var Result = React.createClass({
   }
 });
 
-
 var InputComponent = React.createClass({
     handleChange: function(event){
       this.props.handleChange(event.target.value);
@@ -151,7 +152,7 @@ var GridComponent = React.createClass({
 
   render: function(){
     var resultNodes = this.props.data.map(function(result){
-        return (<img src={result.image} />);
+        return (<img src={result.image} key={result.id} />);
     });
 
     return (
@@ -188,6 +189,12 @@ function processResult(result) {
 }
 
 React.render(
-  <AppComponent endpoint="https://api.instagram.com/v1/users/search" clientId={window.instagramClientId} onSelect={processResult} limit={6}/>,
+  <AppComponent 
+    endpoint="https://api.instagram.com/v1/users/search" 
+    clientId={window.instagramClientId} 
+    onSelect={processResult} 
+    limit={6} 
+    thumbStyle="circle"/>,
+
   document.getElementById('app')
 );
