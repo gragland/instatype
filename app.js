@@ -1,4 +1,9 @@
 window.instagramClientId = '02d26cb819954ba7b5c3c072a885759f';
+// Tells component where to find the values it needs from json returned by endpoint
+window.dataKeys = {
+  image: 'profile_picture',
+  name: 'username'
+}
 
 var AppComponent = React.createClass({
   getInitialState: function(){
@@ -12,17 +17,22 @@ var AppComponent = React.createClass({
   getDefaultProps: function() {
     return {
       limit: 10,
-      placeholder: 'Search instagram users',
-      thumbStyle : 'square'
+      placeholder: '',
+      thumbStyle : 'square',
+      dataKeys : {
+        image: 'image',
+        name: 'name'
+      },
     };
   },
   propTypes: {
     limit: React.PropTypes.number,
     placeholder: React.PropTypes.string,
-    thumbStyle: React.PropTypes.oneOf(['circle', 'square'])
+    thumbStyle: React.PropTypes.oneOf(['circle', 'square']),
+    dataKeys: React.PropTypes.object
   },
   loadResultsFromServer: function (query) {
-    var appcomponent = this;
+    var app = this;
     $.ajax({
       url: this.props.endpoint,
       data: {
@@ -32,14 +42,13 @@ var AppComponent = React.createClass({
       },
       dataType: 'jsonp',
       success: function(data) {
-        // Set image and name values
-        // TODO: Allow passing in location of values in server data (such as result.profile_picture) as prop of component
+        // Get required values from data to display dropdown results
         var renamedData = _.map(data.data, function (result) {
-          result.image = result.profile_picture;
-          result.name = result.username;
+          result.image = result[app.props.dataKeys.image];
+          result.name = result[app.props.dataKeys.name];
           return result;
         });
-        appcomponent.setState({results: renamedData});
+        app.setState({results: renamedData});
       }
     });
   },
@@ -118,7 +127,6 @@ var ResultsComponent = React.createClass({
 
 var Result = React.createClass({
   handleSelect: function (event) {
-    console.log('clicked');
     this.props.handleSelect(this.props.data);
   },
   render: function(){
@@ -190,7 +198,9 @@ function processResult(result) {
 
 React.render(
   <AppComponent 
+    placeholder="Search instagram users" 
     endpoint="https://api.instagram.com/v1/users/search" 
+    dataKeys={window.dataKeys}
     clientId={window.instagramClientId} 
     onSelect={processResult} 
     limit={6} 
