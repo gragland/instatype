@@ -54,7 +54,7 @@ var AppComponent = React.createClass({
 
     window.loadResultsTimeout = setTimeout(function(){
       self.loadResultsFromServer(query);
-    }, 500);
+    }, 200);
       
   },
   handleFocus: function() {
@@ -64,7 +64,7 @@ var AppComponent = React.createClass({
       var self = this;
       window.blurTimeout = setTimeout(function(){
           self.setState( { inFocus : false } );
-      }, 500);
+      }, 200);
   }
 });
 
@@ -173,6 +173,6 @@ function processResult(result) {
 }
 
 React.render(
-  <AppComponent endpoint="https://api.instagram.com/v1/users/search" clientId={window.instagramClientId} onSelect={processResult} limit={10}/>,
+  <AppComponent endpoint="https://api.instagram.com/v1/users/search" clientId={window.instagramClientId} onSelect={processResult} limit={6}/>,
   document.getElementById('app')
 );

@@ -25,6 +25,7 @@ h1{
 }
 
 #app{
+    position: relative;
     margin-left: 2em;
     display: block;
     float:left;
@@ -42,7 +43,7 @@ h1{
 ul.results{
     background-color: #fff;
     position: absolute;
-    width: 600px;
+    width: 100%;
     margin-top: 0;
     padding: 0;
     /*padding: 1.5em;*/
@@ -100,9 +101,20 @@ ul.results > li > div{
 /* close commented backslash hack */
 
 
-@media all and (max-width: 927px) {
+@media all and (max-width: 820px) {
+    h1 { 
+        float: none;
+    }
+
     #app {
+        float: none;
         margin-left: 0;
         margin-top: 1.2em;
+    }
+}
+
+@media all and (max-width: 648px) {
+    #app {
+        width:100%;
     }
 }
