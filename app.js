@@ -4,12 +4,20 @@ window.instagramClientId = '02d26cb819954ba7b5c3c072a885759f';
 var AppComponent = React.createClass({
   getInitialState: function(){
     return {
-      placeholder: 'Search instagram users',
       inputValue : '',
       inFocus: false, 
       results: []
     };
 
+  },
+  getDefaultProps: function() {
+    return {
+      placeholder: 'Search instagram users',
+      thumbStyle : 'circle'
+    };
+  },
+  propTypes: {
+    thumbStyle: React.PropTypes.oneOf(['circle', 'square']),
   },
   loadResultsFromServer: function (query) {
     var appcomponent = this;
@@ -39,8 +47,8 @@ var AppComponent = React.createClass({
   render: function(){
     return (
       <div>
-          <InputComponent placeholder={this.state.placeholder} handleChange={this.handleChange} handleFocus={this.handleFocus} handleBlur={this.handleBlur} value={this.state.inputValue}/>
-          <ResultsComponent data={this.state.results} visible={this.state.inFocus} handleSelect={this.handleSelect} />
+          <InputComponent placeholder={this.props.placeholder} handleChange={this.handleChange} handleFocus={this.handleFocus} handleBlur={this.handleBlur} value={this.state.inputValue}/>
+          <ResultsComponent data={this.state.results} visible={this.state.inFocus} handleSelect={this.handleSelect} thumbStyle={this.props.thumbStyle} />
       </div>
     );
   },
@@ -94,6 +102,8 @@ var ResultsComponent = React.createClass({
       // If no results give .empty class
       if (resultNodes.length === 0)
         resultsClass += ' empty';
+
+      resultsClass += ' thumb-' + this.props.thumbStyle;
 
       return (
         <ul className={resultsClass} onClick={this.handleResultsClick}>

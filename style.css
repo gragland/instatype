@@ -70,6 +70,10 @@ ul.results > li > img{
     height: 4em;
 }
 
+ul.results.thumb-circle > li > img{
+    border-radius: 4em;
+}
+
 ul.results > li > div{
      float: left;
     padding-left: 0.5em;
