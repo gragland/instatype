@@ -42,12 +42,17 @@ var AppComponent = React.createClass({
       },
       dataType: 'jsonp',
       success: function(data) {
+
         // Get required values from data to display dropdown results
         var renamedData = _.map(data.data, function (result) {
           result.image = result[app.props.dataKeys.image];
           result.name = result[app.props.dataKeys.name];
           return result;
         });
+
+        // Enforce limit here as well
+        renamedData = renamedData.slice(0, app.props.limit);
+
         app.setState({results: renamedData});
       }
     });
@@ -91,7 +96,6 @@ var AppComponent = React.createClass({
   }
 });
 
-
 var ResultsComponent = React.createClass({
 
   handleResultsClick: function(event){
@@ -123,7 +127,6 @@ var ResultsComponent = React.createClass({
       );
     }
 });
-
 
 var Result = React.createClass({
   handleSelect: function (event) {
@@ -171,7 +174,7 @@ var GridComponent = React.createClass({
   }
 });
 
-/* Callback function when dropdown item is selected */
+// Callback: Function called when result is clicked
 function processResult(result) {
 
   var endpoint = "https://api.instagram.com/v1/users/" + result.id + "/media/recent";
