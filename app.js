@@ -80,9 +80,16 @@ var AppComponent = React.createClass({
     
     this.setState( { inputValue : query } );
 
-    window.loadResultsTimeout = setTimeout(function(){
-      self.loadResultsFromServer(query);
-    }, 200);
+    if (query){
+
+      window.loadResultsTimeout = setTimeout(function(){
+        self.loadResultsFromServer(query);
+      }, 200);
+
+    }else{
+
+      this.setState({results: []});
+    }
       
   },
   handleFocus: function() {
