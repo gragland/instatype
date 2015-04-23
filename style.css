@@ -36,6 +36,7 @@ h1{
     font-size: 2em;
     padding-left: 0.5em;
     line-height: 2em;
+    border-radius: 0;
 }
 
 ul.results{
@@ -57,6 +58,7 @@ ul.results > li{
     line-height: 4em;
     padding: 0.5em 0 0.5em 1em;
     position: relative;
+    cursor: pointer;
 }
 
 ul.results > li:hover{
@@ -85,6 +87,12 @@ ul.results > li > div{
     width: 25%;
 }
 
+@media all and (max-width: 500px) {
+    body {
+        font-size: 10px;
+    }
+}
+
 
 .clearfix:after {
      visibility: hidden;
@@ -99,4 +107,6 @@ ul.results > li > div{
 * html .clearfix { height: 1%; }
 .clearfix { display: block; }
 /* close commented backslash hack */
+
+
 
