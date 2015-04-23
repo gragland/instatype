@@ -65,6 +65,10 @@ ul.results > li:hover{
     background-color: #FFFEE2;
 }
 
+ul.results > li:active{
+    background-color: #FFFEE2;
+}
+
 ul.results > li > img{
     float: left;
     width: 4em;
