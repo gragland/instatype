@@ -28,6 +28,6 @@
   "homepage": "https://github.com/gragland/typeahead",
   "scripts": {
     "build": "browserify -t babelify -g uglifyify -e js-src/app.js > js-build/bundle.js",
-    "watch": "watchify js-src/app.js -o js-build/bundle.js -v"
+    "watch": "watchify -t babelify js-src/app.js -o js-build/bundle.js -v"
   }
 }
