@@ -1,28 +1,29 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+'use strict';
+
 var React = require('react');
 var _ = require('underscore');
 var Functions = require('./functions.js');
 
+var AppComponent = React.createClass({
+  displayName: 'AppComponent',
 
-var AppComponent = React.createClass({displayName: "AppComponent",
-  getInitialState: function(){
+  getInitialState: function getInitialState() {
     return {
       inputValue: '',
-      inFocus: false, 
+      inFocus: false,
       results: []
     };
-
   },
-  getDefaultProps: function() {
+  getDefaultProps: function getDefaultProps() {
     return {
       limit: 10,
       placeholder: '',
-      thumbStyle : 'square',
-      dataKeys : {
+      thumbStyle: 'square',
+      dataKeys: {
         image: 'image',
         name: 'name'
-      },
-    };
+      } };
   },
   propTypes: {
     limit: React.PropTypes.number,
@@ -30,7 +31,7 @@ var AppComponent = React.createClass({displayName: "AppComponent",
     thumbStyle: React.PropTypes.oneOf(['circle', 'square']),
     dataKeys: React.PropTypes.object
   },
-  loadResultsFromServer: function (query) {
+  loadResultsFromServer: function loadResultsFromServer(query) {
     var app = this;
 
     var endpoint = app.props.endpoint;
@@ -41,152 +42,151 @@ var AppComponent = React.createClass({displayName: "AppComponent",
       count: app.props.limit
     };
 
-    Functions.request(endpoint, requestParams, function(data){
+    Functions.request(endpoint, requestParams, function (data) {
 
-        // If inputValue changed prior to request completing don't bother to render
-        if (app.state.inputValue != query){
-          return false;
-        }
+      // If inputValue changed prior to request completing don't bother to render
+      if (app.state.inputValue != query) {
+        return false;
+      }
 
-        // Get required values from data to display dropdown results
-        var renamedData = _.map(data.data, function (result) {
-          result.image = result[app.props.dataKeys.image];
-          result.name = result[app.props.dataKeys.name];
-          return result;
-        });
+      // Get required values from data to display dropdown results
+      var renamedData = _.map(data.data, function (result) {
+        result.image = result[app.props.dataKeys.image];
+        result.name = result[app.props.dataKeys.name];
+        return result;
+      });
 
-        // Enforce limit here as well
-        renamedData = renamedData.slice(0, app.props.limit);
+      // Enforce limit here as well
+      renamedData = renamedData.slice(0, app.props.limit);
 
-        app.setState({results: renamedData});
+      app.setState({ results: renamedData });
     });
-
-  
   },
-  componentDidMount: function () {
-    //this.loadResultsFromServer();
-  },
-  render: function(){
-    return (
-      React.createElement("div", null, 
-          React.createElement(InputComponent, {placeholder: this.props.placeholder, handleChange: this.handleChange, handleFocus: this.handleFocus, handleBlur: this.handleBlur, value: this.state.inputValue}), 
-          React.createElement(ResultsComponent, {data: this.state.results, visible: this.state.inFocus, handleSelect: this.handleSelect, thumbStyle: this.props.thumbStyle})
-      )
+  componentDidMount: function componentDidMount() {},
+  render: function render() {
+    return React.createElement(
+      'div',
+      null,
+      React.createElement(InputComponent, { placeholder: this.props.placeholder, handleChange: this.handleChange, handleFocus: this.handleFocus, handleBlur: this.handleBlur, value: this.state.inputValue }),
+      React.createElement(ResultsComponent, { data: this.state.results, visible: this.state.inFocus, handleSelect: this.handleSelect, thumbStyle: this.props.thumbStyle })
     );
   },
-  handleSelect: function(selectedResult) {
+  handleSelect: function handleSelect(selectedResult) {
     this.props.onSelect(selectedResult);
-    this.setState({results : [], inputValue : ''});
+    this.setState({ results: [], inputValue: '' });
   },
-  handleChange: function(query) {
+  handleChange: function handleChange(query) {
 
     var self = this;
 
     clearTimeout(window.loadResultsTimeout);
-    
-    this.setState( { inputValue : query } );
 
-    if (query){
+    this.setState({ inputValue: query });
 
-      window.loadResultsTimeout = setTimeout(function(){
+    if (query) {
+
+      window.loadResultsTimeout = setTimeout(function () {
         self.loadResultsFromServer(query);
       }, 200);
+    } else {
 
-    }else{
-
-      this.setState({results: []});
+      this.setState({ results: [] });
     }
-      
   },
-  handleFocus: function() {
-      this.setState( { inFocus : true } );
+  handleFocus: function handleFocus() {
+    this.setState({ inFocus: true });
   },
-  handleBlur: function(event) {
-      var self = this;
-      window.blurTimeout = setTimeout(function(){
-          self.setState( { inFocus : false } );
-      }, 400);
+  handleBlur: function handleBlur(event) {
+    var self = this;
+    window.blurTimeout = setTimeout(function () {
+      self.setState({ inFocus: false });
+    }, 400);
   }
 });
 
-var ResultsComponent = React.createClass({displayName: "ResultsComponent",
+var ResultsComponent = React.createClass({
+  displayName: 'ResultsComponent',
 
-  handleResultsClick: function(event){
+  handleResultsClick: function handleResultsClick(event) {
     clearTimeout(window.blurTimeout);
   },
 
-  render: function(){
+  render: function render() {
     self = this;
-      var resultNodes = this.props.data.map(function(result){
-        return (
-          React.createElement(Result, {image: result.image, handleSelect: self.props.handleSelect, data: result, key: result.id}, 
-              result.name
-          )
-        );
-      });
-
-      var resultsClass = (this.props.visible === true ? 'results show' : 'results hide');
-
-      // If no results give .empty class
-      if (resultNodes.length === 0)
-        resultsClass += ' empty';
-
-      resultsClass += ' thumb-' + this.props.thumbStyle;
-
-      return (
-        React.createElement("ul", {className: resultsClass, onClick: this.handleResultsClick}, 
-            resultNodes
-        )
+    var resultNodes = this.props.data.map(function (result) {
+      return React.createElement(
+        Result,
+        { image: result.image, handleSelect: self.props.handleSelect, data: result, key: result.id },
+        result.name
       );
-    }
+    });
+
+    var resultsClass = this.props.visible === true ? 'results show' : 'results hide';
+
+    // If no results give .empty class
+    if (resultNodes.length === 0) resultsClass += ' empty';
+
+    resultsClass += ' thumb-' + this.props.thumbStyle;
+
+    return React.createElement(
+      'ul',
+      { className: resultsClass, onClick: this.handleResultsClick },
+      resultNodes
+    );
+  }
 });
 
-var Result = React.createClass({displayName: "Result",
-  handleSelect: function (event) {
+var Result = React.createClass({
+  displayName: 'Result',
+
+  handleSelect: function handleSelect(event) {
     this.props.handleSelect(this.props.data);
   },
-  render: function(){
-    return (
-      React.createElement("li", {className: "clearfix", onClick: this.handleSelect}, 
-          React.createElement("img", {src: this.props.image}), 
-          React.createElement("div", null, this.props.children)
+  render: function render() {
+    return React.createElement(
+      'li',
+      { className: 'clearfix', onClick: this.handleSelect },
+      React.createElement('img', { src: this.props.image }),
+      React.createElement(
+        'div',
+        null,
+        this.props.children
       )
     );
   }
 });
 
+var InputComponent = React.createClass({
+  displayName: 'InputComponent',
 
-var InputComponent = React.createClass({displayName: "InputComponent",
-    handleChange: function(event){
-      this.props.handleChange(event.target.value);
-    },
-    handleFocus: function(event){
-      this.props.handleFocus(event);
-    },
-    handleBlur: function(event){
-      this.props.handleBlur(event);
-    },
-    render: function(){
-      return (
-          React.createElement("input", {type: "text", placeholder: this.props.placeholder, className: "input-typeahead", value: this.props.value, onChange: this.handleChange, onFocus: this.handleFocus, onBlur: this.handleBlur})
-      );
-    }
+  handleChange: function handleChange(event) {
+    this.props.handleChange(event.target.value);
+  },
+  handleFocus: function handleFocus(event) {
+    this.props.handleFocus(event);
+  },
+  handleBlur: function handleBlur(event) {
+    this.props.handleBlur(event);
+  },
+  render: function render() {
+    return React.createElement('input', { type: 'text', placeholder: this.props.placeholder, className: 'input-typeahead', value: this.props.value, onChange: this.handleChange, onFocus: this.handleFocus, onBlur: this.handleBlur });
+  }
 });
 
-React.render(
-  React.createElement(AppComponent, {
-    placeholder: "Search instagram users", 
-    endpoint: "https://api.instagram.com/v1/users/search", 
-    dataKeys: window.dataKeys, 
-    clientId: window.instagramClientId, 
-    onSelect: Functions.processResult, 
-    limit: 6, 
-    thumbStyle: "circle"}),
+React.render(React.createElement(AppComponent, {
+  placeholder: 'Search instagram users',
+  endpoint: 'https://api.instagram.com/v1/users/search',
+  dataKeys: window.dataKeys,
+  clientId: window.instagramClientId,
+  onSelect: Functions.processResult,
+  limit: 6,
+  thumbStyle: 'circle' }), document.getElementById('app'));
 
-  document.getElementById('app')
-);
+//this.loadResultsFromServer();
 
 },{"./functions.js":2,"react":158,"underscore":159}],2:[function(require,module,exports){
+'use strict';
+
 var React = require('react');
 var _ = require('underscore');
 var GridComponent = require('./grid.js');
@@ -196,65 +196,63 @@ window.instagramClientId = '02d26cb819954ba7b5c3c072a885759f';
 window.dataKeys = {
   image: 'profile_picture',
   name: 'username'
-}
+};
 
 // Callback: Function called when result is clicked
-var processResult = function(result) {
+var processResult = function processResult(result) {
 
-  var endpoint = "https://api.instagram.com/v1/users/" + result.id + "/media/recent";
+  var endpoint = 'https://api.instagram.com/v1/users/' + result.id + '/media/recent';
 
   var requestParams = {
     client_id: window.instagramClientId,
     count: 20
   };
 
-  request(endpoint, requestParams, function(data){
+  request(endpoint, requestParams, function (data) {
     var gridItems = _.map(data.data, function (result) {
       result.image = result.images.low_resolution.url;
       return result;
     });
-    React.render(
-      React.createElement(GridComponent, {data: gridItems}),
-      document.getElementById('grid')
-    );
+    React.render(React.createElement(GridComponent, { data: gridItems }), document.getElementById('grid'));
   });
-}
+};
 
-var request = function(endpoint, requestParams, callback){
+var request = function request(endpoint, requestParams, callback) {
   $.ajax({
     url: endpoint,
     data: requestParams,
     dataType: 'jsonp',
-    success: function(data) {
+    success: function success(data) {
       callback(data);
     }
   });
-}
+};
 
 module.exports = {
-  request : request,
-  processResult : processResult
-}; 
-
+  request: request,
+  processResult: processResult
+};
 
 },{"./grid.js":3,"react":158,"underscore":159}],3:[function(require,module,exports){
 //var InfiniteGrid = require('../react-infinite-grid-master/src/grid.js');
 
+'use strict';
+
 var React = require('react');
 
 // Displays grid of images
-var GridComponent = React.createClass({displayName: "GridComponent",
+var GridComponent = React.createClass({
+  displayName: 'GridComponent',
 
-  getDefaultProps: function() {
+  getDefaultProps: function getDefaultProps() {
     return {
-      data: [],
-    };
+      data: [] };
   },
 
-  render: function(){
+  render: function render() {
 
-    var resultNodes = this.props.data.map(function(result){
-        return (React.createElement("img", {src: result.image, key: result.id}));
+    var resultNodes = this.props.data.map(function (result) {
+      return React.createElement('img', { src: result.image, key: result.id });
     });
 
     /*
@@ -263,16 +261,16 @@ var GridComponent = React.createClass({displayName: "GridComponent",
     );
     */
 
-    return (
-        React.createElement("div", null, 
-            resultNodes
-        )
+    return React.createElement(
+      'div',
+      null,
+      resultNodes
     );
   }
 });
 
+module.exports = GridComponent;
 
-module.exports = GridComponent; 
 },{"react":158}],4:[function(require,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
