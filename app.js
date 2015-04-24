@@ -26,6 +26,7 @@ var AppComponent = React.createClass({
   },
   loadResultsFromServer: function (query) {
     var app = this;
+
     $.ajax({
       url: this.props.endpoint,
       data: {
@@ -35,6 +36,13 @@ var AppComponent = React.createClass({
       },
       dataType: 'jsonp',
       success: function(data) {
+
+        // If inputValue changed prior to ajax request completing don't bother to render
+        if (app.state.inputValue != query){
+          return false;
+        }
+
+        //console.log(query);
 
         // Get required values from data to display dropdown results
         var renamedData = _.map(data.data, function (result) {
@@ -51,7 +59,7 @@ var AppComponent = React.createClass({
     });
   },
   componentDidMount: function () {
-    this.loadResultsFromServer();
+    //this.loadResultsFromServer();
   },
   render: function(){
     return (
