@@ -1,7 +1,7 @@
 var React = require('react');
 var _ = require('underscore');
-var $ = require('jquery');
 var Functions = require('./functions.js');
+
 
 var AppComponent = React.createClass({displayName: "AppComponent",
   getInitialState: function(){
@@ -32,22 +32,20 @@ var AppComponent = React.createClass({displayName: "AppComponent",
   loadResultsFromServer: function (query) {
     var app = this;
 
-    $.ajax({
-      url: this.props.endpoint,
-      data: {
-        client_id: this.props.clientId,
-        q: query,
-        count: this.props.limit
-      },
-      dataType: 'jsonp',
-      success: function(data) {
+    var endpoint = app.props.endpoint;
 
-        // If inputValue changed prior to ajax request completing don't bother to render
+    var requestParams = {
+      client_id: app.props.clientId,
+      q: query,
+      count: app.props.limit
+    };
+
+    Functions.request(endpoint, requestParams, function(data){
+
+        // If inputValue changed prior to request completing don't bother to render
         if (app.state.inputValue != query){
           return false;
         }
-
-        //console.log(query);
 
         // Get required values from data to display dropdown results
         var renamedData = _.map(data.data, function (result) {
@@ -60,8 +58,9 @@ var AppComponent = React.createClass({displayName: "AppComponent",
         renamedData = renamedData.slice(0, app.props.limit);
 
         app.setState({results: renamedData});
-      }
     });
+
+  
   },
   componentDidMount: function () {
     //this.loadResultsFromServer();
@@ -154,6 +153,7 @@ var Result = React.createClass({displayName: "Result",
     );
   }
 });
+
 
 var InputComponent = React.createClass({displayName: "InputComponent",
     handleChange: function(event){
