@@ -1,5 +1,4 @@
 var React = require('react');
-var _ = require('underscore');
 var GridComponent = require('./grid.js');
 
 window.instagramClientId = '02d26cb819954ba7b5c3c072a885759f';
@@ -20,7 +19,7 @@ var processResult = function(result) {
   };
 
   request(endpoint, requestParams, function(data){
-    var gridItems = _.map(data.data, function (result) {
+    var gridItems = data.data.map(function (result) {
       result.image = result.images.low_resolution.url;
       return result;
     });

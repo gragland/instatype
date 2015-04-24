@@ -1,5 +1,4 @@
 var React = require('react');
-var _ = require('underscore');
 var Functions = require('./functions.js');
 
 
@@ -10,8 +9,8 @@ var AppComponent = React.createClass({
       inFocus: false, 
       results: []
     };
-
   },
+
   getDefaultProps: function() {
     return {
       limit: 10,
@@ -39,7 +38,6 @@ var AppComponent = React.createClass({
       q: query,
       count: app.props.limit
     };
-
     Functions.request(endpoint, requestParams, function(data){
 
         // If inputValue changed prior to request completing don't bother to render
@@ -47,12 +45,23 @@ var AppComponent = React.createClass({
           return false;
         }
 
+        //console.log(data.data);
+
+         // Get required values from data to display dropdown results
+        var renamedData = data.data.map(function(result){
+          result.image = result[app.props.dataKeys.image];
+          result.name = result[app.props.dataKeys.name];
+          return result;
+        });
+
         // Get required values from data to display dropdown results
+        /*
         var renamedData = _.map(data.data, function (result) {
           result.image = result[app.props.dataKeys.image];
           result.name = result[app.props.dataKeys.name];
           return result;
         });
+        */
 
         // Enforce limit here as well
         renamedData = renamedData.slice(0, app.props.limit);
@@ -116,28 +125,31 @@ var ResultsComponent = React.createClass({
 
   render: function(){
     self = this;
-      var resultNodes = this.props.data.map(function(result){
-        return (
-          <Result image={result.image} handleSelect={self.props.handleSelect} data={result} key={result.id}>
-              {result.name}
-          </Result>
-        );
-      });
 
-      var resultsClass = (this.props.visible === true ? 'results show' : 'results hide');
+    //console.log(this.props.data);
 
-      // If no results give .empty class
-      if (resultNodes.length === 0)
-        resultsClass += ' empty';
-
-      resultsClass += ' thumb-' + this.props.thumbStyle;
-
+    var resultNodes = this.props.data.map(function(result){
       return (
-        <ul className={resultsClass} onClick={this.handleResultsClick}>
-            {resultNodes}
-        </ul>
+        <Result image={result.image} handleSelect={self.props.handleSelect} data={result} key={result.id}>
+            {result.name}
+        </Result>
       );
-    }
+    });
+
+    var resultsClass = (this.props.visible === true ? 'results show' : 'results hide');
+
+    // If no results give .empty class
+    if (resultNodes.length === 0)
+      resultsClass += ' empty';
+
+    resultsClass += ' thumb-' + this.props.thumbStyle;
+
+    return (
+      <ul className={resultsClass} onClick={this.handleResultsClick}>
+          {resultNodes}
+      </ul>
+    );
+  }
 });
 
 var Result = React.createClass({
@@ -153,6 +165,7 @@ var Result = React.createClass({
     );
   }
 });
+
 
 
 var InputComponent = React.createClass({
