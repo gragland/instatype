@@ -31,6 +31,12 @@ var processResult = function(result) {
 }
 
 var request = function(endpoint, requestParams, callback){
+
+  // Tiny JSONP Library: https://github.com/OscarGodson/JSONP
+  JSONP(endpoint, requestParams, callback);
+
+  /*
+  // JQuery
   $.ajax({
     url: endpoint,
     data: requestParams,
@@ -38,7 +44,7 @@ var request = function(endpoint, requestParams, callback){
     success: function(data) {
       callback(data);
     }
-  });
+  });*/
 }
 
 module.exports = {

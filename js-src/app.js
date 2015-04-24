@@ -68,7 +68,6 @@ var AppComponent = React.createClass({
 
         app.setState({results: renamedData});
     });
-
   
   },
   componentDidMount: function () {
