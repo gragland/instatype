@@ -1,3 +1,8 @@
+var React = require('react');
+var _ = require('underscore');
+var $ = require('jquery');
+var Functions = require('./functions.js');
+
 var AppComponent = React.createClass({
   getInitialState: function(){
     return {
@@ -173,7 +178,7 @@ React.render(
     endpoint="https://api.instagram.com/v1/users/search" 
     dataKeys={window.dataKeys}
     clientId={window.instagramClientId} 
-    onSelect={processResult} 
+    onSelect={Functions.processResult} 
     limit={6} 
     thumbStyle="circle"/>,
 

@@ -1,3 +1,8 @@
+var React = require('react');
+var _ = require('underscore');
+var $ = require('jquery');
+var GridComponent = require('./grid.js');
+
 window.instagramClientId = '02d26cb819954ba7b5c3c072a885759f';
 // Tells component where to find the values it needs from json returned by endpoint
 window.dataKeys = {
@@ -5,24 +10,8 @@ window.dataKeys = {
   name: 'username'
 }
 
-// Displays grid of images
-var GridComponent = React.createClass({
-
-  render: function(){
-    var resultNodes = this.props.data.map(function(result){
-        return (<img src={result.image} key={result.id} />);
-    });
-
-    return (
-        <div>
-            {resultNodes}
-        </div>
-    );
-  }
-});
-
 // Callback: Function called when result is clicked
-function processResult(result) {
+var processResult = function(result) {
 
   var endpoint = "https://api.instagram.com/v1/users/" + result.id + "/media/recent";
 
@@ -46,4 +35,7 @@ function processResult(result) {
   });
 }
 
+module.exports = {
+  processResult : processResult
+}; 
 
