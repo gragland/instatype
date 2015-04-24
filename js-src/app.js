@@ -172,6 +172,8 @@ var InputComponent = React.createClass({
     }
 });
 
+
+
 React.render(
   <AppComponent 
     placeholder="Search instagram users" 
