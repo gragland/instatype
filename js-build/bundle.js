@@ -21,7 +21,7 @@ var AppComponent = React.createClass({
       limit: 10,
       placeholder: '',
       thumbStyle: 'square',
-      loadingIcon: '/images/loading.gif',
+      loadingIcon: 'images/loading.gif',
       dataKeys: {
         image: 'image',
         name: 'name'
