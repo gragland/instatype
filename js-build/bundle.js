@@ -11,10 +11,10 @@ var AppComponent = React.createClass({
     return {
       inputValue: '',
       inFocus: false,
-      results: []
+      results: [],
+      resultsId: null
     };
   },
-
   getDefaultProps: function getDefaultProps() {
     return {
       limit: 10,
@@ -48,8 +48,6 @@ var AppComponent = React.createClass({
         return false;
       }
 
-      //console.log(data.data);
-
       // Get required values from data to display dropdown results
       var renamedData = data.data.map(function (result) {
         result.image = result[app.props.dataKeys.image];
@@ -57,19 +55,13 @@ var AppComponent = React.createClass({
         return result;
       });
 
-      // Get required values from data to display dropdown results
-      /*
-      var renamedData = _.map(data.data, function (result) {
-        result.image = result[app.props.dataKeys.image];
-        result.name = result[app.props.dataKeys.name];
-        return result;
-      });
-      */
-
       // Enforce limit here as well
       renamedData = renamedData.slice(0, app.props.limit);
 
-      app.setState({ results: renamedData });
+      app.setState({
+        results: renamedData,
+        resultsId: query
+      });
     });
   },
   componentDidMount: function componentDidMount() {},
@@ -78,12 +70,12 @@ var AppComponent = React.createClass({
       'div',
       null,
       React.createElement(InputComponent, { placeholder: this.props.placeholder, handleChange: this.handleChange, handleFocus: this.handleFocus, handleBlur: this.handleBlur, value: this.state.inputValue }),
-      React.createElement(ResultsComponent, { data: this.state.results, visible: this.state.inFocus, handleSelect: this.handleSelect, thumbStyle: this.props.thumbStyle })
+      React.createElement(ResultsComponent, { data: this.state.results, resultsId: this.state.resultsId, visible: this.state.inFocus, handleSelect: this.handleSelect, thumbStyle: this.props.thumbStyle })
     );
   },
   handleSelect: function handleSelect(selectedResult) {
     this.props.onSelect(selectedResult);
-    this.setState({ results: [], inputValue: '' });
+    this.clearState();
   },
   handleChange: function handleChange(query) {
 
@@ -91,16 +83,16 @@ var AppComponent = React.createClass({
 
     clearTimeout(window.loadResultsTimeout);
 
-    this.setState({ inputValue: query });
-
     if (query) {
+
+      this.setState({ inputValue: query });
 
       window.loadResultsTimeout = setTimeout(function () {
         self.loadResultsFromServer(query);
       }, 200);
     } else {
 
-      this.setState({ results: [] });
+      this.clearState();
     }
   },
   handleFocus: function handleFocus() {
@@ -111,6 +103,9 @@ var AppComponent = React.createClass({
     window.blurTimeout = setTimeout(function () {
       self.setState({ inFocus: false });
     }, 400);
+  },
+  clearState: function clearState() {
+    this.setState({ results: [], resultsId: null, inputValue: '' });
   }
 });
 
@@ -120,11 +115,12 @@ var ResultsComponent = React.createClass({
   handleResultsClick: function handleResultsClick(event) {
     clearTimeout(window.blurTimeout);
   },
-
+  shouldComponentUpdate: function shouldComponentUpdate(nextProps, nextState) {
+    // Compare visible and resultsId (any unique identifier for the results, such as a query term) so we can prevent uneccesary re-rendering
+    return this.props.visible !== nextProps.visible || this.props.resultsId !== nextProps.resultsId;
+  },
   render: function render() {
     self = this;
-
-    //console.log(this.props.data);
 
     var resultNodes = this.props.data.map(function (result) {
       return React.createElement(
@@ -134,12 +130,9 @@ var ResultsComponent = React.createClass({
       );
     });
 
-    var resultsClass = this.props.visible === true ? 'results show' : 'results hide';
-
-    // If no results give .empty class
-    if (resultNodes.length === 0) resultsClass += ' empty';
-
-    resultsClass += ' thumb-' + this.props.thumbStyle;
+    var resultsClass = 'results thumb-' + this.props.thumbStyle;
+    resultsClass += this.props.visible === true ? ' show' : ' hide';
+    resultsClass += resultNodes.length === 0 ? ' empty' : '';
 
     return React.createElement(
       'ul',
@@ -154,6 +147,9 @@ var Result = React.createClass({
 
   handleSelect: function handleSelect(event) {
     this.props.handleSelect(this.props.data);
+  },
+  shouldComponentUpdate: function shouldComponentUpdate(nextProps, nextState) {
+    return this.props.data.id !== nextProps.data.id;
   },
   render: function render() {
     return React.createElement(
@@ -172,6 +168,9 @@ var Result = React.createClass({
 var InputComponent = React.createClass({
   displayName: 'InputComponent',
 
+  shouldComponentUpdate: function shouldComponentUpdate(nextProps, nextState) {
+    return this.props.value !== nextProps.value;
+  },
   handleChange: function handleChange(event) {
     this.props.handleChange(event.target.value);
   },
