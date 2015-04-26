@@ -11,9 +11,9 @@ var AppComponent = React.createClass({
       resultsId: null
     };
   },
-  
   getDefaultProps: function() {
     return {
+      text : false,
       limit: 10,
       placeholder: '',
       thumbStyle : 'square',
