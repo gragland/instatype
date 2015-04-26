@@ -74,7 +74,7 @@ var AppComponent = React.createClass({
       'div',
       null,
       React.createElement(InputComponent, { placeholder: this.props.placeholder, handleChange: this.handleChange, handleFocus: this.handleFocus, handleBlur: this.handleBlur, value: this.state.inputValue }),
-      React.createElement(ResultsComponent, { data: this.state.results, resultsId: this.state.resultsId, visible: this.state.inFocus, handleSelect: this.handleSelect, thumbStyle: this.props.thumbStyle }),
+      this.state.results.length > 0 && React.createElement(ResultsComponent, { data: this.state.results, resultsId: this.state.resultsId, visible: this.state.inFocus, handleSelect: this.handleSelect, thumbStyle: this.props.thumbStyle }),
       this.state.loading && React.createElement(LoadingComponent, null)
     );
   },

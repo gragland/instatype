@@ -71,7 +71,9 @@ var AppComponent = React.createClass({
     return (
       <div>
           <InputComponent placeholder={this.props.placeholder} handleChange={this.handleChange} handleFocus={this.handleFocus} handleBlur={this.handleBlur} value={this.state.inputValue} />
-          <ResultsComponent data={this.state.results} resultsId={this.state.resultsId} visible={this.state.inFocus} handleSelect={this.handleSelect} thumbStyle={this.props.thumbStyle} />
+          { this.state.results.length > 0 &&
+            <ResultsComponent data={this.state.results} resultsId={this.state.resultsId} visible={this.state.inFocus} handleSelect={this.handleSelect} thumbStyle={this.props.thumbStyle} />
+          }
           { this.state.loading &&
             <LoadingComponent />
           }
