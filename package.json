@@ -2,9 +2,8 @@
   "name": "web",
   "version": "0.0.0",
   "description": "Simple React Typeahead",
-  "main": "js-src/app.js",
   "dependencies": {
-    "react": "~0.13.2"
+    "react": "~0.13.14"
   },
   "devDependencies": {
     "browserify": "latest",
@@ -13,21 +12,18 @@
     "watchify": "~3.1.2",
     "uglifyify": "latest"
   },
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
   "repository": {
     "type": "git",
-    "url": "git://github.com/gragland/typeahead.git"
+    "url": "git://github.com/gragland/instatype.git"
   },
   "author": "",
-  "license": "BSD-2-Clause",
+  "license": "",
   "bugs": {
     "url": "https://github.com/gragland/typeahead/issues"
   },
   "homepage": "https://github.com/gragland/typeahead",
   "scripts": {
-    "build": "browserify -t babelify -g uglifyify -e js-src/app.js > js-build/bundle.js",
-    "watch": "watchify -t babelify js-src/app.js -o js-build/bundle.js -v"
+    "build": "browserify js-src/app.js --transform babelify --global-transform uglifyify --outfile js-build/bundle.js",
+    "watch": "watchify js-src/app.js --transform babelify --outfile js-build/bundle.js -v"
   }
 }
