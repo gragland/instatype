@@ -75,7 +75,7 @@ var AppComponent = React.createClass({
       null,
       React.createElement(InputComponent, { placeholder: this.props.placeholder, handleChange: this.handleChange, handleFocus: this.handleFocus, handleBlur: this.handleBlur, value: this.state.inputValue }),
       React.createElement(ResultsComponent, { data: this.state.results, resultsId: this.state.resultsId, visible: this.state.inFocus, handleSelect: this.handleSelect, thumbStyle: this.props.thumbStyle }),
-      React.createElement(LoadingComponent, { visible: this.state.loading })
+      this.state.loading && React.createElement(LoadingComponent, null)
     );
   },
   handleSelect: function handleSelect(selectedResult) {
@@ -193,14 +193,8 @@ var InputComponent = React.createClass({
 var LoadingComponent = React.createClass({
   displayName: 'LoadingComponent',
 
-  shouldComponentUpdate: function shouldComponentUpdate(nextProps, nextState) {
-    return this.props.visible !== nextProps.visible;
-  },
   render: function render() {
-
-    if (this.props.visible === false) {
-      return false;
-    }return React.createElement('img', { className: 'loading-icon', src: '/images/loading.gif' });
+    return React.createElement('img', { className: 'loading-icon', src: '/images/loading.gif' });
   }
 });
 

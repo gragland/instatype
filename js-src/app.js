@@ -72,7 +72,9 @@ var AppComponent = React.createClass({
       <div>
           <InputComponent placeholder={this.props.placeholder} handleChange={this.handleChange} handleFocus={this.handleFocus} handleBlur={this.handleBlur} value={this.state.inputValue} />
           <ResultsComponent data={this.state.results} resultsId={this.state.resultsId} visible={this.state.inFocus} handleSelect={this.handleSelect} thumbStyle={this.props.thumbStyle} />
-          <LoadingComponent visible={this.state.loading} />
+          { this.state.loading &&
+            <LoadingComponent />
+          }
       </div>
     );
   },
@@ -185,14 +187,7 @@ var InputComponent = React.createClass({
 });
 
 var LoadingComponent = React.createClass({
-    shouldComponentUpdate: function(nextProps, nextState){
-      return this.props.visible !== nextProps.visible;
-    },
     render: function(){
-
-      if (this.props.visible === false)
-        return false
-
       return (
           <img className="loading-icon" src="/images/loading.gif"/>
       );
