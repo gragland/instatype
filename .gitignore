@@ -1,6 +1,3 @@
 node_modules/
 js-build/.module-cache/
 .DS_Store
-.jshintignore
-.jshintrc
-.validate.json
