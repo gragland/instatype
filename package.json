@@ -10,7 +10,8 @@
     "babelify": "~6.0.2",
     "reactify": "~1.1.0",
     "watchify": "~3.1.2",
-    "uglifyify": "latest"
+    "uglifyify": "latest",
+    "precommit-hook": "latest"
   },
   "repository": {
     "type": "git",
@@ -25,5 +26,6 @@
   "scripts": {
     "build": "browserify js-src/app.js --transform babelify --global-transform uglifyify --outfile js-build/bundle.js",
     "watch": "watchify js-src/app.js --transform babelify --outfile js-build/bundle.js -v"
-  }
+  },
+  "pre-commit": ["build"]
 }
