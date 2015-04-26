@@ -11,6 +11,7 @@ var AppComponent = React.createClass({
     return {
       inputValue: '',
       inFocus: false,
+      loading: false,
       results: [],
       resultsId: null
     };
@@ -41,6 +42,9 @@ var AppComponent = React.createClass({
       q: query,
       count: app.props.limit
     };
+
+    app.setState({ loading: true });
+
     Functions.request(endpoint, requestParams, function (data) {
 
       // If inputValue changed prior to request completing don't bother to render
@@ -60,17 +64,18 @@ var AppComponent = React.createClass({
 
       app.setState({
         results: renamedData,
-        resultsId: query
+        resultsId: query,
+        loading: false
       });
     });
   },
-  componentDidMount: function componentDidMount() {},
   render: function render() {
     return React.createElement(
       'div',
       null,
       React.createElement(InputComponent, { placeholder: this.props.placeholder, handleChange: this.handleChange, handleFocus: this.handleFocus, handleBlur: this.handleBlur, value: this.state.inputValue }),
-      React.createElement(ResultsComponent, { data: this.state.results, resultsId: this.state.resultsId, visible: this.state.inFocus, handleSelect: this.handleSelect, thumbStyle: this.props.thumbStyle })
+      React.createElement(ResultsComponent, { data: this.state.results, resultsId: this.state.resultsId, visible: this.state.inFocus, handleSelect: this.handleSelect, thumbStyle: this.props.thumbStyle }),
+      React.createElement(LoadingComponent, { visible: this.state.loading })
     );
   },
   handleSelect: function handleSelect(selectedResult) {
@@ -105,7 +110,7 @@ var AppComponent = React.createClass({
     }, 400);
   },
   clearState: function clearState() {
-    this.setState({ results: [], resultsId: null, inputValue: '' });
+    this.setState({ results: [], resultsId: null, inputValue: '', loading: false });
   }
 });
 
@@ -185,16 +190,28 @@ var InputComponent = React.createClass({
   }
 });
 
+var LoadingComponent = React.createClass({
+  displayName: 'LoadingComponent',
+
+  shouldComponentUpdate: function shouldComponentUpdate(nextProps, nextState) {
+    return this.props.visible !== nextProps.visible;
+  },
+  render: function render() {
+
+    if (this.props.visible === false) {
+      return false;
+    }return React.createElement('img', { className: 'loading-icon', src: '/images/loading.gif' });
+  }
+});
+
 React.render(React.createElement(AppComponent, {
   placeholder: 'Search instagram users',
   endpoint: 'https://api.instagram.com/v1/users/search',
   dataKeys: window.dataKeys,
   clientId: window.instagramClientId,
-  onSelect: Functions.processResult,
+  onSelect: Functions.resultSelected,
   limit: 6,
   thumbStyle: 'circle' }), document.getElementById('app'));
-
-//this.loadResultsFromServer();
 
 },{"./functions.js":2,"react":158}],2:[function(require,module,exports){
 'use strict';
@@ -210,7 +227,7 @@ window.dataKeys = {
 };
 
 // Callback: Function called when result is clicked
-var processResult = function processResult(result) {
+var resultSelected = function resultSelected(result) {
 
   var endpoint = 'https://api.instagram.com/v1/users/' + result.id + '/media/recent';
 
@@ -247,12 +264,10 @@ var request = function request(endpoint, requestParams, callback) {
 
 module.exports = {
   request: request,
-  processResult: processResult
+  resultSelected: resultSelected
 };
 
 },{"./grid.js":3,"react":158}],3:[function(require,module,exports){
-//var InfiniteGrid = require('../react-infinite-grid-master/src/grid.js');
-
 'use strict';
 
 var React = require('react');
@@ -271,12 +286,6 @@ var GridComponent = React.createClass({
     var resultNodes = this.props.data.map(function (result) {
       return React.createElement('img', { src: result.image, key: result.id });
     });
-
-    /*
-    return(
-      <InfiniteGrid entries={resultNodes} />
-    );
-    */
 
     return React.createElement(
       'div',

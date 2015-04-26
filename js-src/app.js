@@ -1,12 +1,12 @@
 var React = require('react');
 var Functions = require('./functions.js');
 
-
 var AppComponent = React.createClass({
   getInitialState: function(){
     return {
       inputValue: '',
-      inFocus: false, 
+      inFocus: false,
+      loading: false,
       results: [],
       resultsId: null
     };
@@ -38,38 +38,41 @@ var AppComponent = React.createClass({
       q: query,
       count: app.props.limit
     };
+
+    app.setState({ loading : true });
+
     Functions.request(endpoint, requestParams, function(data){
 
-        // If inputValue changed prior to request completing don't bother to render
-        if (app.state.inputValue != query){
-          return false;
-        }
+      // If inputValue changed prior to request completing don't bother to render
+      if (app.state.inputValue != query){
+        return false;
+      }
 
-        // Get required values from data to display dropdown results
-        var renamedData = data.data.map(function(result){
-          result.image = result[app.props.dataKeys.image];
-          result.name = result[app.props.dataKeys.name];
-          return result;
-        });
+      // Get required values from data to display dropdown results
+      var renamedData = data.data.map(function(result){
+        result.image = result[app.props.dataKeys.image];
+        result.name = result[app.props.dataKeys.name];
+        return result;
+      });
 
-        // Enforce limit here as well
-        renamedData = renamedData.slice(0, app.props.limit);
+      // Enforce limit here as well
+      renamedData = renamedData.slice(0, app.props.limit);
 
-        app.setState({
-          results: renamedData,
-          resultsId: query
-        });
+      app.setState({
+        results: renamedData,
+        resultsId: query,
+        loading: false
+      });
+     
     });
   
-  },
-  componentDidMount: function () {
-    //this.loadResultsFromServer();
   },
   render: function(){
     return (
       <div>
-          <InputComponent placeholder={this.props.placeholder} handleChange={this.handleChange} handleFocus={this.handleFocus} handleBlur={this.handleBlur} value={this.state.inputValue}/>
+          <InputComponent placeholder={this.props.placeholder} handleChange={this.handleChange} handleFocus={this.handleFocus} handleBlur={this.handleBlur} value={this.state.inputValue} />
           <ResultsComponent data={this.state.results} resultsId={this.state.resultsId} visible={this.state.inFocus} handleSelect={this.handleSelect} thumbStyle={this.props.thumbStyle} />
+          <LoadingComponent visible={this.state.loading} />
       </div>
     );
   },
@@ -107,7 +110,7 @@ var AppComponent = React.createClass({
       }, 400);
   },
   clearState: function() {
-      this.setState({results : [], resultsId : null, inputValue : ''});
+      this.setState({results : [], resultsId : null, inputValue : '', loading : false});
   }
 });
 
@@ -181,7 +184,20 @@ var InputComponent = React.createClass({
     }
 });
 
+var LoadingComponent = React.createClass({
+    shouldComponentUpdate: function(nextProps, nextState){
+      return this.props.visible !== nextProps.visible;
+    },
+    render: function(){
 
+      if (this.props.visible === false)
+        return false
+
+      return (
+          <img className="loading-icon" src="/images/loading.gif"/>
+      );
+    }
+});
 
 React.render(
   <AppComponent 
@@ -189,7 +205,7 @@ React.render(
     endpoint="https://api.instagram.com/v1/users/search" 
     dataKeys={window.dataKeys}
     clientId={window.instagramClientId} 
-    onSelect={Functions.processResult} 
+    onSelect={Functions.resultSelected} 
     limit={6} 
     thumbStyle="circle"/>,
 

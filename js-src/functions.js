@@ -9,7 +9,7 @@ window.dataKeys = {
 }
 
 // Callback: Function called when result is clicked
-var processResult = function(result) {
+var resultSelected = function(result) {
 
   var endpoint = "https://api.instagram.com/v1/users/" + result.id + "/media/recent";
 
@@ -49,6 +49,6 @@ var request = function(endpoint, requestParams, callback){
 
 module.exports = {
   request : request,
-  processResult : processResult
+  resultSelected : resultSelected
 }; 
 

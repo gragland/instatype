@@ -39,6 +39,13 @@ h1{
     border-radius: 0;
 }
 
+.loading-icon{
+    position: absolute;
+    height: 2.5em;
+    top: 0.9em;
+    right: 1em;
+}
+
 ul.results{
     background-color: #fff;
     position: absolute;
@@ -85,6 +92,8 @@ ul.results > li > div{
     font-size: 2em;
 
 }
+
+
 
 #grid img{
     float: left;
