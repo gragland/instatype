@@ -1,5 +1,5 @@
 var React = require('react');
-var Functions = require('./functions.js');
+var CustomFunctions = require('./custom-functions.js');
 
 var AppComponent = React.createClass({
   getInitialState: function(){
@@ -34,33 +34,22 @@ var AppComponent = React.createClass({
 
     var endpoint = app.props.endpoint;
 
-    var requestParams = {
-      client_id: app.props.clientId,
-      q: query,
-      count: app.props.limit
-    };
+    var requestParams = CustomFunctions.getRequestParams(query, app.props);
 
     app.setState({ loading : true });
 
-    Functions.request(endpoint, requestParams, function(data){
+    CustomFunctions.requestResults(endpoint, requestParams, function(data){
 
       // If inputValue changed prior to request completing don't bother to render
       if (app.state.inputValue != query){
         return false;
       }
 
-      // Get required values from data to display dropdown results
-      var renamedData = data.data.map(function(result){
-        result.image = result[app.props.dataKeys.image];
-        result.name = result[app.props.dataKeys.name];
-        return result;
-      });
-
       // Enforce limit here as well
-      renamedData = renamedData.slice(0, app.props.limit);
+      data = data.slice(0, app.props.limit);
 
       app.setState({
-        results: renamedData,
+        results: data,
         resultsId: query,
         loading: false
       });
@@ -202,8 +191,7 @@ React.render(
     placeholder="Search instagram users" 
     endpoint="https://api.instagram.com/v1/users/search" 
     dataKeys={window.dataKeys}
-    clientId={window.instagramClientId} 
-    onSelect={Functions.resultSelected} 
+    onSelect={CustomFunctions.resultSelected} 
     limit={6} 
     thumbStyle="circle"/>,
 

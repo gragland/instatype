@@ -1,6 +1,7 @@
 var React = require('react');
 
 // Displays grid of images
+// Example component used by our custom resultSelected function (custom-functions.js)
 var GridComponent = React.createClass({
 
   getDefaultProps: function() {

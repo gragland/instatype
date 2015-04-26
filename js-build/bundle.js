@@ -2,7 +2,7 @@
 'use strict';
 
 var React = require('react');
-var Functions = require('./functions.js');
+var CustomFunctions = require('./custom-functions.js');
 
 var AppComponent = React.createClass({
   displayName: 'AppComponent',
@@ -38,33 +38,22 @@ var AppComponent = React.createClass({
 
     var endpoint = app.props.endpoint;
 
-    var requestParams = {
-      client_id: app.props.clientId,
-      q: query,
-      count: app.props.limit
-    };
+    var requestParams = CustomFunctions.getRequestParams(query, app.props);
 
     app.setState({ loading: true });
 
-    Functions.request(endpoint, requestParams, function (data) {
+    CustomFunctions.requestResults(endpoint, requestParams, function (data) {
 
       // If inputValue changed prior to request completing don't bother to render
       if (app.state.inputValue != query) {
         return false;
       }
 
-      // Get required values from data to display dropdown results
-      var renamedData = data.data.map(function (result) {
-        result.image = result[app.props.dataKeys.image];
-        result.name = result[app.props.dataKeys.name];
-        return result;
-      });
-
       // Enforce limit here as well
-      renamedData = renamedData.slice(0, app.props.limit);
+      data = data.slice(0, app.props.limit);
 
       app.setState({
-        results: renamedData,
+        results: data,
         resultsId: query,
         loading: false
       });
@@ -203,26 +192,47 @@ React.render(React.createElement(AppComponent, {
   placeholder: 'Search instagram users',
   endpoint: 'https://api.instagram.com/v1/users/search',
   dataKeys: window.dataKeys,
-  clientId: window.instagramClientId,
-  onSelect: Functions.resultSelected,
+  onSelect: CustomFunctions.resultSelected,
   limit: 6,
   thumbStyle: 'circle' }), document.getElementById('app'));
 
-},{"./functions.js":2,"react":158}],2:[function(require,module,exports){
+},{"./custom-functions.js":2,"react":158}],2:[function(require,module,exports){
 'use strict';
 
 var React = require('react');
 var GridComponent = require('./grid.js');
 
 window.instagramClientId = '02d26cb819954ba7b5c3c072a885759f';
-// Tells component where to find the values it needs from json returned by endpoint
-window.dataKeys = {
-  image: 'profile_picture',
-  name: 'username'
+
+// Customize this function so that it returns the query params expected by your endpoint
+module.exports.getRequestParams = function (query, props) {
+  return {
+    client_id: window.instagramClientId,
+    q: query,
+    count: props.limit
+  };
 };
 
-// Callback: Function called when result is clicked
-var resultSelected = function resultSelected(result) {
+// Customize this function to reformat the data returned by your endpoint
+module.exports.requestResults = function (endpoint, requestParams, callback) {
+
+  var wrappedCallback = function wrappedCallback(data) {
+
+    // You must set an "image" and "name" key for each result
+    var renamedData = data.data.map(function (result) {
+      result.image = result.profile_picture;
+      result.name = result.username;
+      return result;
+    });
+
+    callback(renamedData);
+  };
+
+  request(endpoint, requestParams, wrappedCallback);
+};
+
+// Customize this function to do something when a result is selected
+module.exports.resultSelected = function (result) {
 
   var endpoint = 'https://api.instagram.com/v1/users/' + result.id + '/media/recent';
 
@@ -240,6 +250,7 @@ var resultSelected = function resultSelected(result) {
   });
 };
 
+// Customize this function to use your favorite JSONP library
 var request = function request(endpoint, requestParams, callback) {
 
   // Tiny JSONP Library: https://github.com/OscarGodson/JSONP
@@ -257,17 +268,13 @@ var request = function request(endpoint, requestParams, callback) {
   });*/
 };
 
-module.exports = {
-  request: request,
-  resultSelected: resultSelected
-};
-
 },{"./grid.js":3,"react":158}],3:[function(require,module,exports){
 'use strict';
 
 var React = require('react');
 
 // Displays grid of images
+// Example component used by our custom resultSelected function (custom-functions.js)
 var GridComponent = React.createClass({
   displayName: 'GridComponent',
 
