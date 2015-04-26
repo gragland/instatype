@@ -8,10 +8,10 @@
   "devDependencies": {
     "browserify": "latest",
     "babelify": "~6.0.2",
-    "reactify": "~1.1.0",
     "watchify": "~3.1.2",
     "uglifyify": "latest",
-    "precommit-hook": "latest"
+    "precommit-hook": "latest",
+    "nodemon": "latest"
   },
   "repository": {
     "type": "git",
