@@ -11,7 +11,6 @@ var AppComponent = React.createClass({
       resultsId: null
     };
   },
-  
   getDefaultProps: function() {
     return {
       limit: 10,
