@@ -24,9 +24,13 @@
   },
   "homepage": "https://github.com/gragland/typeahead",
   "scripts": {
-    "bundle": "browserify js-src/app.js --transform babelify --global-transform uglifyify --outfile js-build/bundle.js",
-    "git-add-bundle": "git add js-build/bundle.js",
-    "watch": "watchify js-src/app.js --transform babelify --outfile js-build/bundle.js -v"
+    "bundle-js": "browserify src/js/app.js --transform babelify --global-transform [ uglifyify --no-sourcemap --compress [ --drop_console --unused --dead_code ] ] --outfile build/js/bundle.js",
+    "bundle-css": "cleancss src/css/style.css -o build/css/style.css",
+    "bundle": "npm run bundle-js && npm run bundle-css",
+    "git-add-bundle": "git add build/*",
+    "watch-js": "watchify src/js/app.js --transform babelify --outfile build/js/bundle.js -v",
+    "watch-css": "nodemon -q -w src/css/*.css --exec 'npm run bundle-css'",
+    "watch": "npm run watch-js & npm run watch-css"
   },
   "pre-commit": ["bundle", "git-add-bundle"]
 }

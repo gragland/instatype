@@ -11,6 +11,7 @@ var AppComponent = React.createClass({
       resultsId: null
     };
   },
+
   getDefaultProps: function() {
     return {
       text : false,
