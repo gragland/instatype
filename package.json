@@ -28,5 +28,5 @@
     "git-add-bundle": "git add js-build/bundle.js",
     "watch": "watchify js-src/app.js --transform babelify --outfile js-build/bundle.js -v"
   },
-  "pre-commit": ["build", "git-add-bundle"]
+  "pre-commit": ["bundle", "git-add-bundle"]
 }
