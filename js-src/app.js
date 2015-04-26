@@ -16,6 +16,7 @@ var AppComponent = React.createClass({
       limit: 10,
       placeholder: '',
       thumbStyle : 'square',
+      loadingIcon : '/images/loading.gif',
       dataKeys : {
         image: 'image',
         name: 'name'
@@ -75,7 +76,7 @@ var AppComponent = React.createClass({
             <ResultsComponent data={this.state.results} resultsId={this.state.resultsId} visible={this.state.inFocus} handleSelect={this.handleSelect} thumbStyle={this.props.thumbStyle} />
           }
           { this.state.loading &&
-            <LoadingComponent />
+            <LoadingComponent icon={this.props.loadingIcon} />
           }
       </div>
     );
@@ -191,7 +192,7 @@ var InputComponent = React.createClass({
 var LoadingComponent = React.createClass({
     render: function(){
       return (
-          <img className="loading-icon" src="/images/loading.gif"/>
+          <img className="loading-icon" src={this.props.icon}/>
       );
     }
 });
