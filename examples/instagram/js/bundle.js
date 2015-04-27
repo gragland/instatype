@@ -171,7 +171,7 @@ var GridComponent = React.createClass({
       React.createElement(
         'div',
         { className: 'loadingContainer' },
-        this.state.nextPage && React.createElement(LoadingComponent, { icon: '../../../images/loading.gif' })
+        this.state.nextPage && React.createElement(LoadingComponent, { icon: '../../images/loading.gif' })
       )
     );
   },
