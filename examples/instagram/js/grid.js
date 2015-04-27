@@ -1,5 +1,6 @@
 var React = require('react');
 var CustomFunctions = require('./custom-functions.js');
+var LoadingComponent = require('../../../src/js/components/loading.js');
 
 // Displays grid of images
 // Example component used by our custom resultSelected function (custom-functions.js)
@@ -40,7 +41,14 @@ var GridComponent = React.createClass({
     
     return (
       <div>
-          {resultNodes}
+        <div className="clearfix">
+            {resultNodes}
+        </div>
+        <div className="loadingContainer">
+          {this.state.nextPage &&
+             <LoadingComponent icon="../../../images/loading.gif"/>
+          }
+        </div>
       </div>
     );
   },
@@ -51,7 +59,7 @@ var GridComponent = React.createClass({
 
     window.addEventListener('scroll', CustomFunctions.throttle(function(event){
       app.checkScroll();
-    }, 500));
+    }, 100));
 
     this.checkScroll();
   },
@@ -78,7 +86,7 @@ var GridComponent = React.createClass({
 
     var mergedData = this.state.data.concat(newData);
     var nextPage = data.pagination.next_url;
-    
+
     this.setState({
       data: mergedData,
       nextPage: nextPage,

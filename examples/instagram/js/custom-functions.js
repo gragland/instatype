@@ -37,7 +37,7 @@ module.exports.resultSelected = function(result) {
 
   var requestParams = {
     client_id: window.instagramClientId,
-    count: 20
+    count: 28
   };
 
   request(endpoint, requestParams, function(data){
