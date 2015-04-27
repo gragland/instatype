@@ -1,11 +1,11 @@
 var React = require('react');
-var CustomFunctions = require('./custom-functions.js');
+var ResultsComponent = require('./components/results.js');
+var InputComponent = require('./components/input.js');
+var LoadingComponent = require('./components/loading.js');
 
 React.initializeTouchEvents(true);
 
-//CustomFunctions.resultSelected( { id : 478987666 } );
-
-var AppComponent = React.createClass({
+var InstaTypeComponent = React.createClass({
   getInitialState: function(){
     return {
       inputValue: '',
@@ -24,7 +24,7 @@ var AppComponent = React.createClass({
       limit: 10,
       placeholder: '',
       thumbStyle : 'square',
-      loadingIcon : 'images/loading.gif',
+      loadingIcon : '/images/loading.gif',
       dataKeys : {
         image: 'image',
         name: 'name'
@@ -35,23 +35,19 @@ var AppComponent = React.createClass({
     limit: React.PropTypes.number,
     placeholder: React.PropTypes.string,
     thumbStyle: React.PropTypes.oneOf(['circle', 'square']),
-    dataKeys: React.PropTypes.object
+    dataKeys: React.PropTypes.object,
+    customFunctions: React.PropTypes.object.isRequired
   },
-  /*
-  componentDidMount: function() {
-    //window.addEventListener('scroll', this.do_something);
-  },
-  */
   loadResultsFromServer: function (query) {
     var app = this;
 
     var endpoint = app.props.endpoint;
 
-    var requestParams = CustomFunctions.getRequestParams(query, app.props);
+    var requestParams = this.props.customFunctions.getRequestParams(query, app.props);
 
     app.setState({ loading : true });
 
-    CustomFunctions.requestResults(endpoint, requestParams, function(data){
+    this.props.customFunctions.requestResults(endpoint, requestParams, function(data){
 
       // If inputValue changed prior to request completing don't bother to render
       if (app.state.inputValue != query){
@@ -84,7 +80,7 @@ var AppComponent = React.createClass({
     );
   },
   handleSelect: function(selectedResult) {
-    this.props.onSelect(selectedResult);
+    this.props.customFunctions.resultSelected(selectedResult);
     this.clearState();
   },
   handleChange: function(query) {
@@ -141,105 +137,6 @@ var AppComponent = React.createClass({
   }
 });
 
-var ResultsComponent = React.createClass({
 
-  handleResultsClick: function(event){
-    clearTimeout(window.blurTimeout);
-  },
-  shouldComponentUpdate: function(nextProps, nextState){
-    // Compare visible and resultsId (any unique identifier for the results, such as a query term) so we can prevent uneccesary re-rendering
-    return (this.props.visible !== nextProps.visible || 
-              this.props.resultsId !== nextProps.resultsId);
-  },
-  render: function(){
-    self = this;
+module.exports = InstaTypeComponent;
 
-    var resultNodes = this.props.data.map(function(result){
-      return (
-        <Result image={result.image} handleSelect={self.props.handleSelect} data={result} key={result.id}>
-            {result.name}
-        </Result>
-      );
-    });
-
-    var resultsClass = 'results thumb-' + this.props.thumbStyle;
-    resultsClass += (this.props.visible === true ? ' show' : ' hide');
-    resultsClass += (resultNodes.length === 0 ? ' empty' : ''); 
-
-    return (
-      <ul className={resultsClass} onClick={this.handleResultsClick}>
-          {resultNodes}
-      </ul>
-    );
-  }
-});
-
-var Result = React.createClass({
-  handleSelect: function (event) {
-    this.props.handleSelect(this.props.data);
-  },
-  shouldComponentUpdate: function(nextProps, nextState){
-    return this.props.data.id !== nextProps.data.id;
-  },
-  render: function(){
-    return (
-      <li className="clearfix" onClick={this.handleSelect}>
-          <img src={this.props.image}/>
-          <div>{this.props.children}</div>
-      </li>
-    );
-  }
-});
-
-var InputComponent = React.createClass({
-    shouldComponentUpdate: function(nextProps, nextState){
-      return (this.props.value !== nextProps.value || 
-                this.props.triggerBlur !== nextProps.triggerBlur);
-    },
-    handleChange: function(event){
-      this.props.handleChange(event.target.value);
-    },
-    handleFocus: function(event){
-      this.props.handleFocus(event);
-    },
-    handleBlur: function(event){
-      this.props.handleBlur(event);
-    },
-    triggerBlur: function(){
-      React.findDOMNode(component).blur();
-    },
-    componentDidUpdate: function(){
-      // Passing props.triggerBlur = true causes blur() to be called on input after render
-      // Useful if we need to force input to no longer be in focus
-      // IMPORTANT: handleBlur() passed down from parent component should ...
-      // ... change props.triggerBlur back to false or input will never be able to regain focus.
-      if (this.props.triggerBlur === true){
-        React.findDOMNode(this.refs.inputTypeahead).blur();
-      }
-    },
-    render: function(){
-      return (
-          <input type="text" placeholder={this.props.placeholder} ref="inputTypeahead" className="input-typeahead" value={this.props.value} onChange={this.handleChange} onFocus={this.handleFocus} onBlur={this.handleBlur}/>
-      );
-    }
-});
-
-var LoadingComponent = React.createClass({
-    render: function(){
-      return (
-          <img className="loading-icon" src={this.props.icon}/>
-      );
-    }
-});
-
-React.render(
-  <AppComponent 
-    placeholder="Search instagram users" 
-    endpoint="https://api.instagram.com/v1/users/search" 
-    dataKeys={window.dataKeys}
-    onSelect={CustomFunctions.resultSelected} 
-    limit={6} 
-    thumbStyle="circle"/>,
-
-  document.getElementById('app')
-);
