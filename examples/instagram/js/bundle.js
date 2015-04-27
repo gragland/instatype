@@ -20209,7 +20209,7 @@ var Result = React.createClass({
     return React.createElement(
       "li",
       { className: "clearfix", onClick: this.handleSelect },
-      React.createElement("img", { src: this.props.image }),
+      this.props.image && React.createElement("img", { src: this.props.image }),
       React.createElement(
         "div",
         null,

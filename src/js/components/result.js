@@ -10,7 +10,9 @@ var Result = React.createClass({
   render: function(){
     return (
       <li className="clearfix" onClick={this.handleSelect}>
-          <img src={this.props.image}/>
+          {this.props.image && 
+            <img src={this.props.image}/>
+          }
           <div>{this.props.children}</div>
       </li>
     );
