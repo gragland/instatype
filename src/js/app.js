@@ -17,6 +17,7 @@ var InstaTypeComponent = React.createClass({
       resultsId: null // Unique identifier for set of results (used by ResultsComponent.shouldComponentUpdate)
     };
   },
+
   getDefaultProps: function() {
     return {
       text : false,

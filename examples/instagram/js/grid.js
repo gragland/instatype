@@ -53,7 +53,7 @@ var GridComponent = React.createClass({
         </div>
         <div className="loadingContainer">
           {this.state.nextPage &&
-             <LoadingComponent icon="../../../images/loading.gif"/>
+             <LoadingComponent icon="../../images/loading.gif"/>
           }
         </div>
       </div>

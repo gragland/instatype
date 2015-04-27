@@ -188,7 +188,7 @@ var GridComponent = React.createClass({
       React.createElement(
         'div',
         { className: 'loadingContainer' },
-        this.state.nextPage && React.createElement(LoadingComponent, { icon: '../../../images/loading.gif' })
+        this.state.nextPage && React.createElement(LoadingComponent, { icon: '../../images/loading.gif' })
       )
     );
   },
@@ -20026,6 +20026,7 @@ var InstaTypeComponent = React.createClass({
       resultsId: null // Unique identifier for set of results (used by ResultsComponent.shouldComponentUpdate)
     };
   },
+
   getDefaultProps: function getDefaultProps() {
     return {
       text: false,
