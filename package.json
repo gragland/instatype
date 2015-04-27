@@ -29,7 +29,7 @@
     "bundle": "npm run bundle-js && npm run bundle-css",
     "git-add-bundle": "git add build/*",
     "watch-js": "watchify src/js/app.js --transform babelify --outfile build/js/bundle.js -v",
-    "watch-css": "nodemon -q -w src/css/*.css --exec 'npm run bundle-css'",
+    "watch-css": "nodemon --quiet --watch src/css/*.css --exec 'npm run bundle-css'",
     "watch": "npm run watch-js & npm run watch-css"
   },
   "pre-commit": ["bundle", "git-add-bundle"]
