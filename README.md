@@ -1,4 +1,4 @@
 # instatype
 Simple React Typeahead
 
-<b>Demo: <a href="http://gragland.github.io/instatype/">http://gragland.github.io/instatype</a></b>
+<b>See it in action: <a href="http://gragland.github.io/instatype/examples/instagram/">Instagram User Search Demo</a></b>
