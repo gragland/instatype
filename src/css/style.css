@@ -4,32 +4,25 @@
   -webkit-box-sizing: border-box;
 }
 
-body{
+body {
     font-size: 12px;
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
     padding: 0;
     margin: 0;
 }
 
-h1{
-    float: left;
-    display: block;
-    margin: 0;
-    font-size:2.4em;
-}
 
-#navbar{
+#navbar {
     padding: 2em 2.2em;
     border-bottom: 1px solid #ccc;
     background-color: #F9FDFF;
 }
 
-#app{
+#app {
     position: relative;
     display: block;
     width: 100%;
 }
-
 
 .input-typeahead {
     width: 100%;
@@ -97,29 +90,6 @@ ul.results > li > div{
 
 }
 
-#grid .item {
-    position: relative;
-    float: left;
-    width: 25%;
-}
-
-#grid .item .dummyHeight {
-    padding-top: 100%;
-}
-
-#grid .item img {
-    position: absolute;
-    top: 0;
-    width: 100%;
-}
-
-@media all and (max-width: 500px) {
-    body {
-        font-size: 8px;
-    }
-}
-
-
 .clearfix:after {
      visibility: hidden;
      display: block;
@@ -133,6 +103,3 @@ ul.results > li > div{
 * html .clearfix { height: 1%; }
 .clearfix { display: block; }
 /* close commented backslash hack */
-
-
-
