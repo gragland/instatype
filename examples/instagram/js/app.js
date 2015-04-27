@@ -12,7 +12,7 @@ React.render(
     endpoint="https://api.instagram.com/v1/users/search" 
     dataKeys={window.dataKeys}
     customFunctions={CustomFunctions}
-    loadingIcon="/./images/loading.gif"
+    loadingIcon="../../images/loading.gif"
     limit={6} 
     thumbStyle="circle"/>,
 
