@@ -60,7 +60,7 @@ module.exports.resultSelected = function (result) {
 
   var requestParams = {
     client_id: window.instagramClientId,
-    count: 20
+    count: 28
   };
 
   request(endpoint, requestParams, function (data) {
@@ -120,6 +120,7 @@ module.exports.throttle = function (fn, threshhold, scope) {
 
 var React = require('react');
 var CustomFunctions = require('./custom-functions.js');
+var LoadingComponent = require('../../../src/js/components/loading.js');
 
 // Displays grid of images
 // Example component used by our custom resultSelected function (custom-functions.js)
@@ -162,7 +163,16 @@ var GridComponent = React.createClass({
     return React.createElement(
       'div',
       null,
-      resultNodes
+      React.createElement(
+        'div',
+        { className: 'clearfix' },
+        resultNodes
+      ),
+      React.createElement(
+        'div',
+        { className: 'loadingContainer' },
+        this.state.nextPage && React.createElement(LoadingComponent, { icon: '../../../images/loading.gif' })
+      )
     );
   },
 
@@ -172,7 +182,7 @@ var GridComponent = React.createClass({
 
     window.addEventListener('scroll', CustomFunctions.throttle(function (event) {
       app.checkScroll();
-    }, 500));
+    }, 100));
 
     this.checkScroll();
   },
@@ -236,7 +246,7 @@ var GridComponent = React.createClass({
 
 module.exports = GridComponent;
 
-},{"./custom-functions.js":2,"react":158}],4:[function(require,module,exports){
+},{"../../../src/js/components/loading.js":162,"./custom-functions.js":2,"react":158}],4:[function(require,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
