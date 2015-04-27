@@ -7,6 +7,9 @@ var LoadingComponent = require('../../../src/js/components/loading.js');
 var GridComponent = React.createClass({
 
   getInitialState: function(){
+
+    console.log(this.props.initialNextPage);
+
     return {
       data: this.props.initialData,
       nextPage: this.props.initialNextPage,
@@ -30,14 +33,18 @@ var GridComponent = React.createClass({
   },
   render: function(){
 
-    var resultNodes = this.state.data.map(function(result){
-        return (
-          <div className="item" id={result.id} key={result.id}>
-            <div className="dummyHeight"></div>
-            <img src={result.image}/>
-          </div>
-        );
-    });
+    var resultNodes;
+
+    if (this.state.data){
+      resultNodes = this.state.data.map(function(result){
+          return (
+            <div className="item" id={result.id} key={result.id}>
+              <div className="dummyHeight"></div>
+              <img src={result.image}/>
+            </div>
+          );
+      });
+    }
     
     return (
       <div>
@@ -84,11 +91,13 @@ var GridComponent = React.createClass({
       return result;
     });
 
-    var mergedData = this.state.data.concat(newData);
+    if (this.state.data)
+      newData = this.state.data.concat(newData);
+    
     var nextPage = data.pagination.next_url;
 
     this.setState({
-      data: mergedData,
+      data: newData,
       nextPage: nextPage,
       paging: false
     });

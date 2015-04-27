@@ -25,6 +25,7 @@ var React = require('react');
 var GridComponent = require('./grid.js');
 
 window.instagramClientId = '02d26cb819954ba7b5c3c072a885759f';
+window.instagramCount = 28;
 
 // Customize this function so that it returns the query params expected by your endpoint
 module.exports.getRequestParams = function (query, props) {
@@ -60,7 +61,7 @@ module.exports.resultSelected = function (result) {
 
   var requestParams = {
     client_id: window.instagramClientId,
-    count: 28
+    count: window.instagramCount
   };
 
   request(endpoint, requestParams, function (data) {
@@ -73,6 +74,15 @@ module.exports.resultSelected = function (result) {
 
     React.render(React.createElement(GridComponent, { initialData: gridItems, initialNextPage: nextPage }), document.getElementById('grid'));
   });
+};
+
+// Let's GridComponent handle the initial ajax call. Advantage is that we get an initial loading indicator.
+// Rename function to "resultSelected" to use
+module.exports.resultSelectedAlternate = function (result) {
+
+  var endpoint = 'https://api.instagram.com/v1/users/' + result.id + '/media/recent?client_id=' + window.instagramClientId + '&count=' + window.instagramCount;
+
+  React.render(React.createElement(GridComponent, { initialNextPage: endpoint }), document.getElementById('grid'));
 };
 
 // Customize this function to use your favorite JSONP library
@@ -128,6 +138,9 @@ var GridComponent = React.createClass({
   displayName: 'GridComponent',
 
   getInitialState: function getInitialState() {
+
+    console.log(this.props.initialNextPage);
+
     return {
       data: this.props.initialData,
       nextPage: this.props.initialNextPage,
@@ -151,14 +164,18 @@ var GridComponent = React.createClass({
   },
   render: function render() {
 
-    var resultNodes = this.state.data.map(function (result) {
-      return React.createElement(
-        'div',
-        { className: 'item', id: result.id, key: result.id },
-        React.createElement('div', { className: 'dummyHeight' }),
-        React.createElement('img', { src: result.image })
-      );
-    });
+    var resultNodes;
+
+    if (this.state.data) {
+      resultNodes = this.state.data.map(function (result) {
+        return React.createElement(
+          'div',
+          { className: 'item', id: result.id, key: result.id },
+          React.createElement('div', { className: 'dummyHeight' }),
+          React.createElement('img', { src: result.image })
+        );
+      });
+    }
 
     return React.createElement(
       'div',
@@ -207,11 +224,12 @@ var GridComponent = React.createClass({
       return result;
     });
 
-    var mergedData = this.state.data.concat(newData);
+    if (this.state.data) newData = this.state.data.concat(newData);
+
     var nextPage = data.pagination.next_url;
 
     this.setState({
-      data: mergedData,
+      data: newData,
       nextPage: nextPage,
       paging: false
     });

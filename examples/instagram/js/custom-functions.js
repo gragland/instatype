@@ -2,6 +2,7 @@ var React = require('react');
 var GridComponent = require('./grid.js');
 
 window.instagramClientId = '02d26cb819954ba7b5c3c072a885759f';
+window.instagramCount = 28;
 
 // Customize this function so that it returns the query params expected by your endpoint
 module.exports.getRequestParams = function(query, props){
@@ -37,7 +38,7 @@ module.exports.resultSelected = function(result) {
 
   var requestParams = {
     client_id: window.instagramClientId,
-    count: 28
+    count: window.instagramCount
   };
 
   request(endpoint, requestParams, function(data){
@@ -54,6 +55,21 @@ module.exports.resultSelected = function(result) {
     );
   });
 }
+
+// Let's GridComponent handle the initial ajax call. Advantage is that we get an initial loading indicator.
+// Rename function to "resultSelected" to use
+module.exports.resultSelectedAlternate = function(result) {
+
+  var endpoint = "https://api.instagram.com/v1/users/" + result.id + 
+                    "/media/recent?client_id=" + window.instagramClientId + 
+                        "&count=" + window.instagramCount;
+
+  React.render(
+      <GridComponent initialNextPage={endpoint}/>,
+      document.getElementById('grid')
+  );
+}
+
 
 // Customize this function to use your favorite JSONP library
 var request = module.exports.request = function(endpoint, requestParams, callback){
