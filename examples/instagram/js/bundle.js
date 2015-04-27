@@ -14,7 +14,7 @@ React.render(React.createElement(InstaTypeComponent, {
   endpoint: 'https://api.instagram.com/v1/users/search',
   dataKeys: window.dataKeys,
   customFunctions: CustomFunctions,
-  loadingIcon: '/./images/loading.gif',
+  loadingIcon: '../../images/loading.gif',
   limit: 6,
   thumbStyle: 'circle' }), document.getElementById('app'));
 
@@ -19998,6 +19998,7 @@ var InstaTypeComponent = React.createClass({
       resultsId: null // Unique identifier for set of results (used by ResultsComponent.shouldComponentUpdate)
     };
   },
+
   getDefaultProps: function getDefaultProps() {
     return {
       text: false,
