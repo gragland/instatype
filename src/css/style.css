@@ -52,6 +52,7 @@ h1{
 ul.results{
     background-color: #fff;
     position: absolute;
+    z-index: 9999;
     width: 100%;
     margin-top: 0;
     padding: 0;
@@ -96,11 +97,20 @@ ul.results > li > div{
 
 }
 
-
-
-#grid img{
+#grid .item {
+    position: relative;
     float: left;
     width: 25%;
+}
+
+#grid .item .dummyHeight {
+    padding-top: 100%;
+}
+
+#grid .item img {
+    position: absolute;
+    top: 0;
+    width: 100%;
 }
 
 @media all and (max-width: 500px) {

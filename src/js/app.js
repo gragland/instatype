@@ -3,6 +3,8 @@ var CustomFunctions = require('./custom-functions.js');
 
 React.initializeTouchEvents(true);
 
+//CustomFunctions.resultSelected( { id : 478987666 } );
+
 var AppComponent = React.createClass({
   getInitialState: function(){
     return {
