@@ -1,14 +1,20 @@
 var React = require('react');
 var CustomFunctions = require('./custom-functions.js');
 
+React.initializeTouchEvents(true);
+
+//CustomFunctions.resultSelected( { id : 478987666 } );
+
 var AppComponent = React.createClass({
   getInitialState: function(){
     return {
       inputValue: '',
-      inFocus: false,
-      loading: false,
+      inputFocused: false, // Does the input currently have focus?
+      inputTriggerBlur: false, // Will manually trigger blur() event on input
+      showResults: false, // Show or hide the ResultsComponent
+      loading: false, // Are we currently loading data from server?
       results: [],
-      resultsId: null
+      resultsId: null // Unique identifier for set of results (used by ResultsComponent.shouldComponentUpdate)
     };
   },
 
@@ -31,6 +37,11 @@ var AppComponent = React.createClass({
     thumbStyle: React.PropTypes.oneOf(['circle', 'square']),
     dataKeys: React.PropTypes.object
   },
+  /*
+  componentDidMount: function() {
+    //window.addEventListener('scroll', this.do_something);
+  },
+  */
   loadResultsFromServer: function (query) {
     var app = this;
 
@@ -61,10 +72,10 @@ var AppComponent = React.createClass({
   },
   render: function(){
     return (
-      <div>
-          <InputComponent placeholder={this.props.placeholder} handleChange={this.handleChange} handleFocus={this.handleFocus} handleBlur={this.handleBlur} value={this.state.inputValue} />
+      <div onTouchMove={this.handleTouchMove}>
+          <InputComponent triggerBlur={this.state.inputTriggerBlur} placeholder={this.props.placeholder} handleChange={this.handleChange} handleFocus={this.handleFocus} handleBlur={this.handleBlur} value={this.state.inputValue} />
           { this.state.results.length > 0 &&
-            <ResultsComponent data={this.state.results} resultsId={this.state.resultsId} visible={this.state.inFocus} handleSelect={this.handleSelect} thumbStyle={this.props.thumbStyle} />
+            <ResultsComponent data={this.state.results} resultsId={this.state.resultsId} visible={this.state.showResults} handleSelect={this.handleSelect} thumbStyle={this.props.thumbStyle} />
           }
           { this.state.loading &&
             <LoadingComponent icon={this.props.loadingIcon} />
@@ -97,13 +108,33 @@ var AppComponent = React.createClass({
       
   },
   handleFocus: function() {
-      this.setState( { inFocus : true } );
+      this.setState( { showResults : true, inputFocused: true } );
   },
   handleBlur: function(event) {
-      var self = this;
-      window.blurTimeout = setTimeout(function(){
-          self.setState( { inFocus : false } );
-      }, 400);
+
+      // Hide results because input no longer has focus
+      // We only don't hide if we manually triggered the blur event ...
+      // ... which is used to hide keyboard on mobile when scrolling (easier to see results)
+      if (this.state.inputTriggerBlur === false){
+        var self = this;
+        window.blurTimeout = setTimeout(function(){
+
+            if (self.state.inputFocused == false) // Make sure it's still not focused after timeout
+              self.setState( { showResults : false } );
+            
+        }, 400);
+      }
+
+      this.setState( { inputFocused : false, inputTriggerBlur: false } );
+  },
+  handleTouchMove: function(){
+
+    // When scrolling on a touch device ...
+    // If the input is focused we want to trigger blur so that keyboard hides
+    if (this.state.inputFocused === true){
+      this.setState( { inputTriggerBlur : true } );
+    }
+
   },
   clearState: function() {
       this.setState({results : [], resultsId : null, inputValue : '', loading : false});
@@ -162,7 +193,8 @@ var Result = React.createClass({
 
 var InputComponent = React.createClass({
     shouldComponentUpdate: function(nextProps, nextState){
-      return this.props.value !== nextProps.value;
+      return (this.props.value !== nextProps.value || 
+                this.props.triggerBlur !== nextProps.triggerBlur);
     },
     handleChange: function(event){
       this.props.handleChange(event.target.value);
@@ -173,9 +205,21 @@ var InputComponent = React.createClass({
     handleBlur: function(event){
       this.props.handleBlur(event);
     },
+    triggerBlur: function(){
+      React.findDOMNode(component).blur();
+    },
+    componentDidUpdate: function(){
+      // Passing props.triggerBlur = true causes blur() to be called on input after render
+      // Useful if we need to force input to no longer be in focus
+      // IMPORTANT: handleBlur() passed down from parent component should ...
+      // ... change props.triggerBlur back to false or input will never be able to regain focus.
+      if (this.props.triggerBlur === true){
+        React.findDOMNode(this.refs.inputTypeahead).blur();
+      }
+    },
     render: function(){
       return (
-          <input type="text" placeholder={this.props.placeholder} className="input-typeahead" value={this.props.value} onChange={this.handleChange} onFocus={this.handleFocus} onBlur={this.handleBlur}/>
+          <input type="text" placeholder={this.props.placeholder} ref="inputTypeahead" className="input-typeahead" value={this.props.value} onChange={this.handleChange} onFocus={this.handleFocus} onBlur={this.handleBlur}/>
       );
     }
 });

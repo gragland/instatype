@@ -45,15 +45,18 @@ module.exports.resultSelected = function(result) {
       result.image = result.images.low_resolution.url;
       return result;
     });
+
+    var nextPage = data.pagination.next_url;
+
     React.render(
-      <GridComponent data={gridItems} />,
+      <GridComponent initialData={gridItems} initialNextPage={nextPage}/>,
       document.getElementById('grid')
     );
   });
 }
 
 // Customize this function to use your favorite JSONP library
-var request = function(endpoint, requestParams, callback){
+var request = module.exports.request = function(endpoint, requestParams, callback){
 
   // Tiny JSONP Library: https://github.com/OscarGodson/JSONP
   JSONP(endpoint, requestParams, callback);
@@ -68,4 +71,27 @@ var request = function(endpoint, requestParams, callback){
       callback(data);
     }
   });*/
+}
+
+module.exports.throttle = function(fn, threshhold, scope) {
+  threshhold || (threshhold = 250);
+  var last,
+      deferTimer;
+  return function () {
+    var context = scope || this;
+
+    var now = +new Date,
+        args = arguments;
+    if (last && now < last + threshhold) {
+      // hold on to it
+      clearTimeout(deferTimer);
+      deferTimer = setTimeout(function () {
+        last = now;
+        fn.apply(context, args);
+      }, threshhold);
+    } else {
+      last = now;
+      fn.apply(context, args);
+    }
+  };
 }
