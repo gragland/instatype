@@ -1,24 +1,10 @@
-* {
+#instatype * {
   box-sizing: border-box;
   -moz-box-sizing: border-box;
   -webkit-box-sizing: border-box;
 }
 
-body {
-    font-size: 12px;
-    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-    padding: 0;
-    margin: 0;
-}
-
-
-#navbar {
-    padding: 2em 2.2em;
-    border-bottom: 1px solid #ccc;
-    background-color: #F9FDFF;
-}
-
-#app {
+#instatype {
     position: relative;
     display: block;
     width: 100%;

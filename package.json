@@ -4,7 +4,7 @@
   "description": "Simple React Typeahead",
   "main": "scr/js/app.js",
   "dependencies": {
-    "react": "~0.13.14"
+    "react": "~0.13.2"
   },
   "devDependencies": {
     "browserify": "latest",
@@ -12,6 +12,7 @@
     "watchify": "~3.1.2",
     "uglifyify": "latest",
     "precommit-hook": "latest",
+    "clean-css": "latest",
     "nodemon": "latest"
   },
   "repository": {

@@ -16,5 +16,5 @@ React.render(
     limit={6} 
     thumbStyle="circle"/>,
 
-  document.getElementById('app')
+  document.getElementById('instatype')
 );

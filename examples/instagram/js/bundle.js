@@ -16,7 +16,7 @@ React.render(React.createElement(InstaTypeComponent, {
   customFunctions: CustomFunctions,
   loadingIcon: '../../images/loading.gif',
   limit: 6,
-  thumbStyle: 'circle' }), document.getElementById('app'));
+  thumbStyle: 'circle' }), document.getElementById('instatype'));
 
 },{"../../../src/js/app.js":160,"./custom-functions.js":2,"react":158}],2:[function(require,module,exports){
 'use strict';
