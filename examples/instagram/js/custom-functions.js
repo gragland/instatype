@@ -4,17 +4,16 @@ var GridComponent = require('./grid.js');
 window.instagramClientId = '02d26cb819954ba7b5c3c072a885759f';
 window.instagramCount = 28;
 
-// Customize this function so that it returns the query params expected by your endpoint
-module.exports.getRequestParams = function(query, props){
-  return {
+// Customize this function to reformat the data returned by your endpoint
+module.exports.requestHandler = function(query, limit, callback){
+
+  var endpoint = 'https://api.instagram.com/v1/users/search';
+
+  var requestParams = {
     client_id: window.instagramClientId,
     q: query,
-    count: props.limit
+    count: limit
   };
-}
-
-// Customize this function to reformat the data returned by your endpoint
-module.exports.requestResults = function(endpoint, requestParams, callback){
 
   var wrappedCallback = function(data){
 
@@ -32,7 +31,7 @@ module.exports.requestResults = function(endpoint, requestParams, callback){
 }
 
 // Customize this function to do something when a result is selected
-module.exports.resultSelected = function(result) {
+module.exports.selectedHandler = function(result) {
 
   var endpoint = "https://api.instagram.com/v1/users/" + result.id + "/media/recent";
 
@@ -56,9 +55,9 @@ module.exports.resultSelected = function(result) {
   });
 }
 
-// Let's GridComponent handle the initial ajax call. Advantage is that we get an initial loading indicator.
-// Rename function to "resultSelected" to use
-module.exports.resultSelectedAlternate = function(result) {
+// Let's GridResultsComponent handle the initial ajax call. Advantage is that we get an initial loading indicator.
+// Rename function to "selectedHandler" to use
+module.exports.selectedHandlerAlternate = function(result) {
 
   var endpoint = "https://api.instagram.com/v1/users/" + result.id + 
                     "/media/recent?client_id=" + window.instagramClientId + 

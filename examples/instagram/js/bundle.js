@@ -7,13 +7,12 @@ var InstaTypeComponent = require('../../../src/js/app.js');
 
 React.initializeTouchEvents(true);
 
-CustomFunctions.resultSelected({ id: 478987666 });
+CustomFunctions.selectedHandler({ id: 478987666 });
 
 React.render(React.createElement(InstaTypeComponent, {
   placeholder: 'Search instagram users',
-  endpoint: 'https://api.instagram.com/v1/users/search',
-  dataKeys: window.dataKeys,
-  customFunctions: CustomFunctions,
+  requestHandler: CustomFunctions.requestHandler,
+  selectedHandler: CustomFunctions.selectedHandler,
   loadingIcon: '../../images/loading.gif',
   limit: 6,
   thumbStyle: 'circle' }), document.getElementById('instatype'));
@@ -27,17 +26,16 @@ var GridComponent = require('./grid.js');
 window.instagramClientId = '02d26cb819954ba7b5c3c072a885759f';
 window.instagramCount = 28;
 
-// Customize this function so that it returns the query params expected by your endpoint
-module.exports.getRequestParams = function (query, props) {
-  return {
+// Customize this function to reformat the data returned by your endpoint
+module.exports.requestHandler = function (query, limit, callback) {
+
+  var endpoint = 'https://api.instagram.com/v1/users/search';
+
+  var requestParams = {
     client_id: window.instagramClientId,
     q: query,
-    count: props.limit
+    count: limit
   };
-};
-
-// Customize this function to reformat the data returned by your endpoint
-module.exports.requestResults = function (endpoint, requestParams, callback) {
 
   var wrappedCallback = function wrappedCallback(data) {
 
@@ -55,7 +53,7 @@ module.exports.requestResults = function (endpoint, requestParams, callback) {
 };
 
 // Customize this function to do something when a result is selected
-module.exports.resultSelected = function (result) {
+module.exports.selectedHandler = function (result) {
 
   var endpoint = 'https://api.instagram.com/v1/users/' + result.id + '/media/recent';
 
@@ -76,9 +74,9 @@ module.exports.resultSelected = function (result) {
   });
 };
 
-// Let's GridComponent handle the initial ajax call. Advantage is that we get an initial loading indicator.
-// Rename function to "resultSelected" to use
-module.exports.resultSelectedAlternate = function (result) {
+// Let's GridResultsComponent handle the initial ajax call. Advantage is that we get an initial loading indicator.
+// Rename function to "selectedHandler" to use
+module.exports.selectedHandlerAlternate = function (result) {
 
   var endpoint = 'https://api.instagram.com/v1/users/' + result.id + '/media/recent?client_id=' + window.instagramClientId + '&count=' + window.instagramCount;
 
@@ -20033,29 +20031,25 @@ var InstaTypeComponent = React.createClass({
       limit: 10,
       placeholder: '',
       thumbStyle: 'square',
-      loadingIcon: '/images/loading.gif',
-      dataKeys: {
-        image: 'image',
-        name: 'name'
-      } };
+      loadingIcon: '/images/loading.gif'
+    };
   },
   propTypes: {
     limit: React.PropTypes.number,
     placeholder: React.PropTypes.string,
     thumbStyle: React.PropTypes.oneOf(['circle', 'square']),
-    dataKeys: React.PropTypes.object,
-    customFunctions: React.PropTypes.object.isRequired
+    requestHandler: React.PropTypes.func.isRequired,
+    selectedHandler: React.PropTypes.func.isRequired
   },
   loadResultsFromServer: function loadResultsFromServer(query) {
     var app = this;
 
-    var endpoint = app.props.endpoint;
-
-    var requestParams = this.props.customFunctions.getRequestParams(query, app.props);
+    // TODO: if endpoint specified we should use components own ajax function and add "q" param to endpoint
+    //var endpoint = app.props.endpoint;
 
     app.setState({ loading: true });
 
-    this.props.customFunctions.requestResults(endpoint, requestParams, function (data) {
+    this.props.requestHandler(query, this.props.limit, function (data) {
 
       // If inputValue changed prior to request completing don't bother to render
       if (app.state.inputValue != query) {
@@ -20082,7 +20076,7 @@ var InstaTypeComponent = React.createClass({
     );
   },
   handleSelect: function handleSelect(selectedResult) {
-    this.props.customFunctions.resultSelected(selectedResult);
+    this.props.selectedHandler(selectedResult);
     this.clearState();
   },
   handleChange: function handleChange(query) {

@@ -24,30 +24,25 @@ var InstaTypeComponent = React.createClass({
       limit: 10,
       placeholder: '',
       thumbStyle : 'square',
-      loadingIcon : '/images/loading.gif',
-      dataKeys : {
-        image: 'image',
-        name: 'name'
-      },
+      loadingIcon : '/images/loading.gif'
     };
   },
   propTypes: {
     limit: React.PropTypes.number,
     placeholder: React.PropTypes.string,
     thumbStyle: React.PropTypes.oneOf(['circle', 'square']),
-    dataKeys: React.PropTypes.object,
-    customFunctions: React.PropTypes.object.isRequired
+    requestHandler: React.PropTypes.func.isRequired,
+    selectedHandler: React.PropTypes.func.isRequired
   },
   loadResultsFromServer: function (query) {
     var app = this;
 
-    var endpoint = app.props.endpoint;
-
-    var requestParams = this.props.customFunctions.getRequestParams(query, app.props);
+    // TODO: if endpoint specified we should use components own ajax function and add "q" param to endpoint
+    //var endpoint = app.props.endpoint;
 
     app.setState({ loading : true });
 
-    this.props.customFunctions.requestResults(endpoint, requestParams, function(data){
+    this.props.requestHandler(query, this.props.limit, function(data){
 
       // If inputValue changed prior to request completing don't bother to render
       if (app.state.inputValue != query){
@@ -80,7 +75,7 @@ var InstaTypeComponent = React.createClass({
     );
   },
   handleSelect: function(selectedResult) {
-    this.props.customFunctions.resultSelected(selectedResult);
+    this.props.selectedHandler(selectedResult);
     this.clearState();
   },
   handleChange: function(query) {

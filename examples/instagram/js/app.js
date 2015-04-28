@@ -4,14 +4,13 @@ var InstaTypeComponent = require('../../../src/js/app.js');
 
 React.initializeTouchEvents(true);
 
-CustomFunctions.resultSelected( { id : 478987666 } );
+CustomFunctions.selectedHandler( { id : 478987666 } );
 
 React.render(
   <InstaTypeComponent 
     placeholder="Search instagram users" 
-    endpoint="https://api.instagram.com/v1/users/search" 
-    dataKeys={window.dataKeys}
-    customFunctions={CustomFunctions}
+    requestHandler={CustomFunctions.requestHandler}
+    selectedHandler={CustomFunctions.selectedHandler}
     loadingIcon="../../images/loading.gif"
     limit={6} 
     thumbStyle="circle"/>,
