@@ -10,6 +10,7 @@ var InstaTypeComponent = React.createClass({
     return {
       inputValue: '',
       inputFocused: false, // Does the input currently have focus?
+      inputTriggerFocus: false, // Will manually trigger focus() event on input
       inputTriggerBlur: false, // Will manually trigger blur() event on input
       showResults: false, // Show or hide the ResultsComponent
       loading: false, // Are we currently loading data from server?
@@ -35,6 +36,7 @@ var InstaTypeComponent = React.createClass({
     selectedHandler: React.PropTypes.func.isRequired
   },
   loadResultsFromServer: function (query) {
+
     var app = this;
 
     // TODO: if endpoint specified we should use components own ajax function and add "q" param to endpoint
@@ -64,7 +66,7 @@ var InstaTypeComponent = React.createClass({
   render: function(){
     return (
       <div onTouchMove={this.handleTouchMove}>
-          <InputComponent triggerBlur={this.state.inputTriggerBlur} placeholder={this.props.placeholder} handleChange={this.handleChange} handleFocus={this.handleFocus} handleBlur={this.handleBlur} value={this.state.inputValue} />
+          <InputComponent triggerFocus={this.state.inputTriggerFocus} triggerBlur={this.state.inputTriggerBlur} placeholder={this.props.placeholder} handleChange={this.handleChange} handleFocus={this.handleFocus} handleBlur={this.handleBlur} value={this.state.inputValue} />
           { this.state.results.length > 0 &&
             <ResultsComponent data={this.state.results} resultsId={this.state.resultsId} visible={this.state.showResults} handleSelect={this.handleSelect} thumbStyle={this.props.thumbStyle} />
           }
@@ -99,7 +101,7 @@ var InstaTypeComponent = React.createClass({
       
   },
   handleFocus: function() {
-      this.setState( { showResults : true, inputFocused: true } );
+      this.setState( { showResults : true, inputFocused: true, inputTriggerFocus: false  } );
   },
   handleBlur: function(event) {
 
