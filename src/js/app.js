@@ -18,7 +18,21 @@ var InstaTypeComponent = React.createClass({
       resultsId: null // Unique identifier for set of results (used by ResultsComponent.shouldComponentUpdate)
     };
   },
+  componentWillReceiveProps: function(nextProps){
 
+    if ( (typeof nextProps.inputTriggerFocus !== 'undefined' && this.state.inputTriggerFocus != nextProps.inputTriggerFocus) ||
+          (typeof nextProps.inputTriggerBlur !== 'undefined' && this.state.inputTriggerBlur != nextProps.inputTriggerBlur)) {
+
+      //alert(this.state.inputTriggerFocus + ' / ' + nextProps.inputTriggerFocus);
+      //alert(this.state.inputTriggerBlur + ' / ' + nextProps.inputTriggerBlur);
+
+      this.setState({
+        inputTriggerFocus: nextProps.inputTriggerFocus,
+        inputTriggerBlur: nextProps.inputTriggerBlur
+      });
+    }
+
+  },
   getDefaultProps: function() {
     return {
       text : false,
