@@ -20,11 +20,9 @@ var InstaTypeComponent = React.createClass({
   },
   componentWillReceiveProps: function(nextProps){
 
+    // Transfer inputTriggerFocus and inputTriggerBlur props to state
     if ( (typeof nextProps.inputTriggerFocus !== 'undefined' && this.state.inputTriggerFocus != nextProps.inputTriggerFocus) ||
           (typeof nextProps.inputTriggerBlur !== 'undefined' && this.state.inputTriggerBlur != nextProps.inputTriggerBlur)) {
-
-      //alert(this.state.inputTriggerFocus + ' / ' + nextProps.inputTriggerFocus);
-      //alert(this.state.inputTriggerBlur + ' / ' + nextProps.inputTriggerBlur);
 
       this.setState({
         inputTriggerFocus: nextProps.inputTriggerFocus,
@@ -33,6 +31,19 @@ var InstaTypeComponent = React.createClass({
     }
 
   },
+
+  componentDidMount: function(){
+
+    // Transfer inputTriggerFocus prop to state (it can be set to true when component is first rendered)
+    // inputTriggerBlur can't be set to true on render because there is no reason to (initial state is blur)
+    if (this.props.inputTriggerFocus === true){
+      this.setState({
+        inputTriggerFocus: this.props.inputTriggerFocus
+      });
+    }
+
+  },
+
   getDefaultProps: function() {
     return {
       text : false,

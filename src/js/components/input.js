@@ -3,7 +3,8 @@ var React = require('react');
 var InputComponent = React.createClass({
     shouldComponentUpdate: function(nextProps, nextState){
       return (this.props.value !== nextProps.value || 
-                this.props.triggerBlur !== nextProps.triggerBlur);
+                this.props.triggerBlur !== nextProps.triggerBlur ||
+                  this.props.triggerFocus !== nextProps.triggerFocus);
     },
     handleChange: function(event){
       this.props.handleChange(event.target.value);
@@ -14,24 +15,28 @@ var InputComponent = React.createClass({
     handleBlur: function(event){
       this.props.handleBlur(event);
     },
-    /*
     triggerBlur: function(){
-      React.findDOMNode(component).blur();
+      React.findDOMNode(this.refs.inputTypeahead).blur();
     },
     triggerFocus: function(){
-      React.findDOMNode(component).focus();
+     
+      React.findDOMNode(this.refs.inputTypeahead).focus();
     },
-    */
+    componentDidMount: function(){
+      if (this.props.triggerFocus === true){
+         this.triggerFocus();
+      }
+    },
     componentDidUpdate: function(){
       // Passing props.triggerBlur = true causes blur() to be called on input after render
       // Useful if we need to force input to no longer be in focus
       // IMPORTANT: handleBlur() passed down from parent component should ...
       // ... change props.triggerBlur back to false or input will never be able to regain focus.
       if (this.props.triggerBlur === true){
-        React.findDOMNode(this.refs.inputTypeahead).blur();
+         this.triggerBlur();
       }else
       if (this.props.triggerFocus === true){
-        React.findDOMNode(this.refs.inputTypeahead).focus();
+         this.triggerFocus();
       }
     },
     
