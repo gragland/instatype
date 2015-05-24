@@ -90,7 +90,7 @@ var InstaTypeComponent = React.createClass({
   },
   render: function(){
     return (
-      <div onTouchMove={this.handleTouchMove}>
+      <div id="instatype" onTouchMove={this.handleTouchMove}>
           <InputComponent triggerFocus={this.state.inputTriggerFocus} triggerBlur={this.state.inputTriggerBlur} placeholder={this.props.placeholder} handleChange={this.handleChange} handleFocus={this.handleFocus} handleBlur={this.handleBlur} value={this.state.inputValue} />
           { this.state.results.length > 0 &&
             <ResultsComponent data={this.state.results} resultsId={this.state.resultsId} visible={this.state.showResults} handleSelect={this.handleSelect} thumbStyle={this.props.thumbStyle} />

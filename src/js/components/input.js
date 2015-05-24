@@ -42,7 +42,7 @@ var InputComponent = React.createClass({
     
     render: function(){
       return (
-          <input type="text" placeholder={this.props.placeholder} ref="inputTypeahead" className="input-typeahead" value={this.props.value} onChange={this.handleChange} onFocus={this.handleFocus} onBlur={this.handleBlur}/>
+          <input type="text" autoCorrect="off" autoComplete="off" autoCapitalize="off" placeholder={this.props.placeholder} ref="inputTypeahead" className="input-typeahead" value={this.props.value} onChange={this.handleChange} onFocus={this.handleFocus} onBlur={this.handleBlur}/>
       );
     }
 });
