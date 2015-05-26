@@ -10,6 +10,10 @@
     width: 100%;
 }
 
+.input-wrapper {
+    position: relative;
+}
+
 .input-typeahead {
     width: 100%;
     margin: 0;
@@ -51,11 +55,7 @@ ul.results > li{
     cursor: pointer;
 }
 
-ul.results > li:hover{
-    background-color: #FFFEE2;
-}
-
-ul.results > li:active{
+ul.results > li.hovered{
     background-color: #FFFEE2;
 }
 

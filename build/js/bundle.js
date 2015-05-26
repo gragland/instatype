@@ -19792,38 +19792,12 @@ var InstaTypeComponent = React.createClass({
   getInitialState: function getInitialState() {
     return {
       inputValue: '',
-      inputFocused: false, // Does the input currently have focus?
-      inputTriggerFocus: false, // Will manually trigger focus() event on input
-      inputTriggerBlur: false, // Will manually trigger blur() event on input
       showResults: false, // Show or hide the ResultsComponent
       loading: false, // Are we currently loading data from server?
       results: [],
       resultsId: null // Unique identifier for set of results (used by ResultsComponent.shouldComponentUpdate)
     };
   },
-  componentWillReceiveProps: function componentWillReceiveProps(nextProps) {
-
-    // Transfer inputTriggerFocus and inputTriggerBlur props to state
-    if (typeof nextProps.inputTriggerFocus !== 'undefined' && this.state.inputTriggerFocus != nextProps.inputTriggerFocus || typeof nextProps.inputTriggerBlur !== 'undefined' && this.state.inputTriggerBlur != nextProps.inputTriggerBlur) {
-
-      this.setState({
-        inputTriggerFocus: nextProps.inputTriggerFocus,
-        inputTriggerBlur: nextProps.inputTriggerBlur
-      });
-    }
-  },
-
-  componentDidMount: function componentDidMount() {
-
-    // Transfer inputTriggerFocus prop to state (it can be set to true when component is first rendered)
-    // inputTriggerBlur can't be set to true on render because there is no reason to (initial state is blur)
-    if (this.props.inputTriggerFocus === true) {
-      this.setState({
-        inputTriggerFocus: this.props.inputTriggerFocus
-      });
-    }
-  },
-
   getDefaultProps: function getDefaultProps() {
     return {
       text: false,
@@ -19866,15 +19840,6 @@ var InstaTypeComponent = React.createClass({
       });
     });
   },
-  render: function render() {
-    return React.createElement(
-      'div',
-      { id: 'instatype', onTouchMove: this.handleTouchMove },
-      React.createElement(InputComponent, { triggerFocus: this.state.inputTriggerFocus, triggerBlur: this.state.inputTriggerBlur, placeholder: this.props.placeholder, handleChange: this.handleChange, handleFocus: this.handleFocus, handleBlur: this.handleBlur, value: this.state.inputValue }),
-      this.state.results.length > 0 && React.createElement(ResultsComponent, { data: this.state.results, resultsId: this.state.resultsId, visible: this.state.showResults, handleSelect: this.handleSelect, thumbStyle: this.props.thumbStyle }),
-      this.state.loading && React.createElement(LoadingComponent, { icon: this.props.loadingIcon })
-    );
-  },
   handleSelect: function handleSelect(selectedResult) {
     this.props.selectedHandler(selectedResult);
     this.clearState();
@@ -19898,36 +19863,59 @@ var InstaTypeComponent = React.createClass({
     }
   },
   handleFocus: function handleFocus() {
-    this.setState({ showResults: true, inputFocused: true, inputTriggerFocus: false });
+
+    clearTimeout(window.blurTimeout);
+
+    this.setState({ showResults: true });
+
+    // On focus set the cursor position to the end of input
+    // This seems to have fixed an ios bug where the cursor doesn't always show when focused
+    setTimeout((function () {
+
+      var inputRef = this.refs.inputComponent.refs.input.getDOMNode();
+
+      console.log('SELECTION START:' + inputRef.selectionStart);
+
+      //if (inputRef.setSelectionRange) // If function exists
+      //inputRef.setSelectionRange(inputRef.value.length, inputRef.value.length);
+    }).bind(this), 1000);
   },
+
   handleBlur: function handleBlur(event) {
 
-    // Hide results because input no longer has focus
-    // We only don't hide if we manually triggered the blur event ...
-    // ... which is used to hide keyboard on mobile when scrolling (easier to see results)
-    if (this.state.inputTriggerBlur === false) {
-      var self = this;
-      window.blurTimeout = setTimeout(function () {
+    var self = this;
 
-        if (self.state.inputFocused == false) // Make sure it's still not focused after timeout
-          self.setState({ showResults: false });
-      }, 400);
-    }
+    window.blurTimeout = setTimeout(function () {
 
-    this.setState({ inputFocused: false, inputTriggerBlur: false });
+      self.setState({ showResults: false });
+    }, 200);
   },
   handleTouchMove: function handleTouchMove() {
 
-    // When scrolling on a touch device ...
-    // If the input is focused we want to trigger blur so that keyboard hides
-    if (this.state.inputFocused === true) {
-      this.setState({ inputTriggerBlur: true });
-    }
+    this.refs.inputComponent.refs.input.getDOMNode().blur();
+    clearTimeout(window.blurTimeout); // Cancel delayed blur so menu stays open
   },
   clearState: function clearState() {
     this.setState({ results: [], resultsId: null, inputValue: '', loading: false });
-  }
-});
+  },
+  render: function render() {
+    return React.createElement(
+      'div',
+      { id: 'instatype', onTouchMove: this.handleTouchMove },
+      React.createElement(
+        'div',
+        { className: 'input-wrapper' },
+        React.createElement(InputComponent, {
+          placeholder: this.props.placeholder,
+          handleChange: this.handleChange,
+          handleFocus: this.handleFocus,
+          handleBlur: this.handleBlur,
+          ref: 'inputComponent' }),
+        this.state.loading && React.createElement(LoadingComponent, { icon: this.props.loadingIcon })
+      ),
+      this.state.results.length > 0 && React.createElement(ResultsComponent, { data: this.state.results, resultsId: this.state.resultsId, visible: this.state.showResults, handleSelect: this.handleSelect, thumbStyle: this.props.thumbStyle })
+    );
+  } });
 
 module.exports = InstaTypeComponent;
 
@@ -19940,7 +19928,7 @@ var InputComponent = React.createClass({
   displayName: "InputComponent",
 
   shouldComponentUpdate: function shouldComponentUpdate(nextProps, nextState) {
-    return this.props.value !== nextProps.value || this.props.triggerBlur !== nextProps.triggerBlur || this.props.triggerFocus !== nextProps.triggerFocus;
+    return false;
   },
   handleChange: function handleChange(event) {
     this.props.handleChange(event.target.value);
@@ -19951,32 +19939,18 @@ var InputComponent = React.createClass({
   handleBlur: function handleBlur(event) {
     this.props.handleBlur(event);
   },
-  triggerBlur: function triggerBlur() {
-    React.findDOMNode(this.refs.inputTypeahead).blur();
-  },
-  triggerFocus: function triggerFocus() {
-
-    React.findDOMNode(this.refs.inputTypeahead).focus();
-  },
-  componentDidMount: function componentDidMount() {
-    if (this.props.triggerFocus === true) {
-      this.triggerFocus();
-    }
-  },
-  componentDidUpdate: function componentDidUpdate() {
-    // Passing props.triggerBlur = true causes blur() to be called on input after render
-    // Useful if we need to force input to no longer be in focus
-    // IMPORTANT: handleBlur() passed down from parent component should ...
-    // ... change props.triggerBlur back to false or input will never be able to regain focus.
-    if (this.props.triggerBlur === true) {
-      this.triggerBlur();
-    } else if (this.props.triggerFocus === true) {
-      this.triggerFocus();
-    }
-  },
-
   render: function render() {
-    return React.createElement("input", { type: "text", autoCorrect: "off", autoComplete: "off", autoCapitalize: "off", placeholder: this.props.placeholder, ref: "inputTypeahead", className: "input-typeahead", value: this.props.value, onChange: this.handleChange, onFocus: this.handleFocus, onBlur: this.handleBlur });
+    return React.createElement("input", {
+      type: "text",
+      autoCorrect: "off",
+      autoComplete: "off",
+      autoCapitalize: "off",
+      placeholder: this.props.placeholder,
+      className: "input-typeahead",
+      onChange: this.handleChange,
+      onFocus: this.handleFocus,
+      onBlur: this.handleBlur,
+      ref: "input" });
   }
 });
 
@@ -19990,6 +19964,9 @@ var React = require("react");
 var LoadingComponent = React.createClass({
     displayName: "LoadingComponent",
 
+    shouldComponentUpdate: function shouldComponentUpdate(nextProps, nextState) {
+        return false;
+    },
     render: function render() {
         return React.createElement("img", { className: "loading-icon", src: this.props.icon });
     }
@@ -19998,26 +19975,50 @@ var LoadingComponent = React.createClass({
 module.exports = LoadingComponent;
 
 },{"react":155}],160:[function(require,module,exports){
-"use strict";
+'use strict';
 
-var React = require("react");
+var React = require('react');
 
 var Result = React.createClass({
-  displayName: "Result",
+  displayName: 'Result',
 
+  getInitialState: function getInitialState() {
+    return {
+      isHovered: false
+    };
+  },
   handleSelect: function handleSelect(event) {
+
+    this.setHoveredClass();
+
     this.props.handleSelect(this.props.data);
   },
   shouldComponentUpdate: function shouldComponentUpdate(nextProps, nextState) {
-    return this.props.data.id !== nextProps.data.id;
+
+    return true;
+
+    return this.props.data.id !== nextProps.data.id || this.state.isHovered !== nextState.isHovered;
+  },
+  setHoveredClass: function setHoveredClass(hover) {
+    this.setState({ isHovered: hover });
+  },
+  onMouseOver: function onMouseOver() {
+    this.setHoveredClass(true);
+  },
+  onMouseLeave: function onMouseLeave() {
+    this.setHoveredClass(false);
   },
   render: function render() {
+
+    var className = 'clearfix';
+    if (this.state.isHovered) className += ' hovered';
+
     return React.createElement(
-      "li",
-      { className: "clearfix", onClick: this.handleSelect },
-      this.props.image && React.createElement("img", { src: this.props.image }),
+      'li',
+      { className: className, onClick: this.handleSelect, onMouseOver: this.onMouseOver, onMouseLeave: this.onMouseLeave },
+      this.props.image && React.createElement('img', { src: this.props.image }),
       React.createElement(
-        "div",
+        'div',
         null,
         this.props.children
       )
