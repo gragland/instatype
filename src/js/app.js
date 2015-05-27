@@ -31,6 +31,11 @@ var InstaTypeComponent = React.createClass({
     requestHandler: React.PropTypes.func.isRequired,
     selectedHandler: React.PropTypes.func.isRequired
   },
+  shouldComponentUpdate: function(nextProps, nextState){
+      return (this.state.resultsId !== nextState.resultsId ||
+                this.state.loading !== nextState.loading ||
+                  this.state.showResults !== nextState.showResults);
+  },
   loadResultsFromServer: function (query) {
 
     var app = this;
@@ -87,30 +92,38 @@ var InstaTypeComponent = React.createClass({
 
       clearTimeout(window.blurTimeout);
 
+      if (this.props.focusHandler)
+        this.props.focusHandler(true);
+
       this.setState( { showResults : true } );
 
       // On focus set the cursor position to the end of input
       // This seems to have fixed an ios bug where the cursor doesn't always show when focused
+      /*
       setTimeout(function(){
 
         var inputRef = this.refs.inputComponent.refs.input.getDOMNode();
 
         console.log('SELECTION START:' + inputRef.selectionStart);
 
-        //if (inputRef.setSelectionRange) // If function exists
-          //inputRef.setSelectionRange(inputRef.value.length, inputRef.value.length);
+        if (inputRef.setSelectionRange) // If function exists
+          inputRef.setSelectionRange(inputRef.value.length, inputRef.value.length);
 
       }.bind(this), 1000);
+      */
   },
 
   handleBlur: function(event) {
 
+    console.log('HANDLE BLUR');
+
+    if (this.props.focusHandler)
+      this.props.focusHandler(false);
+
     var self = this;
 
     window.blurTimeout = setTimeout(function(){
-
       self.setState({ showResults: false });
-
     }, 200);
 
   },
@@ -121,6 +134,7 @@ var InstaTypeComponent = React.createClass({
 
   },
   clearState: function() {
+
       this.setState({results : [], resultsId : null, inputValue : '', loading : false});
   },
   render: function(){
