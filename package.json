@@ -2,7 +2,7 @@
   "name": "web",
   "version": "0.0.0",
   "description": "Simple React Typeahead",
-  "main": "scr/js/app.js",
+  "main": "src/js/app.js",
   "dependencies": {
     "react": "~0.13.2"
   },
