@@ -4,7 +4,7 @@
   "description": "Simple React Typeahead",
   "main": "scr/js/app.js",
   "dependencies": {
-    "react": "~0.13.2"
+    "react": "^0.13.x"
   },
   "devDependencies": {
     "browserify": "latest",
@@ -25,15 +25,11 @@
     "url": "https://github.com/gragland/instatype/issues"
   },
   "homepage": "https://github.com/gragland/instatype",
-
   "scripts": {
-
     "bundle": "npm run bundle-js && npm run bundle-css",
     "bundle-js": "browserify src/js/app.js --transform babelify --global-transform [ uglifyify --no-sourcemap --compress [ --drop_console --unused --dead_code ] ] --outfile build/js/bundle.js",
     "bundle-css": "cleancss src/css/style.css -o build/css/style.css",
-    
     "git-add-bundle": "git add build/*",
-
     "watch-js-example": "watchify examples/instagram/js/app.js --transform babelify --outfile examples/instagram/js/bundle.js -v",
     "watch-js": "watchify src/js/app.js --transform babelify --outfile build/js/bundle.js -v",
     "watch-css": "nodemon --quiet --watch src/css/*.css --exec 'npm run bundle-css'",
