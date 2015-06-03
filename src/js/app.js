@@ -18,10 +18,14 @@ var InstaTypeComponent = React.createClass({
   getDefaultProps: function() {
     return {
       text : false,
-      limit: 10,
-      placeholder: '',
+      limit : 10,
+      placeholder : 'Search',
       thumbStyle : 'square',
-      loadingIcon : '/images/loading.gif'
+      loadingIcon : '/images/loading.gif',
+      // Blur input ontouchstart. 
+      // Fixes an phonegap/ios bug where input cursor doesn't show up on focus after previously blurring naturally
+      // Don't enable unless experiencing this bug
+      blurOnTouchStart : false,
     };
   },
   propTypes: {
@@ -38,30 +42,25 @@ var InstaTypeComponent = React.createClass({
   },
   loadResultsFromServer: function (query) {
 
-    var app = this;
-
-    // TODO: if endpoint specified we should use components own ajax function and add "q" param to endpoint
-    //var endpoint = app.props.endpoint;
-
-    app.setState({ loading : true });
+    this.setState({ loading : true });
 
     this.props.requestHandler(query, this.props.limit, function(data){
 
       // If inputValue changed prior to request completing don't bother to render
-      if (app.state.inputValue != query){
+      if (this.state.inputValue != query){
         return false;
       }
 
-      // Enforce limit here as well
-      data = data.slice(0, app.props.limit);
+      // Truncate data to specific limit
+      data = data.slice(0, this.props.limit);
 
-      app.setState({
+      this.setState({
         results: data,
         resultsId: query,
         loading: false
       });
      
-    });
+    }.bind(this));
   
   },
   handleSelect: function(selectedResult) {
@@ -70,8 +69,6 @@ var InstaTypeComponent = React.createClass({
   },
   handleChange: function(query) {
 
-    var self = this;
-
     clearTimeout(window.loadResultsTimeout);
 
     if (query){
@@ -79,8 +76,8 @@ var InstaTypeComponent = React.createClass({
       this.setState( { inputValue : query } );
 
       window.loadResultsTimeout = setTimeout(function(){
-        self.loadResultsFromServer(query);
-      }, 200);
+        this.loadResultsFromServer(query);
+      }.bind(this), 200);
 
     }else{
 
@@ -88,54 +85,75 @@ var InstaTypeComponent = React.createClass({
     }
       
   },
+  showResults: function(){
+
+    if (this.state.showResults === false)
+      this.setState({ showResults : true });
+
+    // Cancel any pending hide results timeout
+    clearTimeout(window.blurHideResultsTimeout); 
+  },
+  hideResults: function(){
+
+    if (this.state.showResults === true)
+      this.setState({ showResults : false });
+
+    // Cancel any pending hide results timeout
+    clearTimeout(window.blurHideResultsTimeout); 
+  },
   handleFocus: function() {
 
-      clearTimeout(window.blurTimeout);
-
-      if (this.props.focusHandler)
-        this.props.focusHandler(true);
-
-      this.setState( { showResults : true } );
-
-      // On focus set the cursor position to the end of input
-      // This seems to have fixed an ios bug where the cursor doesn't always show when focused
-      /*
-      setTimeout(function(){
-
-        var inputRef = this.refs.inputComponent.refs.input.getDOMNode();
-
-        console.log('SELECTION START:' + inputRef.selectionStart);
-
-        if (inputRef.setSelectionRange) // If function exists
-          inputRef.setSelectionRange(inputRef.value.length, inputRef.value.length);
-
-      }.bind(this), 1000);
-      */
+      this.showResults();
   },
 
   handleBlur: function(event) {
 
-    console.log('HANDLE BLUR');
+    // Hide results after a 400ms delay
+    // This gives us the ability to keep results open by canceling this timeout
+    // TODO: Find a cleaner way to do this
+    window.blurHideResultsTimeout = setTimeout(function(){
 
-    if (this.props.focusHandler)
-      this.props.focusHandler(false);
+      this.hideResults(); // Hide
 
-    var self = this;
-
-    window.blurTimeout = setTimeout(function(){
-      self.setState({ showResults: false });
-    }, 200);
+    }.bind(this), 400);
 
   },
+  // Attached to #instatype div onTouchMove
+  // Cancels delayed hiding of results (see this.handleBlur) so menu stays open while scrolling 
   handleTouchMove: function(){
 
-    this.refs.inputComponent.refs.input.getDOMNode().blur();
-    clearTimeout(window.blurTimeout); // Cancel delayed blur so menu stays open
-
+    // If we are NOT auto-blurring on touch, we need to do it here
+    if (this.props.blurOnTouchStart === false)
+      this.blurInput();
+    
+    // Prevents results from hiding
+    clearTimeout(window.blurHideResultsTimeout);
   },
   clearState: function() {
 
       this.setState({results : [], resultsId : null, inputValue : '', loading : false});
+  },
+  blurInput: function(){
+
+    this.refs.inputComponent.refs.input.getDOMNode().blur();
+  },
+  componentDidMount: function() {
+
+    // Blur the input when the user touches (ontouchstart) anywhere on the screen.
+    // This fixes a nasty bug (on ios in phonegap webview) where a natural blur (due to clicking somewhere on screen) ...
+    // ... will result in the input's blinking caret not displaying next time the input is in focus.
+    // Triggering a blur manually ontouchstart seems to solve this problem.
+    // Capture phase (rather than bubbling phase) so that it's called before any other events
+    if (this.props.blurOnTouchStart === true)
+      document.addEventListener('touchstart', this.blurInput, true); 
+  },
+  componentWillUnmount: function(){
+
+    // Cancel timeout or we could end up setting state for component that isn't mounted
+    clearTimeout(window.blurHideResultsTimeout);
+
+    if (this.props.blurOnTouchStart === true)
+      document.removeEventListener('touchstart', this.blurInput, true);
   },
   render: function(){
     return (
@@ -147,15 +165,19 @@ var InstaTypeComponent = React.createClass({
             handleChange={this.handleChange} 
             handleFocus={this.handleFocus} 
             handleBlur={this.handleBlur} 
-            ref="inputComponent" />
+            ref="inputComponent"/>
 
             { this.state.loading &&
               <LoadingComponent icon={this.props.loadingIcon} />
             }
           </div>
           
-          { this.state.results.length > 0 &&
-            <ResultsComponent data={this.state.results} resultsId={this.state.resultsId} visible={this.state.showResults} handleSelect={this.handleSelect} thumbStyle={this.props.thumbStyle} />
+          { this.state.showResults && 
+            <ResultsComponent 
+              data={this.state.results} 
+              resultsId={this.state.resultsId} 
+              handleSelect={this.handleSelect} 
+              thumbStyle={this.props.thumbStyle}/>
           }
 
       </div>

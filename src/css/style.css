@@ -32,13 +32,22 @@
     right: 1em;
 }
 
+.resultsContainer {
+    position: absolute;
+    z-index: 9997;
+    width: 100%;
+    margin: 0;
+    background-color:red;
+}
+
 ul.results{
-    background-color: #fff;
     position: absolute;
     z-index: 9999;
-    width: 100%;
-    margin-top: 0;
+    top:0;
+    width:100%;
+    margin: 0;
     padding: 0;
+    background-color: #fff;
     border: 1px solid #ccc;
     border-top: none;
     list-style-type: none;

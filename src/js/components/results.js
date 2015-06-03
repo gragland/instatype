@@ -3,33 +3,35 @@ var Result = require('./result.js');
 
 var ResultsComponent = React.createClass({
 
-  handleResultsClick: function(event){
-    clearTimeout(window.blurTimeout);
-  },
   shouldComponentUpdate: function(nextProps, nextState){
-    // Compare visible and resultsId (any unique identifier for the results, such as a query term) so we can prevent uneccesary re-rendering
-    return (this.props.visible !== nextProps.visible || 
-              this.props.resultsId !== nextProps.resultsId);
+    if (this.props.resultsId || nextProps.resultsId){ // If we are passing a resultsId (unique identifier for the results)
+      return (this.props.resultsId !== nextProps.resultsId); // Return true if resultsId has changed
+    }else{
+      return true; // Always try to update if we have no resultsId to compare
+    }
   },
   render: function(){
-    self = this;
 
     var resultNodes = this.props.data.map(function(result){
       return (
-        <Result image={result.image} handleSelect={self.props.handleSelect} data={result} key={result.id}>
+        <Result image={result.image} handleSelect={this.props.handleSelect} data={result} key={result.id}>
             {result.name}
         </Result>
       );
-    });
-
+    }.bind(this));
+    
     var resultsClass = 'results thumb-' + this.props.thumbStyle;
-    resultsClass += (this.props.visible === true ? ' show' : ' hide');
-    resultsClass += (resultNodes.length === 0 ? ' empty' : ''); 
 
     return (
-      <ul className={resultsClass} onClick={this.handleResultsClick}>
-          {resultNodes}
-      </ul>
+      <div className="resultsContainer">
+
+        { this.props.data.length > 0 &&
+          <ul className={resultsClass}>
+              {resultNodes}
+          </ul>
+        }
+
+      </div>
     );
   }
 });

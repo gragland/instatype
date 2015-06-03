@@ -7,26 +7,19 @@ var Result = React.createClass({
     };
   },
   handleSelect: function (event) {
-
-    this.setHoveredClass();
-
     this.props.handleSelect(this.props.data);
+    event.preventDefault();
+    event.stopPropagation();
   },
   shouldComponentUpdate: function(nextProps, nextState){
-
-    return true;
-
-    return (this.props.data.id !== nextProps.data.id ||
+    return (this.props.data.id && (this.props.data.id !== nextProps.data.id) ||
               this.state.isHovered !== nextState.isHovered);
   },
-  setHoveredClass: function(hover){
-    this.setState({ isHovered: hover })
-  },
   onMouseOver: function(){
-    this.setHoveredClass(true);
+    this.setState({ isHovered: true })
   },
   onMouseLeave: function(){
-    this.setHoveredClass(false);
+    this.setState({ isHovered: false })
   },
   render: function(){
 
