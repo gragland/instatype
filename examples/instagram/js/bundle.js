@@ -20066,10 +20066,13 @@ var InstaTypeComponent = React.createClass({
     return {
       text: false,
       limit: 10,
-      placeholder: '',
+      placeholder: 'Search',
       thumbStyle: 'square',
-      loadingIcon: '/images/loading.gif'
-    };
+      loadingIcon: '/images/loading.gif',
+      // Blur input ontouchstart.
+      // Fixes an phonegap/ios bug where input cursor doesn't show up on focus after previously blurring naturally
+      // Don't enable unless experiencing this bug
+      blurOnTouchStart: false };
   },
   propTypes: {
     limit: React.PropTypes.number,
@@ -20078,31 +20081,29 @@ var InstaTypeComponent = React.createClass({
     requestHandler: React.PropTypes.func.isRequired,
     selectedHandler: React.PropTypes.func.isRequired
   },
+  shouldComponentUpdate: function shouldComponentUpdate(nextProps, nextState) {
+    return this.state.resultsId !== nextState.resultsId || this.state.loading !== nextState.loading || this.state.showResults !== nextState.showResults;
+  },
   loadResultsFromServer: function loadResultsFromServer(query) {
 
-    var app = this;
+    this.setState({ loading: true });
 
-    // TODO: if endpoint specified we should use components own ajax function and add "q" param to endpoint
-    //var endpoint = app.props.endpoint;
-
-    app.setState({ loading: true });
-
-    this.props.requestHandler(query, this.props.limit, function (data) {
+    this.props.requestHandler(query, this.props.limit, (function (data) {
 
       // If inputValue changed prior to request completing don't bother to render
-      if (app.state.inputValue != query) {
+      if (this.state.inputValue != query) {
         return false;
       }
 
-      // Enforce limit here as well
-      data = data.slice(0, app.props.limit);
+      // Truncate data to specific limit
+      data = data.slice(0, this.props.limit);
 
-      app.setState({
+      this.setState({
         results: data,
         resultsId: query,
         loading: false
       });
-    });
+    }).bind(this));
   },
   handleSelect: function handleSelect(selectedResult) {
     this.props.selectedHandler(selectedResult);
@@ -20110,57 +20111,82 @@ var InstaTypeComponent = React.createClass({
   },
   handleChange: function handleChange(query) {
 
-    var self = this;
-
     clearTimeout(window.loadResultsTimeout);
 
     if (query) {
 
       this.setState({ inputValue: query });
 
-      window.loadResultsTimeout = setTimeout(function () {
-        self.loadResultsFromServer(query);
-      }, 200);
+      window.loadResultsTimeout = setTimeout((function () {
+        this.loadResultsFromServer(query);
+      }).bind(this), 200);
     } else {
 
       this.clearState();
     }
   },
+  showResults: function showResults() {
+
+    if (this.state.showResults === false) this.setState({ showResults: true });
+
+    // Cancel any pending hide results timeout
+    clearTimeout(window.blurHideResultsTimeout);
+  },
+  hideResults: function hideResults() {
+
+    if (this.state.showResults === true) this.setState({ showResults: false });
+
+    // Cancel any pending hide results timeout
+    clearTimeout(window.blurHideResultsTimeout);
+  },
   handleFocus: function handleFocus() {
 
-    clearTimeout(window.blurTimeout);
-
-    this.setState({ showResults: true });
-
-    // On focus set the cursor position to the end of input
-    // This seems to have fixed an ios bug where the cursor doesn't always show when focused
-    setTimeout((function () {
-
-      var inputRef = this.refs.inputComponent.refs.input.getDOMNode();
-
-      console.log('SELECTION START:' + inputRef.selectionStart);
-
-      //if (inputRef.setSelectionRange) // If function exists
-      //inputRef.setSelectionRange(inputRef.value.length, inputRef.value.length);
-    }).bind(this), 1000);
+    this.showResults();
   },
 
   handleBlur: function handleBlur(event) {
 
-    var self = this;
+    // Hide results after a 400ms delay
+    // This gives us the ability to keep results open by canceling this timeout
+    // TODO: Find a cleaner way to do this
+    window.blurHideResultsTimeout = setTimeout((function () {
 
-    window.blurTimeout = setTimeout(function () {
-
-      self.setState({ showResults: false });
-    }, 200);
+      this.hideResults(); // Hide
+    }).bind(this), 400);
   },
+  // Attached to #instatype div onTouchMove
+  // Cancels delayed hiding of results (see this.handleBlur) so menu stays open while scrolling
   handleTouchMove: function handleTouchMove() {
 
-    this.refs.inputComponent.refs.input.getDOMNode().blur();
-    clearTimeout(window.blurTimeout); // Cancel delayed blur so menu stays open
+    // If we are NOT auto-blurring on touch, we need to do it here
+    if (this.props.blurOnTouchStart === false) this.blurInput();
+
+    // Prevents results from hiding
+    clearTimeout(window.blurHideResultsTimeout);
   },
   clearState: function clearState() {
+
     this.setState({ results: [], resultsId: null, inputValue: '', loading: false });
+  },
+  blurInput: function blurInput() {
+
+    this.refs.inputComponent.refs.input.getDOMNode().blur();
+  },
+  componentDidMount: function componentDidMount() {
+
+    // Blur the input when the user touches (ontouchstart) anywhere on the screen.
+    // This fixes a nasty bug (on ios in phonegap webview) where a natural blur (due to clicking somewhere on screen) ...
+    // ... will result in the input's blinking caret not displaying next time the input is in focus.
+    // Triggering a blur manually ontouchstart seems to solve this problem.
+    // Capture phase (rather than bubbling phase) so that it's called before any other events
+    if (this.props.blurOnTouchStart === true) document.addEventListener('touchstart', this.blurInput, true);
+  },
+  componentWillUnmount: function componentWillUnmount() {
+
+    // Cancel timeout or we could end up setting state for component that isn't mounted
+    clearTimeout(window.blurHideResultsTimeout);
+
+    if (this.props.blurOnTouchStart === true) document.removeEventListener('touchstart', this.blurInput, true);
   },
   render: function render() {
     return React.createElement(
@@ -20177,7 +20203,11 @@ var InstaTypeComponent = React.createClass({
           ref: 'inputComponent' }),
         this.state.loading && React.createElement(LoadingComponent, { icon: this.props.loadingIcon })
       ),
-      this.state.results.length > 0 && React.createElement(ResultsComponent, { data: this.state.results, resultsId: this.state.resultsId, visible: this.state.showResults, handleSelect: this.handleSelect, thumbStyle: this.props.thumbStyle })
+      this.state.showResults && React.createElement(ResultsComponent, {
+        data: this.state.results,
+        resultsId: this.state.resultsId,
+        handleSelect: this.handleSelect,
+        thumbStyle: this.props.thumbStyle })
     );
   } });
 
@@ -20252,25 +20282,18 @@ var Result = React.createClass({
     };
   },
   handleSelect: function handleSelect(event) {
-
-    this.setHoveredClass();
-
     this.props.handleSelect(this.props.data);
+    event.preventDefault();
+    event.stopPropagation();
   },
   shouldComponentUpdate: function shouldComponentUpdate(nextProps, nextState) {
-
-    return true;
-
-    return this.props.data.id !== nextProps.data.id || this.state.isHovered !== nextState.isHovered;
-  },
-  setHoveredClass: function setHoveredClass(hover) {
-    this.setState({ isHovered: hover });
+    return this.props.data.id && this.props.data.id !== nextProps.data.id || this.state.isHovered !== nextState.isHovered;
   },
   onMouseOver: function onMouseOver() {
-    this.setHoveredClass(true);
+    this.setState({ isHovered: true });
   },
   onMouseLeave: function onMouseLeave() {
-    this.setHoveredClass(false);
+    this.setState({ isHovered: false });
   },
   render: function render() {
 
@@ -20301,32 +20324,34 @@ var Result = require('./result.js');
 var ResultsComponent = React.createClass({
   displayName: 'ResultsComponent',
 
-  handleResultsClick: function handleResultsClick(event) {
-    clearTimeout(window.blurTimeout);
-  },
   shouldComponentUpdate: function shouldComponentUpdate(nextProps, nextState) {
-    // Compare visible and resultsId (any unique identifier for the results, such as a query term) so we can prevent uneccesary re-rendering
-    return this.props.visible !== nextProps.visible || this.props.resultsId !== nextProps.resultsId;
+    if (this.props.resultsId || nextProps.resultsId) {
+      // If we are passing a resultsId (unique identifier for the results)
+      return this.props.resultsId !== nextProps.resultsId; // Return true if resultsId has changed
+    } else {
+      return true; // Always try to update if we have no resultsId to compare
+    }
   },
   render: function render() {
-    self = this;
 
-    var resultNodes = this.props.data.map(function (result) {
+    var resultNodes = this.props.data.map((function (result) {
       return React.createElement(
         Result,
-        { image: result.image, handleSelect: self.props.handleSelect, data: result, key: result.id },
+        { image: result.image, handleSelect: this.props.handleSelect, data: result, key: result.id },
         result.name
       );
-    });
+    }).bind(this));
 
     var resultsClass = 'results thumb-' + this.props.thumbStyle;
-    resultsClass += this.props.visible === true ? ' show' : ' hide';
-    resultsClass += resultNodes.length === 0 ? ' empty' : '';
 
     return React.createElement(
-      'ul',
-      { className: resultsClass, onClick: this.handleResultsClick },
-      resultNodes
+      'div',
+      { className: 'resultsContainer' },
+      this.props.data.length > 0 && React.createElement(
+        'ul',
+        { className: resultsClass },
+        resultNodes
+      )
     );
   }
 });
