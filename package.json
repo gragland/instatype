@@ -19,7 +19,6 @@
     "type": "git",
     "url": "git://github.com/gragland/instatype.git"
   },
-  "browserify": {"transform": ["reactify"]},
   "author": "",
   "license": "",
   "bugs": {
