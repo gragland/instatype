@@ -7,13 +7,14 @@
     "react": "^0.13.x"
   },
   "devDependencies": {
-    "browserify": "latest",
     "babelify": "~6.0.2",
-    "watchify": "~3.1.2",
-    "uglifyify": "latest",
-    "precommit-hook": "latest",
+    "browserify": "latest",
     "clean-css": "latest",
-    "nodemon": "latest"
+    "nodemon": "latest",
+    "precommit-hook": "latest",
+    "reactify": "^1.1.1",
+    "uglifyify": "latest",
+    "watchify": "~3.1.2"
   },
   "repository": {
     "type": "git",
@@ -23,6 +24,11 @@
   "license": "",
   "bugs": {
     "url": "https://github.com/gragland/instatype/issues"
+  },
+  "browserify": {
+    "transform": [
+      "reactify"
+    ]
   },
   "homepage": "https://github.com/gragland/instatype",
   "scripts": {
