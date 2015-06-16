@@ -1,8 +1,8 @@
 {
   "name": "instatype",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Simple React Typeahead",
-  "main": "src/js/app.js",
+  "main": "build/js/bundle.js",
   "peerDependencies": {
     "react": ">=0.12.0"
   },
@@ -46,6 +46,7 @@
     "watch-js-example": "watchify examples/instagram/js/app.js --transform babelify --outfile examples/instagram/js/bundle.js -v",
     "watch-js": "watchify src/js/app.js --transform babelify --outfile build/js/bundle.js -v",
     "watch-css": "nodemon --quiet --watch src/css/*.css --exec 'npm run bundle-css'",
-    "watch": "npm run watch-js & npm run watch-js-example & npm run watch-css"
+    "watch": "npm run watch-js & npm run watch-js-example & npm run watch-css",
+    "prepublish": "npm run bundle"
   }
 }
