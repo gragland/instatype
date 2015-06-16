@@ -20,17 +20,24 @@
     "type": "git",
     "url": "git://github.com/gragland/instatype.git"
   },
-  "author": "",
-  "license": "",
+  "author": "Gabe Ragland <gabe.ragland@gmail.com>",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/gragland/instatype/issues"
   },
+  "keywords": [
+    "instatype",
+    "autocomplete",
+    "typeahead",
+    "react",
+    "react-component"
+  ],
+  "homepage": "https://github.com/gragland/instatype",
   "browserify": {
     "transform": [
       "reactify"
     ]
   },
-  "homepage": "https://github.com/gragland/instatype",
   "scripts": {
     "bundle": "npm run bundle-js && npm run bundle-css",
     "bundle-js": "browserify src/js/app.js --transform babelify --global-transform [ uglifyify --no-sourcemap --compress [ --drop_console --unused --dead_code ] ] --outfile build/js/bundle.js",
