@@ -10,11 +10,11 @@
     width: 100%;
 }
 
-.input-wrapper {
+#instatype .input-wrapper {
     position: relative;
 }
 
-.input-typeahead {
+#instatype .input-typeahead {
     width: 100%;
     margin: 0;
     font-size: 2em;
@@ -24,7 +24,7 @@
     border-radius: 0;
 }
 
-.loading-icon{
+#instatype .loading-icon{
     position: absolute;
     height: 100%;
     padding-top: 1em;
@@ -32,7 +32,7 @@
     right: 1em;
 }
 
-.resultsContainer {
+#instatype .resultsContainer {
     position: absolute;
     z-index: 9997;
     width: 100%;
@@ -40,7 +40,7 @@
     background-color:red;
 }
 
-ul.results{
+#instatype ul.results{
     position: absolute;
     z-index: 9999;
     top:0;
@@ -53,38 +53,38 @@ ul.results{
     list-style-type: none;
 }
 
-ul.results.hide, ul.results.empty{
+#instatype ul.results.hide, ul.results.empty{
     display: none;
 }
 
-ul.results > li{
+#instatype ul.results > li{
     line-height: 4em;
     padding: 0.5em 0 0.5em 1em;
     position: relative;
     cursor: pointer;
 }
 
-ul.results > li.hovered{
+#instatype ul.results > li.hovered{
     background-color: #FFFEE2;
 }
 
-ul.results > li > img{
+#instatype ul.results > li > img{
     float: left;
     width: 4em;
     height: 4em;
     margin-right: 1em;
 }
 
-ul.results.thumb-circle > li > img{
+#instatype ul.results.thumb-circle > li > img{
     border-radius: 4em;
 }
 
-ul.results > li > div{
+#instatype ul.results > li > div{
     float: left;
     font-size: 2em;
 }
 
-.clearfix:after {
+#instatype .clearfix:after {
     content: "";
     display: table;
     clear: both;
