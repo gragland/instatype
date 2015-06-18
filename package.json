@@ -1,6 +1,6 @@
 {
   "name": "instatype",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Simple React Typeahead",
   "main": "src/js/app.js",
   "peerDependencies": {
