@@ -1,3 +1,4 @@
 node_modules/
 build/.module-cache/
 .DS_Store
+npm-debug.log
