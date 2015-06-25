@@ -15,7 +15,7 @@ Simple React Typeahead
         document.getElementById('app')
     );
 
-If using Webpack make sure to include the style-loader:
+If using Webpack make sure to include the style-loader in your webpack config:
 
     module: {
         loaders: [
