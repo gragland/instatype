@@ -42,6 +42,12 @@ body {
     right: 0;
 }
 
+.clearfix:after {
+    content: "";
+    display: table;
+    clear: both;
+}
+
 @media all and (max-width: 500px) {
     body {
         font-size: 8px;
