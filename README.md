@@ -1,11 +1,28 @@
 # instatype
 Simple React Typeahead
 
+## Demo
+<a href="http://gragland.github.io/instatype/examples/instagram">http://gragland.github.io/instatype/examples/instagram</a>
+
 ## Install
 `npm install instatype`
 
-## Demo
-<a href="http://gragland.github.io/instatype/examples/instagram">http://gragland.github.io/instatype/examples/instagram</a>
+## Usage
+    var Instatype = require('instatype');
+    
+    React.render(
+        <Instatype requestHandler={myRequestHandler} selectedHandler={mySelectedHandler}/>,
+        document.getElementById('app')
+    );
+
+If using Webpack make sure to include the style-loader:
+
+    module: {
+        loaders: [
+            { test: /\.css$/, loader: "style-loader!css-loader" },
+            { test: /\.jsx?$/, loaders: ['react-hot', 'jsx-loader?harmony']}
+        ]
+    }
 
 ## Props
 
