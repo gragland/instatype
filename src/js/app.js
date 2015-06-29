@@ -120,9 +120,9 @@ var InstaTypeComponent = React.createClass({
     }.bind(this), 400);
 
   },
-  // Attached to #instatype div onTouchMove
-  // Cancels delayed hiding of results (see this.handleBlur) so menu stays open while scrolling 
-  handleTouchMove: function(){
+  // Attached to #instatype div onTouchStart
+  // Cancels delayed hiding of results (see this.handleBlur) so menu stays open when result tapped and scrolling
+  handleTouch: function(){
 
     // If we are NOT auto-blurring on touch, we need to do it here
     if (this.props.blurOnTouchStart === false)
@@ -159,7 +159,7 @@ var InstaTypeComponent = React.createClass({
   },
   render: function(){
     return (
-      <div id="instatype" onTouchMove={this.handleTouchMove}>
+      <div id="instatype" onTouchStart={this.handleTouch}>
 
         <div className="input-wrapper">
           <InputComponent 
