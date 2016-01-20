@@ -12,8 +12,9 @@ var Result = React.createClass({
     event.stopPropagation();
   },
   shouldComponentUpdate: function(nextProps, nextState){
-    return (this.props.data.id && (this.props.data.id !== nextProps.data.id) ||
-              this.state.isHovered !== nextState.isHovered);
+    return (!this.props.data.id || // Always update if we have no data.id to identify whether result changed
+              (this.props.data.id !== nextProps.data.id) || // Update if data.id did change
+                this.state.isHovered !== nextState.isHovered); // Update if hover state changed
   },
   onMouseOver: function(){
     this.setState({ isHovered: true })
