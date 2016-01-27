@@ -5,7 +5,8 @@ var LoadingComponent = require('./components/loading.js');
 
 require('./../css/style.css');
 
-React.initializeTouchEvents(true);
+if (typeof React.initializeTouchEvents == 'function')
+  React.initializeTouchEvents(true); // Removed in React 0.14
 
 var InstaTypeComponent = React.createClass({
   getInitialState: function(){
@@ -35,7 +36,8 @@ var InstaTypeComponent = React.createClass({
     placeholder: React.PropTypes.string,
     thumbStyle: React.PropTypes.oneOf(['circle', 'square']),
     requestHandler: React.PropTypes.func.isRequired,
-    selectedHandler: React.PropTypes.func.isRequired
+    selectedHandler: React.PropTypes.func.isRequired,
+    onBlur: React.PropTypes.func
   },
   shouldComponentUpdate: function(nextProps, nextState){
       return (this.state.resultsId !== nextState.resultsId ||
@@ -118,6 +120,15 @@ var InstaTypeComponent = React.createClass({
       this.hideResults(); // Hide
 
     }.bind(this), 400);
+
+    // Slight timeout so that selectedHandler() gets called before props.onBlur
+    // This is important because if props.onBlur causes Instatype component to be removed from DOM ...
+    // ... then selectedHandler() will never get called
+    if (this.props.onBlur){
+      setTimeout(function(){
+        this.props.onBlur();
+      }.bind(this), 10);
+    }
 
   },
   // Attached to #instatype div onTouchStart
