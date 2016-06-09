@@ -17,6 +17,7 @@ var InputComponent = React.createClass({
       return (
           <input 
             type="text" 
+            defaultValue={this.props.defaultValue}
             autoCorrect="off" 
             autoComplete="off" 
             autoCapitalize="off"

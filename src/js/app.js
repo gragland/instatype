@@ -22,6 +22,7 @@ var InstaTypeComponent = React.createClass({
     return {
       text : false,
       limit : 10,
+      defaultInputValue : null,
       placeholder : 'Search',
       thumbStyle : 'square',
       loadingIcon : '/images/loading.gif',
@@ -174,6 +175,7 @@ var InstaTypeComponent = React.createClass({
 
         <div className="input-wrapper">
           <InputComponent 
+            defaultValue={this.props.defaultInputValue}
             placeholder={this.props.placeholder} 
             handleChange={this.handleChange} 
             handleFocus={this.handleFocus} 
