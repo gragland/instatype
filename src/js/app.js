@@ -3,7 +3,19 @@ var ResultsComponent = require('./components/results.js');
 var InputComponent = require('./components/input.js');
 var LoadingComponent = require('./components/loading.js');
 
-require('./../css/style.css');
+// Ensure that we only run the code that Webpack css-loader replaces require() with if ...
+// ... in a browser environment. Rendering on the server will throw "window is not defined" error.
+// Ideally css-loader will be updated to skip browser checks if window is undefined.
+if (typeof window !== 'undefined') {
+
+  // Results in "Module build failed: CssSyntaxError"
+  // But this is how you're supposed to use webpack css-loader
+  // Why does leaving it out work fine?
+  //require("css!./../css/style.css");
+
+  require("./../css/style.css");
+}
+
 
 if (typeof React.initializeTouchEvents == 'function')
   React.initializeTouchEvents(true); // Removed in React 0.14

@@ -1,6 +1,6 @@
 {
   "name": "instatype",
-  "version": "1.0.8",
+  "version": "1.0.9",
   "description": "Simple React Typeahead",
   "main": "build/js/bundle.js",
   "peerDependencies": {
@@ -12,10 +12,10 @@
     "babel-preset-es2015": "latest",
     "babel-preset-react": "latest",
     "babel-preset-stage-0": "latest",
+    "css-loader": "^0.23.1",
     "precommit-hook": "latest",
     "style-loader": "latest",
-    "webpack": "latest",
-    "precommit-hook": "latest"
+    "webpack": "latest"
   },
   "repository": {
     "type": "git",

@@ -68,7 +68,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	var InputComponent = __webpack_require__(5);
 	var LoadingComponent = __webpack_require__(6);
 
-	__webpack_require__(7);
+	// Results in "Module build failed: CssSyntaxError"
+	// But this is how you're supposed to use webpack css-loader
+	// Why does leaving it out work fine?
+	//require("css!./../css/style.css");
+	if (typeof window !== 'undefined') {
+	  __webpack_require__(7);
+	}
 
 	if (typeof React.initializeTouchEvents == 'function') React.initializeTouchEvents(true); // Removed in React 0.14
 
@@ -432,8 +438,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	if(false) {
 		// When the styles change, update the <style> tags
 		if(!content.locals) {
-			module.hot.accept("!!./../../../../../node_modules/css-loader/index.js!./style.css", function() {
-				var newContent = require("!!./../../../../../node_modules/css-loader/index.js!./style.css");
+			module.hot.accept("!!./../../node_modules/css-loader/index.js!./style.css", function() {
+				var newContent = require("!!./../../node_modules/css-loader/index.js!./style.css");
 				if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
 				update(newContent);
 			});
