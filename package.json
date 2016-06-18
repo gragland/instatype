@@ -1,21 +1,20 @@
 {
   "name": "instatype",
-  "version": "1.0.6",
+  "version": "1.0.8",
   "description": "Simple React Typeahead",
-  "main": "src/js/app.js",
+  "main": "build/js/bundle.js",
   "peerDependencies": {
     "react": ">=0.12.0"
   },
   "devDependencies": {
-    "babelify": "~6.0.2",
-    "browserify": "latest",
-    "browserify-css": "^0.6.1",
-    "clean-css": "latest",
-    "nodemon": "latest",
+    "babel-core": "latest",
+    "babel-loader": "latest",
+    "babel-preset-es2015": "latest",
+    "babel-preset-react": "latest",
+    "babel-preset-stage-0": "latest",
     "precommit-hook": "latest",
-    "reactify": "^1.1.1",
-    "uglifyify": "latest",
-    "watchify": "~3.1.2"
+    "style-loader": "latest",
+    "webpack": "latest"
   },
   "repository": {
     "type": "git",
@@ -34,19 +33,11 @@
     "react-component"
   ],
   "homepage": "https://github.com/gragland/instatype",
-  "browserify": {
-    "transform": [
-      "reactify",
-      "browserify-css"
-    ]
-  },
   "scripts": {
-    "bundle": "npm run bundle-js & npm run bundle-js-example",
-    "bundle-js": "browserify src/js/app.js --transform babelify -t [ browserify-css --autoInject=true ] --global-transform [ uglifyify --no-sourcemap --compress [ --drop_console --unused --dead_code ] ] --outfile build/js/bundle.js",
-    "bundle-js-example": "browserify examples/instagram/js/app.js --transform babelify -t [ browserify-css --autoInject=true ] --global-transform [ uglifyify --no-sourcemap --compress [ --drop_console --unused --dead_code ] ] --outfile examples/instagram/js/bundle.js",
-    "watch": "npm run watch-js & npm run watch-js-example",
-    "watch-js": "watchify src/js/app.js --transform babelify -t [ browserify-css --autoInject=true ] --outfile build/js/bundle.js -v",
-    "watch-js-example": "watchify examples/instagram/js/app.js --transform babelify -t [ browserify-css --autoInject=true ] --outfile examples/instagram/js/bundle.js -v",
+    "bundle": "webpack --config webpack.config.js",
     "prepublish": "npm run bundle"
-  }
+  },
+  "pre-commit": [
+    "bundle"
+  ]
 }
