@@ -14,7 +14,8 @@
     "babel-preset-stage-0": "latest",
     "precommit-hook": "latest",
     "style-loader": "latest",
-    "webpack": "latest"
+    "webpack": "latest",
+    "precommit-hook": "latest"
   },
   "repository": {
     "type": "git",
@@ -40,6 +41,6 @@
   },
   "pre-commit": [
     "bundle",
-    "git-add-js",
+    "git-add-js"
   ]
 }
