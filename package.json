@@ -35,9 +35,11 @@
   "homepage": "https://github.com/gragland/instatype",
   "scripts": {
     "bundle": "webpack --config webpack.config.js",
+    "git-add-js": "git add build/js/*",
     "prepublish": "npm run bundle"
   },
   "pre-commit": [
-    "bundle"
+    "bundle",
+    "git-add-js",
   ]
 }
