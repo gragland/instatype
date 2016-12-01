@@ -1,6 +1,6 @@
 {
   "name": "instatype",
-  "version": "1.0.9",
+  "version": "1.0.10",
   "description": "Simple React Typeahead",
   "main": "lib/instatype.js",
   "scripts": {
