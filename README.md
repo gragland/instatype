@@ -2,7 +2,7 @@
 Simple React Typeahead
 
 ## Demo
-<a href="http://gragland.github.io/instatype/examples/instagram">http://gragland.github.io/instatype/examples/instagram</a>
+<a href="http://gragland.github.io/instatype/examples/instagram">http://gragland.github.io/instatype/examples/instagram</a> (not working currently due to Instagram API changes)
 
 ## Install
 `npm install instatype --save`
@@ -30,8 +30,6 @@ Prop                       |    Description
 `selectedHandler`              | Required function that is called when a dropdown result is clicked. This will be passed the full object initially used to populate that result in the dropdown.
 
 ## Example requestHandler
-Data fetching is done by a custom function that you pass in via the `requestHandler` prop. This way you can use your preferred ajax library and alter the response data client-side before passing it to instatype. After fetching data make sure to give each object a "name" and optional "image" value, and then pass the final data to callback() to populate the instatype component. Here's an example.
-
 ```
 requestHandlerUsers: function(query, limit, callback){
 
