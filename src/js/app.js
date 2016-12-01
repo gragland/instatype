@@ -37,7 +37,7 @@ var InstaTypeComponent = React.createClass({
       defaultInputValue : null,
       placeholder : 'Search',
       thumbStyle : 'square',
-      loadingIcon : '/images/loading.gif',
+      loadingIcon : null,
       // Blur input ontouchstart. 
       // Fixes an phonegap/ios bug where input cursor doesn't show up on focus after previously blurring naturally
       // Don't enable unless experiencing this bug
@@ -195,7 +195,7 @@ var InstaTypeComponent = React.createClass({
             ref="inputComponent"/>
 
             { this.state.loading &&
-              <LoadingComponent icon={this.props.loadingIcon} />
+              <LoadingComponent icon={this.props.loadingIcon || undefined} />
             }
           </div>
           

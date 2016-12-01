@@ -21,7 +21,13 @@ module.exports = {
         test: /\.css$/, 
         // Required for processing parent instatype project
         loader: 'style-loader!css-loader',
-        exclude: /(node_modules)/,
+        exclude: /(node_modules)/
+      },
+      { 
+        test: /\.(png|jpg|jpeg|gif|svg)$/,
+        // Required for processing parent instatype project images
+        loader: 'url?limit=100000',
+        include: [ path.join(__dirname, '..', '..', 'images') ]
       },
       { 
         test: /\.jsx?$/, 

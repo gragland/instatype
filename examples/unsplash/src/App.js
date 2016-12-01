@@ -72,10 +72,9 @@ var App = React.createClass({
 
         <div id="navbar">
           <Instatype 
-            placeholder="Search instagram users" 
+            placeholder="Search Unsplash users" 
             requestHandler={this.requestHandler}
             selectedHandler={this.selectedHandler}
-            loadingIcon="../../images/loading.gif"
             limit={6} 
             thumbStyle="circle"/>
         </div>

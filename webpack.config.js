@@ -23,6 +23,11 @@ module.exports = {
         test: /\.jsx?$/, 
         loaders: ['babel'], 
         exclude: /(node_modules)/
+      },
+      { 
+        test: /\.(png|jpg|jpeg|gif|svg)$/, 
+        loader: 'url?limit=100000',
+        include: __dirname + '/images'
       }
     ]
   },
