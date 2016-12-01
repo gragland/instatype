@@ -5,23 +5,17 @@ Simple React Typeahead
 <a href="http://gragland.github.io/instatype/examples/instagram">http://gragland.github.io/instatype/examples/instagram</a>
 
 ## Install
-`npm install instatype`
+`npm install instatype --save`
 
 ## Usage
-    var Instatype = require('instatype');
-    
-    React.render(
-        <Instatype requestHandler={myRequestHandler} selectedHandler={mySelectedHandler}/>,
-        document.getElementById('app')
-    );
+    import React from 'react';
+    import Instatype from 'instatype';
 
-If using Webpack make sure to include the style-loader in your webpack config:
+    class Component extends React.Component {
 
-    module: {
-        loaders: [
-            { test: /\.css$/, loader: "style-loader!css-loader" },
-            { test: /\.jsx?$/, loaders: ['react-hot', 'jsx-loader?harmony']}
-        ]
+      render() {
+        return <Instatype requestHandler={myRequestHandler} selectedHandler={mySelectedHandler}/>;
+      }
     }
 
 ## Props
@@ -32,7 +26,7 @@ Prop                       |    Description
 `limit`                    | Number of results to show in dropdown
 `thumbStyle`               | Set result images to "circle" or "square"
 `loadingIcon`              | Path to custom loading icon
-`requestHandler`           | Required function that fetches data, adds "image" and "name" fields to all response objects, and then passes data back to instatype component. See an example requestHandler function below.
+`requestHandler`           | Required function that fetches data, adds "image" and "name" properties to each object in the response array, and then passes data back to the instatype component. See an example requestHandler function below.
 `selectedHandler`              | Required function that is called when a dropdown result is clicked. This will be passed the full object initially used to populate that result in the dropdown.
 
 ## Example requestHandler
