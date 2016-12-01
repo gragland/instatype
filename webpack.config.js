@@ -7,12 +7,11 @@ module.exports = {
     ]
   },
   output: {
-    path: __dirname + '/build/js/',
-    filename: 'bundle.js',
+    path: __dirname + '/lib/',
+    filename: 'instatype.js',
     libraryTarget: "umd"
   },
   resolve: {
-    // Allow omitting these extensions in require()
     extensions: ['', '.js', '.jsx']
   },
   module: {

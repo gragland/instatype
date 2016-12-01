@@ -1,12 +1,11 @@
 var React = require('react');
+var ReactDOM = require('react-dom');
+var InstaTypeComponent = require('instatype');
 var CustomFunctions = require('./custom-functions.js');
-var InstaTypeComponent = require('../../../src/js/app.js');
-
-React.initializeTouchEvents(true);
 
 CustomFunctions.selectedHandler( { id : 478987666 } );
 
-React.render(
+ReactDOM.render(
   <InstaTypeComponent 
     placeholder="Search instagram users" 
     requestHandler={CustomFunctions.requestHandler}

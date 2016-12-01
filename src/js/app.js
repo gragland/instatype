@@ -1,4 +1,5 @@
 var React = require('react');
+var ReactDOM = require('react-dom');
 var ResultsComponent = require('./components/results.js');
 var InputComponent = require('./components/input.js');
 var LoadingComponent = require('./components/loading.js');

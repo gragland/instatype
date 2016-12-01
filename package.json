@@ -2,20 +2,29 @@
   "name": "instatype",
   "version": "1.0.9",
   "description": "Simple React Typeahead",
-  "main": "build/js/bundle.js",
+  "main": "lib/instatype.js",
+  "scripts": {
+    "build": "webpack --config webpack.config.js",
+    "prepublish": "npm run build"
+  },
+  "pre-commit": [
+    "build"
+  ],
   "peerDependencies": {
-    "react": ">=0.12.0"
+    "react": ">=0.12.0 <16.0.0",
+    "react-dom": ">=0.12.0 <16.0.0"
   },
   "devDependencies": {
-    "babel-core": "latest",
-    "babel-loader": "latest",
-    "babel-preset-es2015": "latest",
-    "babel-preset-react": "latest",
-    "babel-preset-stage-0": "latest",
+    "react": "^15.4.1",
+    "react-dom": "^15.4.1",
+    "babel-core": "6.18.2",
+    "babel-loader": "6.2.8",
+    "babel-preset-es2015": "6.18.0",
+    "babel-preset-react": "6.16.0",
     "css-loader": "^0.23.1",
-    "precommit-hook": "latest",
-    "style-loader": "latest",
-    "webpack": "latest"
+    "pre-commit": "^1.1.3",
+    "style-loader": "0.13.1",
+    "webpack": "1.13.3"
   },
   "repository": {
     "type": "git",
@@ -33,14 +42,5 @@
     "react",
     "react-component"
   ],
-  "homepage": "https://github.com/gragland/instatype",
-  "scripts": {
-    "bundle": "webpack --config webpack.config.js",
-    "git-add-js": "git add build/js/*",
-    "prepublish": "npm run bundle"
-  },
-  "pre-commit": [
-    "bundle",
-    "git-add-js"
-  ]
+  "homepage": "https://github.com/gragland/instatype"
 }
