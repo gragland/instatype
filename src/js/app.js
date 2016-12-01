@@ -1,5 +1,4 @@
 var React = require('react');
-var ReactDOM = require('react-dom');
 var ResultsComponent = require('./components/results.js');
 var InputComponent = require('./components/input.js');
 var LoadingComponent = require('./components/loading.js');
@@ -54,9 +53,9 @@ var InstaTypeComponent = React.createClass({
     onBlur: React.PropTypes.func
   },
   shouldComponentUpdate: function(nextProps, nextState){
-      return (this.state.resultsId !== nextState.resultsId ||
-                this.state.loading !== nextState.loading ||
-                  this.state.showResults !== nextState.showResults);
+    return (this.state.resultsId !== nextState.resultsId ||
+              this.state.loading !== nextState.loading ||
+                this.state.showResults !== nextState.showResults);
   },
   loadResultsFromServer: function (query) {
 

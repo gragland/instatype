@@ -1,15 +1,13 @@
 var webpack = require('webpack');
 
 module.exports = {
-  entry: {
-    bundle: [
-      './src/js/app.js'
-    ]
-  },
+  entry: [
+    './src/js/app.js'
+  ],
   output: {
     path: __dirname + '/lib/',
     filename: 'instatype.js',
-    libraryTarget: "umd"
+    libraryTarget: 'umd'
   },
   resolve: {
     extensions: ['', '.js', '.jsx']

@@ -1,9 +1,12 @@
+/*
 var React = require('react');
 var GridComponent = require('./grid.js');
 
 window.instagramClientId = '02d26cb819954ba7b5c3c072a885759f';
 window.instagramCount = 28;
+*/
 
+/*
 // Customize this function to reformat the data returned by your endpoint
 module.exports.requestHandler = function(query, limit, callback){
 
@@ -69,24 +72,13 @@ module.exports.selectedHandlerAlternate = function(result) {
   );
 }
 
-
 // Customize this function to use your favorite JSONP library
 var request = module.exports.request = function(endpoint, requestParams, callback){
 
   // Tiny JSONP Library: https://github.com/OscarGodson/JSONP
   JSONP(endpoint, requestParams, callback);
-
-  /*
-  // JQuery
-  $.ajax({
-    url: endpoint,
-    data: requestParams,
-    dataType: 'jsonp',
-    success: function(data) {
-      callback(data);
-    }
-  });*/
 }
+*/
 
 module.exports.throttle = function(fn, threshhold, scope) {
   threshhold || (threshhold = 250);
