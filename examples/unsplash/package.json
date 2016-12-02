@@ -25,6 +25,7 @@
     "webpack-merge": "^1.0.2"
   },
   "dependencies": {
+    "compression": "^1.6.2",
     "express": "^4.14.0",
     "instatype": "^1.0.12",
     "lodash": "^4.17.2",

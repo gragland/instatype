@@ -2,7 +2,7 @@
 Simple React Typeahead
 
 ## Demo
-<a href="https://unsplash-zlbodczpdg.now.sh">https://unsplash-zlbodczpdg.now.sh</a>
+<a href="https://unsplash-dgmwyjzvcg.now.sh">https://unsplash-dgmwyjzvcg.now.sh</a>
 
 ## Install
 `npm install instatype --save`

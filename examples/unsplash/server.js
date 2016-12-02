@@ -1,5 +1,6 @@
 var path = require('path');
 var express = require('express');
+var compression = require('compression');
 
 var server = express();
 
@@ -16,6 +17,10 @@ if (process.env.NODE_ENV === 'development'){
 	server.use(require('webpack-hot-middleware')(compiler));
 
 	console.log('Hot Reloading Active');
+
+}else{
+
+	server.use(compression());
 }
 
 
