@@ -2,7 +2,7 @@
 Simple React Typeahead
 
 ## Demo
-<a href="https://unsplash-gnacajcrny.now.sh/">https://unsplash-gnacajcrny.now.sh/</a> (not working currently due to Instagram API changes)
+<a href="https://unsplash-gnacajcrny.now.sh/">https://unsplash-gnacajcrny.now.sh</a> (not working currently due to Instagram API changes)
 
 ## Install
 `npm install instatype --save`
