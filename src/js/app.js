@@ -1,67 +1,84 @@
-var React = require('react');
-var ResultsComponent = require('./components/results.js');
-var InputComponent = require('./components/input.js');
-var LoadingComponent = require('./components/loading.js');
+import React from 'react';
+import Results from './components/results.js';
+import InputComponent from './components/input.js';
+import Loading from './components/loading.js';
 
-// Ensure that we only run the code that Webpack css-loader replaces require() with if ...
-// ... in a browser environment. Rendering on the server will throw "window is not defined" error.
-// Ideally css-loader will be updated to skip browser checks if window is undefined.
+// Ensure we don't run code inserted by style-loader if rendering server-side.
+// We'll get a "window is not defined" error and it's useless on the server anyway.
 if (typeof window !== 'undefined') {
-
-  // Results in "Module build failed: CssSyntaxError"
-  // But this is how you're supposed to use webpack css-loader
-  // Why does leaving it out work fine?
-  //require("css!./../css/style.css");
-
   require("./../css/style.css");
 }
 
+// For older versions of React (deprecated in 0.14)
+if (typeof React.initializeTouchEvents === 'function'){
+  React.initializeTouchEvents(true);
+}
 
-if (typeof React.initializeTouchEvents == 'function')
-  React.initializeTouchEvents(true); // Removed in React 0.14
+class Instatype extends React.Component {
 
-var InstaTypeComponent = React.createClass({
-  getInitialState: function(){
-    return {
-      inputValue: '',
-      showResults: false, // Show or hide the ResultsComponent
+  constructor(props) {
+    super(props);
+    
+    this.state = { 
+      inputValue: '', // Current value of input
+      showResults: false, // Show or hide results
       loading: false, // Are we currently loading data from server?
-      results: [],
-      resultsId: null // Unique identifier for set of results (used by ResultsComponent.shouldComponentUpdate)
+      results: [], // Data populating the results dropdown
+      resultsQuery: null // Search string for displayed results
     };
-  },
-  getDefaultProps: function() {
-    return {
-      text : false,
-      limit : 10,
-      defaultInputValue : null,
-      placeholder : 'Search',
-      thumbStyle : 'square',
-      loadingIcon : null,
-      // Blur input ontouchstart. 
-      // Fixes an phonegap/ios bug where input cursor doesn't show up on focus after previously blurring naturally
-      // Don't enable unless experiencing this bug
-      blurOnTouchStart : false,
-    };
-  },
-  propTypes: {
-    limit: React.PropTypes.number,
-    placeholder: React.PropTypes.string,
-    thumbStyle: React.PropTypes.oneOf(['circle', 'square']),
-    requestHandler: React.PropTypes.func.isRequired,
-    selectedHandler: React.PropTypes.func.isRequired,
-    onBlur: React.PropTypes.func
-  },
-  shouldComponentUpdate: function(nextProps, nextState){
-    return (this.state.resultsId !== nextState.resultsId ||
+    
+    this.loadResultsFromServer = this.loadResultsFromServer.bind(this);
+    this.handleSelect = this.handleSelect.bind(this);
+    this.handleChange = this.handleChange.bind(this);
+    this.showResults = this.showResults.bind(this);
+    this.hideResults = this.hideResults.bind(this);
+    this.handleFocus = this.handleFocus.bind(this);
+    this.handleBlur = this.handleBlur.bind(this);
+    this.handleTouch = this.handleTouch.bind(this);
+    this.clearState = this.clearState.bind(this);
+    this.blurInput = this.blurInput.bind(this);
+    this.handleBlur = this.handleBlur.bind(this);
+  }
+
+  shouldComponentUpdate(nextProps, nextState){
+
+    // Always update if we don't have the required state to compare
+    if (!this.state || !this.state.resultsQuery || !nextState || !nextState.resultsQuery){
+      return true;
+    }
+
+    return (this.state.resultsQuery !== nextState.resultsQuery ||
               this.state.loading !== nextState.loading ||
                 this.state.showResults !== nextState.showResults);
-  },
-  loadResultsFromServer: function (query) {
+  }
 
-    this.setState({ loading : true });
+  componentDidMount() {
 
-    this.props.requestHandler(query, this.props.limit, function(data){
+    // Blur the input when the user touches (ontouchstart) anywhere on the screen.
+    // This fixes a nasty bug (on ios in phonegap webview) where a natural blur (due to clicking somewhere on screen) ...
+    // ... will result in the input's blinking caret not displaying next time the input is in focus.
+    // Triggering a blur manually ontouchstart seems to solve this problem.
+    // Capture phase (rather than bubbling phase) so that it's called before any other events
+    if (this.props.blurOnTouchStart === true){
+      document.addEventListener('touchstart', this.blurInput, true); 
+    }
+  }
+
+  componentWillUnmount(){
+
+    // Cancel timeout or we could end up setting state for component that isn't mounted
+    clearTimeout(window.blurHideResultsTimeout);
+
+    if (this.props.blurOnTouchStart === true){
+      document.removeEventListener('touchstart', this.blurInput, true);
+    }
+  }
+
+  loadResultsFromServer(query) {
+
+    this.setState({ loading: true });
+
+    this.props.requestHandler(query, this.props.limit, (data) => {
 
       // If inputValue changed prior to request completing don't bother to render
       if (this.state.inputValue != query){
@@ -73,145 +90,162 @@ var InstaTypeComponent = React.createClass({
 
       this.setState({
         results: data,
-        resultsId: query,
+        resultsQuery: query,
         loading: false
       });
      
-    }.bind(this));
-  
-  },
-  handleSelect: function(selectedResult) {
+    });
+  }
+
+  handleSelect(selectedResult) {
     this.props.selectedHandler(selectedResult);
     this.clearState();
-  },
-  handleChange: function(query) {
+  }
+
+  handleChange(query) {
 
     clearTimeout(window.loadResultsTimeout);
 
     if (query){
 
-      this.setState( { inputValue : query } );
+      this.setState({ inputValue: query });
 
-      window.loadResultsTimeout = setTimeout(function(){
+      window.loadResultsTimeout = setTimeout(() => {
         this.loadResultsFromServer(query);
-      }.bind(this), 200);
+      }, 200);
 
     }else{
 
       this.clearState();
     }
       
-  },
-  showResults: function(){
+  }
+
+  showResults(){
 
     if (this.state.showResults === false)
       this.setState({ showResults : true });
 
     // Cancel any pending hide results timeout
     clearTimeout(window.blurHideResultsTimeout); 
-  },
-  hideResults: function(){
+  }
+
+  hideResults(){
 
     if (this.state.showResults === true)
       this.setState({ showResults : false });
 
     // Cancel any pending hide results timeout
     clearTimeout(window.blurHideResultsTimeout); 
-  },
-  handleFocus: function() {
+  }
+
+  handleFocus() {
 
       this.showResults();
-  },
+  }
 
-  handleBlur: function(event) {
+  handleBlur(event) {
 
     // Hide results after a 400ms delay
     // This gives us the ability to keep results open by canceling this timeout
     // TODO: Find a cleaner way to do this
-    window.blurHideResultsTimeout = setTimeout(function(){
-
+    window.blurHideResultsTimeout = setTimeout(() => {
       this.hideResults(); // Hide
-
-    }.bind(this), 400);
+    }, 400);
 
     // Slight timeout so that selectedHandler() gets called before props.onBlur
     // This is important because if props.onBlur causes Instatype component to be removed from DOM ...
     // ... then selectedHandler() will never get called
     if (this.props.onBlur){
-      setTimeout(function(){
+      setTimeout(() => {
         this.props.onBlur();
-      }.bind(this), 10);
+      }, 10);
     }
+  }
 
-  },
   // Attached to #instatype div onTouchStart
   // Cancels delayed hiding of results (see this.handleBlur) so menu stays open when result tapped and scrolling
-  handleTouch: function(){
+  handleTouch(){
 
     // If we are NOT auto-blurring on touch, we need to do it here
-    if (this.props.blurOnTouchStart === false)
+    if (this.props.blurOnTouchStart === false){
       this.blurInput();
+    }
     
     // Prevents results from hiding
     clearTimeout(window.blurHideResultsTimeout);
-  },
-  clearState: function() {
+  }
 
-      this.setState({results : [], resultsId : null, inputValue : '', loading : false});
-  },
-  blurInput: function(){
+  clearState() {
+    this.setState({
+      results: [], 
+      resultsQuery: null, 
+      inputValue: '', 
+      loading: false
+    });
+  }
 
+  blurInput(){
     this.refs.inputComponent.refs.input.getDOMNode().blur();
-  },
-  componentDidMount: function() {
+  }
 
-    // Blur the input when the user touches (ontouchstart) anywhere on the screen.
-    // This fixes a nasty bug (on ios in phonegap webview) where a natural blur (due to clicking somewhere on screen) ...
-    // ... will result in the input's blinking caret not displaying next time the input is in focus.
-    // Triggering a blur manually ontouchstart seems to solve this problem.
-    // Capture phase (rather than bubbling phase) so that it's called before any other events
-    if (this.props.blurOnTouchStart === true)
-      document.addEventListener('touchstart', this.blurInput, true); 
-  },
-  componentWillUnmount: function(){
+  render(){
 
-    // Cancel timeout or we could end up setting state for component that isn't mounted
-    clearTimeout(window.blurHideResultsTimeout);
+    const { defaultInputValue, placeholder, loadingIcon, thumbStyle } = this.props;
+    const { results, resultsQuery, showResults, loading } = this.state;
 
-    if (this.props.blurOnTouchStart === true)
-      document.removeEventListener('touchstart', this.blurInput, true);
-  },
-  render: function(){
     return (
       <div id="instatype" onTouchStart={this.handleTouch}>
 
         <div className="input-wrapper">
           <InputComponent 
-            defaultValue={this.props.defaultInputValue}
-            placeholder={this.props.placeholder} 
+            defaultValue={defaultInputValue}
+            placeholder={placeholder} 
             handleChange={this.handleChange} 
             handleFocus={this.handleFocus} 
             handleBlur={this.handleBlur} 
-            ref="inputComponent"/>
+            ref="inputComponent" />
 
-            { this.state.loading &&
-              <LoadingComponent icon={this.props.loadingIcon || undefined} />
-            }
-          </div>
+          { loading &&
+            <Loading icon={loadingIcon || undefined} />
+          }
+        </div>
           
-          { this.state.showResults && 
-            <ResultsComponent 
-              data={this.state.results} 
-              resultsId={this.state.resultsId} 
+          { showResults && 
+            <Results 
+              data={results} 
+              resultsId={resultsQuery} 
               handleSelect={this.handleSelect} 
-              thumbStyle={this.props.thumbStyle}/>
+              thumbStyle={thumbStyle} />
           }
 
       </div>
     );
-  },
-});
+  }
+};
+
+Instatype.propTypes = {
+  limit: React.PropTypes.number,
+  placeholder: React.PropTypes.string,
+  thumbStyle: React.PropTypes.oneOf(['circle', 'square']),
+  requestHandler: React.PropTypes.func.isRequired,
+  selectedHandler: React.PropTypes.func.isRequired,
+  onBlur: React.PropTypes.func
+};
+
+Instatype.defaultProps = {
+  text: false,
+  limit: 10,
+  defaultInputValue: null,
+  placeholder: 'Search',
+  thumbStyle: 'square',
+  loadingIcon: null,
+  // Blur input ontouchstart. 
+  // Fixes an phonegap/ios bug where input cursor doesn't show up on focus after previously blurring naturally
+  // Don't enable unless experiencing this bug
+  blurOnTouchStart: false
+};
 
 
-module.exports = InstaTypeComponent;
+export default Instatype;
 

@@ -1,35 +1,49 @@
-var React = require('react');
+import React from 'react';
 
-var InputComponent = React.createClass({
-    shouldComponentUpdate: function(nextProps, nextState){
+class Input extends React.Component {
+
+    constructor(props) {
+      super(props);
+      this.handleChange = this.handleChange.bind(this);
+      this.handleFocus = this.handleFocus.bind(this);
+      this.handleBlur = this.handleBlur.bind(this);
+    }
+
+    shouldComponentUpdate(nextProps, nextState){
       return false;
-    },
-    handleChange: function(event){
+    }
+
+    handleChange(event){
       this.props.handleChange(event.target.value);
-    },
-    handleFocus: function(event){
+    }
+
+    handleFocus(event){
       this.props.handleFocus(event);
-    },
-    handleBlur: function(event){
+    }
+
+    handleBlur(event){
       this.props.handleBlur(event);
-    },   
-    render: function(){
+    }
+
+    render(){
+
+      const { defaultValue, placeholder } = this.props;
+
       return (
-          <input 
-            type="text" 
-            defaultValue={this.props.defaultValue}
-            autoCorrect="off" 
-            autoComplete="off" 
-            autoCapitalize="off"
-            placeholder={this.props.placeholder} 
-            className="input-typeahead" 
-            onChange={this.handleChange} 
-            onFocus={this.handleFocus} 
-            onBlur={this.handleBlur} 
-            ref="input" />
+        <input 
+          type="text" 
+          defaultValue={defaultValue}
+          autoCorrect="off" 
+          autoComplete="off" 
+          autoCapitalize="off"
+          placeholder={placeholder} 
+          className="input-typeahead" 
+          onChange={this.handleChange} 
+          onFocus={this.handleFocus} 
+          onBlur={this.handleBlur} 
+          ref="input" />
       );
     }
-});
+};
 
-
-module.exports = InputComponent;
+export default Input;

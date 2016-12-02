@@ -1,19 +1,10 @@
-var React = require('react');
+import React from 'react';
+import defaultIcon from './../../../images/loading.svg';
 
-var icon = require('./../../../images/loading.svg');
+const Loading = ({icon}) => (
+  <img className="loading-icon" src={icon}/>
+);
 
-var LoadingComponent = React.createClass({
-	getDefaultProps: function() {
-	  return {
-	    icon: icon
-  	}
-  },
+Loading.defaultProps = { icon: defaultIcon };
 
-  render: function(){
-    return (
-      <img className="loading-icon" src={this.props.icon}/>
-    );
-  }
-});
-
-module.exports = LoadingComponent;
+export default Loading;

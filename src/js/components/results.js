@@ -1,39 +1,47 @@
-var React = require('react');
-var Result = require('./result.js');
+import React from 'react';
+import Result from './result.js';
 
-var ResultsComponent = React.createClass({
+class Results extends React.Component {
 
-  shouldComponentUpdate: function(nextProps, nextState){
-    if (this.props.resultsId || nextProps.resultsId){ // If we are passing a resultsId (unique identifier for the results)
-      return (this.props.resultsId !== nextProps.resultsId); // Return true if resultsId has changed
-    }else{
-      return true; // Always try to update if we have no resultsId to compare
+  constructor(props) {
+    super(props);
+  }
+
+  shouldComponentUpdate(nextProps, nextState){
+
+    // Always update if we don't have the required props to compare
+    if (!this.props || !this.props.resultsId || !nextProps || !nextProps.resultsId){
+      return true;
     }
-  },
-  render: function(){
 
-    var resultNodes = this.props.data.map(function(result){
-      return (
-        <Result image={result.image} handleSelect={this.props.handleSelect} data={result} key={result.id}>
-            {result.name}
-        </Result>
-      );
-    }.bind(this));
-    
-    var resultsClass = 'results thumb-' + this.props.thumbStyle;
+    // Only update if resultsId prop has changed
+    return (this.props.resultsId !== nextProps.resultsId);
+  }
+
+  render(){
+
+    const { data, handleSelect, thumbStyle } = this.props;
+
+    const resultsClass = 'results thumb-' + thumbStyle;
 
     return (
       <div className="resultsContainer">
 
-        { this.props.data.length > 0 &&
+        { data && data.length > 0 &&
           <ul className={resultsClass}>
-              {resultNodes}
+            
+            {data.map((result) => (
+              <Result image={result.image} handleSelect={handleSelect} data={result} key={result.id || undefined}>
+                {result.name}
+              </Result>
+            ))}
+
           </ul>
         }
 
       </div>
     );
   }
-});
+};
 
-module.exports = ResultsComponent;
+export default Results;
