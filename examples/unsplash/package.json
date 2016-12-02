@@ -6,7 +6,7 @@
     "start": "NODE_ENV=production node server.js",
     "start-dev": "NODE_ENV=development node server.js",
     "start-dev-dual": "NODE_ENV=development DUAL=1 node server.js",
-    "now-deploy": "now -e NODE_ENV=production",
+    "now-deploy": "npm run build && now -e NODE_ENV=production",
     "now-build": ""
   },
   "license": "MIT",
