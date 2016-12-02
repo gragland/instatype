@@ -26,7 +26,7 @@
   },
   "dependencies": {
     "express": "^4.14.0",
-    "instatype": "^1.0.11",
+    "instatype": "^1.0.12",
     "lodash": "^4.17.2",
     "react": "^15.4.1",
     "react-dom": "^15.4.1",
