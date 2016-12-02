@@ -1,14 +1,15 @@
 # instatype
-Simple React Typeahead
+A mobile-friendly React autocomplete component
 
-## Demo
-<a href="https://unsplash-dgmwyjzvcg.now.sh">https://unsplash-dgmwyjzvcg.now.sh</a>
+## Demos
+<a href="https://unsplash-dgmwyjzvcg.now.sh">unsplash-dgmwyjzvcg.now.sh</a> (latest)<br/>
+<a href="http://saveyourvines.com">saveyourvines.com</a>
 
 ## Install
 `npm install instatype --save`
 
 ## Contribute
-`npm run example` to run the example app (see demo above).<br/> Includes hot loading of the instatype source for easy development.
+`npm run example` to run the example app with hot loading of instatype source for easy development.
 
 ## Usage
     import React from 'react';
