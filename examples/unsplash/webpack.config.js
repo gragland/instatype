@@ -7,39 +7,6 @@ var common = {
     path: path.join(__dirname, 'public/assets'),
     filename: 'bundle.js',
     publicPath: '/assets/'
-  },
-  module: {
-    loaders: [
-      { 
-        test: /\.css$/, 
-        // Required for processing parent instatype project
-        loader: 'style-loader!css-loader',
-        exclude: /(node_modules)/
-      },
-      { 
-        test: /\.(png|jpg|jpeg|gif|svg)$/,
-        // Required for processing parent instatype project images
-        loader: 'url?limit=100000',
-        include: [ path.join(__dirname, '..', '..', 'images') ]
-      },
-      { 
-        test: /\.jsx?$/, 
-        loaders: ['babel'], 
-        include: [
-          // Run babel on this example and and instatype source.
-          // Necessary because we require() instatype source instead of node module.
-          path.join(__dirname, 'src'), 
-          path.join(__dirname, '..', '..', 'src')
-        ]
-      }
-    ]
-  },
-  resolve: {
-    root: [
-      // Find node module directories in this example and parent instatype project.
-      path.join(__dirname, 'node_modules'), 
-      path.join(__dirname, '..', '..', 'node_modules')
-    ]
   }
 };
 
@@ -54,10 +21,39 @@ var development = {
   ],
   resolve: {
     alias: {
-      // We want require('instatype') to map to source js (not node module) ...
+      // Make require('instatype') resolve to src (not node module) ...
       // ... so that we can work on instatype with hot reloading.
       'instatype': path.join(__dirname, '..', '..', 'src', 'js', 'app.js')
-    }
+    },
+    root: [
+      // Find node module directories in this example and parent instatype project.
+      path.join(__dirname, 'node_modules'), 
+      path.join(__dirname, '..', '..', 'node_modules')
+    ]
+  },
+  // Because we make require('instatype') resolve to src ...
+  // ... we need to include loaders used by instatype's webpack.config.js
+  module: {
+    loaders: [
+      { 
+        test: /\.css$/, 
+        loader: 'style-loader!css-loader',
+        include: [ path.join(__dirname, '..', '..', 'src') ]
+      },
+      { 
+        test: /\.(png|jpg|jpeg|gif|svg)$/,
+        loader: 'url?limit=100000',
+        include: [ path.join(__dirname, '..', '..', 'images') ]
+      },
+      { 
+        test: /\.jsx?$/, 
+        loaders: ['babel'], 
+        include: [ 
+          path.join(__dirname, 'src'),
+          path.join(__dirname, '..', '..', 'src') 
+        ]
+      }
+    ]
   }
 }
 
@@ -70,9 +66,17 @@ var production = {
       }
     }),
     new webpack.optimize.UglifyJsPlugin()
-  ]
+  ],
+  module: {
+    loaders: [
+      { 
+        test: /\.jsx?$/, 
+        loaders: ['babel'], 
+        include: path.join(__dirname, 'src')
+      }
+    ]
+  }
 }
-
 
 switch(process.env.NODE_ENV) {
   case 'production':
@@ -81,5 +85,6 @@ switch(process.env.NODE_ENV) {
   default:
     var config = merge(common, development);
 }
+
 
 module.exports = config;

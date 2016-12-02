@@ -17,12 +17,12 @@ module.exports = {
       { 
         test: /\.css$/, 
         loader: 'style-loader!css-loader',
-        exclude: /(node_modules)/
+        include: __dirname + '/src'
       },
       { 
         test: /\.jsx?$/, 
         loaders: ['babel'], 
-        exclude: /(node_modules)/
+        include: __dirname + '/src'
       },
       { 
         test: /\.(png|jpg|jpeg|gif|svg)$/, 
