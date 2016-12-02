@@ -7,6 +7,9 @@ Simple React Typeahead
 ## Install
 `npm install instatype --save`
 
+## Contribute
+`npm run example` to run the example app (see demo above).<br/> Includes hot loading of the instatype source for easy development.
+
 ## Usage
     import React from 'react';
     import Instatype from 'instatype';
