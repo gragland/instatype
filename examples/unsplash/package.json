@@ -4,7 +4,8 @@
     "build": "NODE_ENV=production webpack --config webpack.config.js",
     "build-dev": "NODE_ENV=development webpack --config webpack.config.js",
     "start": "NODE_ENV=production node server.js",
-    "start-dev": "NODE_ENV=development node server.js"
+    "start-dev": "NODE_ENV=development node server.js",
+    "start-dev-dual": "NODE_ENV=development DUAL=1 node server.js"
   },
   "license": "MIT",
   "devDependencies": {

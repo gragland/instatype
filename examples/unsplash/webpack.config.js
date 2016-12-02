@@ -2,6 +2,8 @@ var path = require('path');
 var webpack = require('webpack');
 var merge = require('webpack-merge');
 
+/***** SHARED CONFIG *****/
+
 var common = {
   output: {
     path: path.join(__dirname, 'public/assets'),
@@ -10,7 +12,33 @@ var common = {
   }
 };
 
+/***** DEVELOPMENT CONFIG *****/
+
 var development = {
+  devtool: 'eval',
+  entry: [
+      'webpack-hot-middleware/client',
+      './src/index.js'
+  ],
+  plugins: [
+    new webpack.HotModuleReplacementPlugin(),
+  ],
+  module: {
+    loaders: [
+      { 
+        test: /\.jsx?$/, 
+        loaders: ['babel'], 
+        include: path.join(__dirname, 'src')
+      }
+    ]
+  }
+}
+
+/***** DUAL DEVELOPMENT CONFIG *****/
+/* Hot reloading of parent instatype project (instead of using node module) */
+/* Easy development of both instatype and the example code  */
+
+var dualDevelopment = {
   devtool: 'eval',
   entry: [
       'webpack-hot-middleware/client',
@@ -57,6 +85,8 @@ var development = {
   }
 }
 
+/***** PRODUCTION CONFIG *****/
+
 var production = {
   entry: './src/index.js',
   plugins: [
@@ -78,13 +108,14 @@ var production = {
   }
 }
 
-switch(process.env.NODE_ENV) {
-  case 'production':
-    var config = merge(common, production);
-    break;
-  default:
+if (process.env.NODE_ENV === 'production'){
+  var config = merge(common, production);
+}else{
+  if (process.env.DUAL){
+    var config = merge(common, dualDevelopment);
+  }else{
     var config = merge(common, development);
+  }
 }
-
 
 module.exports = config;

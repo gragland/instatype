@@ -5,7 +5,7 @@
   "main": "lib/instatype.js",
   "scripts": {
     "build": "webpack --config webpack.config.js",
-    "example": "cd examples/unsplash && npm install && npm start",
+    "example": "cd examples/unsplash && npm install && npm run start-dev-dual",
     "start": "npm run example",
     "prepublish": "npm run build"
   },
