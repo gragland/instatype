@@ -7,7 +7,7 @@ var merge = require('webpack-merge');
 var common = {
   output: {
     path: path.join(__dirname, 'public/assets'),
-    filename: 'bundle.js',
+    filename: '[name].js',
     publicPath: '/assets/'
   }
 };
@@ -16,10 +16,12 @@ var common = {
 
 var development = {
   devtool: 'eval',
-  entry: [
+  entry: {
+    bundle: [
       'webpack-hot-middleware/client',
       './src/index.js'
-  ],
+    ]
+  },
   plugins: [
     new webpack.HotModuleReplacementPlugin(),
   ],
@@ -43,10 +45,12 @@ var development = {
 
 var dualDevelopment = {
   devtool: 'eval',
-  entry: [
+  entry: {
+    bundle: [
       'webpack-hot-middleware/client',
       './src/index.js'
-  ],
+    ]
+  },
   plugins: [
     new webpack.HotModuleReplacementPlugin(),
   ],
@@ -92,7 +96,9 @@ var dualDevelopment = {
 /***** PRODUCTION CONFIG *****/
 
 var production = {
-  entry: './src/index.js',
+  entry: {
+    bundle: './src/index.js',
+  },
   plugins: [
     new webpack.DefinePlugin({
       'process.env': {

@@ -9,9 +9,6 @@ module.exports = {
     filename: 'instatype.js',
     libraryTarget: 'umd'
   },
-  resolve: {
-    extensions: ['', '.js', '.jsx']
-  },
   module: {
     loaders: [
       { 
