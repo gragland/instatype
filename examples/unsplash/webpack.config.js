@@ -1,20 +1,13 @@
 var path = require('path');
 var webpack = require('webpack');
+var merge = require('webpack-merge');
 
-module.exports = {
-  devtool: 'eval',
-  entry: [
-      'webpack-hot-middleware/client',
-      './src/index.js'
-  ],
+var common = {
   output: {
     path: path.join(__dirname, 'public/assets'),
     filename: 'bundle.js',
     publicPath: '/assets/'
   },
-  plugins: [
-    new webpack.HotModuleReplacementPlugin(),
-  ],
   module: {
     loaders: [
       { 
@@ -49,3 +42,44 @@ module.exports = {
     ]
   }
 };
+
+var development = {
+  devtool: 'eval',
+  entry: [
+      'webpack-hot-middleware/client',
+      './src/index.js'
+  ],
+  plugins: [
+    new webpack.HotModuleReplacementPlugin(),
+  ],
+  resolve: {
+    alias: {
+      // We want require('instatype') to map to source js (not node module) ...
+      // ... so that we can work on instatype with hot reloading.
+      'instatype': path.join(__dirname, '..', '..', 'src', 'js', 'app.js')
+    }
+  }
+}
+
+var production = {
+  entry: './src/index.js',
+  plugins: [
+    new webpack.DefinePlugin({
+      'process.env': {
+        NODE_ENV: JSON.stringify('production')
+      }
+    }),
+    new webpack.optimize.UglifyJsPlugin()
+  ]
+}
+
+
+switch(process.env.NODE_ENV) {
+  case 'production':
+    var config = merge(common, production);
+    break;
+  default:
+    var config = merge(common, development);
+}
+
+module.exports = config;

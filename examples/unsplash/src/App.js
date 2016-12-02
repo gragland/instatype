@@ -1,7 +1,5 @@
 var React = require('react');
-
-// Require source instead of node module so that we modify instatype
-var Instatype = require('./../../../src/js/app.js');
+var Instatype = require('instatype');
 
 var INSTAGRAM_CLIENT_ID = '02d26cb819954ba7b5c3c072a885759f';
 var INSTAGRAM_FETCH_COUNT = 28;

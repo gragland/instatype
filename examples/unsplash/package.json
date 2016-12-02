@@ -1,8 +1,10 @@
 {
   "description": "Example app using instatype",
   "scripts": {
-    "build": "webpack --config webpack.config.js",
-    "start": "node server.js"
+    "build": "NODE_ENV=production webpack --config webpack.config.js",
+    "build-dev": "NODE_ENV=development webpack --config webpack.config.js",
+    "start": "NODE_ENV=production node server.js",
+    "start-dev": "NODE_ENV=development node server.js"
   },
   "license": "MIT",
   "devDependencies": {
@@ -13,9 +15,12 @@
     "react-hot-loader": "^3.0.0-beta.0",
     "webpack": "1.13.3",
     "webpack-dev-middleware": "^1.6.1",
-    "webpack-hot-middleware": "^2.10.0"
+    "webpack-hot-middleware": "^2.10.0",
+    "webpack-merge": "^1.0.2"
   },
   "dependencies": {
+    "express": "^4.14.0",
+    "instatype": "^1.0.11",
     "react": "^15.4.1",
     "react-dom": "^15.4.1"
   }

@@ -1,16 +1,23 @@
 var path = require('path');
 var express = require('express');
-var webpack = require('webpack');
-var config = require('./webpack.config');
 
 var server = express();
-var compiler = webpack(config);
 
-server.use(require('webpack-dev-middleware')(compiler, {
-  publicPath: config.output.publicPath
-}));
+if (process.env.NODE_ENV === 'development'){
 
-server.use(require('webpack-hot-middleware')(compiler));
+	var webpack = require('webpack');
+	var config = require('./webpack.config');
+	var compiler = webpack(config);
+
+	server.use(require('webpack-dev-middleware')(compiler, {
+	  publicPath: config.output.publicPath
+	}));
+
+	server.use(require('webpack-hot-middleware')(compiler));
+
+	console.log('Hot Reloading Active');
+}
+
 
 server.use('/assets', express.static(__dirname + '/public/assets'));
 
