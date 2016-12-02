@@ -5,9 +5,14 @@
     "build-dev": "NODE_ENV=development webpack --config webpack.config.js",
     "start": "NODE_ENV=production node server.js",
     "start-dev": "NODE_ENV=development node server.js",
-    "start-dev-dual": "NODE_ENV=development DUAL=1 node server.js"
+    "start-dev-dual": "NODE_ENV=development DUAL=1 node server.js",
+    "now-deploy": "now -e NODE_ENV=production",
+    "now-build": ""
   },
   "license": "MIT",
+  "engines": {
+    "node": ">=6.9.0"
+  },
   "devDependencies": {
     "babel-core": "6.18.2",
     "babel-loader": "6.2.8",
@@ -21,8 +26,11 @@
   },
   "dependencies": {
     "express": "^4.14.0",
+    "fetch-everywhere": "^1.0.5",
     "instatype": "^1.0.11",
     "react": "^15.4.1",
-    "react-dom": "^15.4.1"
+    "react-dom": "^15.4.1",
+    "react-simple-grid": "^1.0.2",
+    "unsplash-js": "^4.3.1"
   }
 }
