@@ -3,6 +3,7 @@ import Instatype from 'instatype';
 import Grid from 'react-simple-grid';
 import Unsplash from 'unsplash-js';
 import throttle from 'lodash/throttle';
+import "whatwg-fetch";
 
 const unsplash = new Unsplash({ applicationId: '806337d0390512806adf0ab960cb1fbc65b631dfe303a14dcb56432003bd8bfc' });
 

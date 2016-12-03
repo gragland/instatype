@@ -37,7 +37,6 @@ module.exports = {
   },
   // Keep these dependencies out of the bundle (parent project should require them)
   externals: {
-    'react': 'react',
-    'react-dom' : 'react-dom'
+    'react': 'react'
   }
 };
