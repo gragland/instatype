@@ -77,12 +77,12 @@ var dualDevelopment = {
       },
       { 
         test: /\.(png|jpg|jpeg|gif|svg)$/,
-        loader: 'url?limit=100000',
+        loader: 'url-loader?limit=100000',
         include: [ path.join(__dirname, '..', '..', 'images') ]
       },
       { 
         test: /\.jsx?$/, 
-        loaders: ['babel'], 
+        loaders: ['babel-loader'], 
         include: [ 
           path.join(__dirname, 'src'),
           path.join(__dirname, '..', '..', 'src'),
