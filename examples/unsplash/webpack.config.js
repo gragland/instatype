@@ -71,12 +71,12 @@ var dualDevelopment = {
   module: {
     loaders: [
       { 
-        test: /\.css$/, 
-        loader: 'style-loader!css-loader',
+        test: /\.less$/, 
+        loader: 'style-loader!css-loader!less-loader',
         include: [ path.join(__dirname, '..', '..', 'src') ]
       },
       { 
-        test: /\.(png|jpg|jpeg|gif|svg)$/,
+        test: /\.svg$/,
         loader: 'url-loader?limit=100000',
         include: [ path.join(__dirname, '..', '..', 'images') ]
       },
