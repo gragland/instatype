@@ -6,7 +6,7 @@ import Loading from './components/loading.js';
 // Ensure we don't run code inserted by style-loader if rendering server-side.
 // We'll get a "window is not defined" error and it's useless on the server anyway.
 if (typeof window !== 'undefined') {
-  require("./../css/style.css");
+  require("!style-loader!css-loader!less-loader!./../less/style.less");
 }
 
 // For older versions of React (deprecated in 0.14)
