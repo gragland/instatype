@@ -1,6 +1,7 @@
 import React from 'react';
 import Instatype from 'instatype';
 import Grid from 'react-simple-grid';
+import Image from './Image.js';
 import Unsplash from 'unsplash-js';
 import throttle from 'lodash/throttle';
 
@@ -95,10 +96,10 @@ class App extends React.Component {
 
         { photos && photos.length > 0 && 
           <div style={{ overflowX: 'hidden' }}>
-            <Grid blocksPerRow={4} blockSpacing={4} hideOuterSpacing={true}>
+            <Grid blocksPerRow={4} blockSpacing={2}>
               {photos.map(photo => (     
-                <a href={photo.links.html} target="_blank" key={photo.id} >
-                  <img src={'https://source.unsplash.com/' + photo.id +'/400x400'} style={{ display: 'block', width: '100%' }}/> 
+                <a href={photo.links.html} target="_blank" key={photo.id}>
+                  <Image src={'https://source.unsplash.com/' + photo.id +'/400x400'} />
                 </a>
               ))}
             </Grid>

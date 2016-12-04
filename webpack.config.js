@@ -24,12 +24,12 @@ module.exports = {
         include: __dirname + '/src'
       },
       { 
-        test: /\.jsx?$/, 
+        test: /\.js$/, 
         loaders: ['babel-loader'], 
         include: __dirname + '/src'
       },
       { 
-        test: /\.(png|jpg|jpeg|gif|svg)$/, 
+        test: /\.svg$/, 
         loader: 'url-loader?limit=100000',
         include: __dirname + '/images'
       }

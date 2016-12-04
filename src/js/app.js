@@ -226,15 +226,17 @@ class Instatype extends React.Component {
 
 Instatype.propTypes = {
   limit: React.PropTypes.number,
+  defaultInputValue: React.PropTypes.string,
   placeholder: React.PropTypes.string,
   thumbStyle: React.PropTypes.oneOf(['circle', 'square']),
+  loadingIcon: React.PropTypes.string,
+  blurOnTouchStart: React.PropTypes.bool,
+  onBlur: React.PropTypes.func,
   requestHandler: React.PropTypes.func.isRequired,
   selectedHandler: React.PropTypes.func.isRequired,
-  onBlur: React.PropTypes.func
 };
 
 Instatype.defaultProps = {
-  text: false,
   limit: 10,
   defaultInputValue: null,
   placeholder: 'Search',

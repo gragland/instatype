@@ -22,13 +22,11 @@ class Results extends React.Component {
 
     const { data, handleSelect, thumbStyle } = this.props;
 
-    const resultsClass = 'results thumb-' + thumbStyle;
-
     return (
       <div className="resultsContainer">
 
         { data && data.length > 0 &&
-          <ul className={resultsClass}>
+          <ul className={'results thumb-' + thumbStyle}>
             
             {data.map((result) => (
               <Result image={result.image} handleSelect={handleSelect} data={result} key={result.id || undefined}>
@@ -42,6 +40,12 @@ class Results extends React.Component {
       </div>
     );
   }
+};
+
+Results.propTypes = {
+  data: React.PropTypes.array,
+  handleSelect: React.PropTypes.func.isRequired,
+  thumbStyle: React.PropTypes.string.isRequired
 };
 
 export default Results;

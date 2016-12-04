@@ -46,4 +46,12 @@ class Input extends React.Component {
     }
 };
 
+Input.propTypes = {
+  handleChange: React.PropTypes.func.isRequired,
+  handleFocus: React.PropTypes.func,
+  handleBlur: React.PropTypes.func,
+  defaultValue: React.PropTypes.string,
+  placeholder: React.PropTypes.string
+};
+
 export default Input;

@@ -32,19 +32,29 @@ class Result extends React.Component {
 
   render(){
 
+    const { image, children } = this.props;
+
     let className = 'clearfix';
     if (this.state.isHovered)
       className += ' hovered';
 
     return (
       <li className={className} onClick={this.handleSelect} onMouseOver={this.onMouseOver} onMouseLeave={this.onMouseLeave}>
-          {this.props.image && 
-            <img src={this.props.image}/>
+          {image && 
+            <img src={image}/>
           }
-          <div>{this.props.children}</div>
+          <div>{children}</div>
       </li>
     );
   }
 };
+
+Result.propTypes = {
+  data: React.PropTypes.object.isRequired,
+  image: React.PropTypes.string,
+  children: React.PropTypes.node
+};
+
+
 
 export default Result;

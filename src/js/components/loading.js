@@ -5,6 +5,12 @@ const Loading = ({icon}) => (
   <img className="loading-icon" src={icon}/>
 );
 
-Loading.defaultProps = { icon: defaultIcon };
+Loading.propTypes = {
+  loadingIcon: React.PropTypes.string
+};
+
+Loading.defaultProps = { 
+	icon: defaultIcon 
+};
 
 export default Loading;
