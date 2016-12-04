@@ -1,21 +1,10 @@
 import React from 'react';
 import Result from './result.js';
 
-class Results extends React.Component {
+class Results extends React.PureComponent {
 
   constructor(props) {
     super(props);
-  }
-
-  shouldComponentUpdate(nextProps, nextState){
-
-    // Always update if we don't have the required props to compare
-    if (!this.props || !this.props.resultsId || !nextProps || !nextProps.resultsId){
-      return true;
-    }
-
-    // Only update if resultsId prop has changed
-    return (this.props.resultsId !== nextProps.resultsId);
   }
 
   render(){
@@ -28,8 +17,8 @@ class Results extends React.Component {
         { data && data.length > 0 &&
           <ul className={'results thumb-' + thumbStyle}>
             
-            {data.map((result) => (
-              <Result image={result.image} handleSelect={handleSelect} data={result} key={result.id || undefined}>
+            {data.map((result, i) => (
+              <Result image={result.image} handleSelect={handleSelect} data={result} key={( result.id ? `id-${result.id}` : i )}>
                 {result.name}
               </Result>
             ))}

@@ -1,6 +1,6 @@
 import React from 'react';
 
-class Result extends React.Component {
+class Result extends React.PureComponent {
 
   constructor(props) {
     super(props);
@@ -16,30 +16,21 @@ class Result extends React.Component {
     event.stopPropagation();
   }
 
-  shouldComponentUpdate(nextProps, nextState){
-    return (!this.props.data.id || // If we have no data.id to identify whether result changed
-              (this.props.data.id !== nextProps.data.id) || // If data.id did change
-                this.state.isHovered !== nextState.isHovered); // If hover state changed
-  }
-
   onMouseOver(){
-    this.setState({ isHovered: true })
+    this.setState({ isHovered: true });
   }
 
   onMouseLeave(){
-    this.setState({ isHovered: false })
+    this.setState({ isHovered: false });
   }
 
   render(){
 
     const { image, children } = this.props;
-
-    let className = 'clearfix';
-    if (this.state.isHovered)
-      className += ' hovered';
+    const { isHovered } = this.state;
 
     return (
-      <li className={className} onClick={this.handleSelect} onMouseOver={this.onMouseOver} onMouseLeave={this.onMouseLeave}>
+      <li className={`${isHovered ? 'hovered' : ''} clearfix`} onClick={this.handleSelect} onMouseOver={this.onMouseOver} onMouseLeave={this.onMouseLeave}>
           {image && 
             <img src={image}/>
           }
@@ -54,7 +45,5 @@ Result.propTypes = {
   image: React.PropTypes.string,
   children: React.PropTypes.node
 };
-
-
 
 export default Result;

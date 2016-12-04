@@ -6,7 +6,7 @@ import Loading from './components/loading.js';
 // Ensure we don't run code inserted by style-loader if rendering server-side.
 // We'll get a "window is not defined" error and it's useless on the server anyway.
 if (typeof window !== 'undefined') {
-  require("!style-loader!css-loader!less-loader!./../less/style.less");
+  require("./../less/style.less");
 }
 
 // For older versions of React (deprecated in 0.14)
@@ -14,7 +14,7 @@ if (typeof React.initializeTouchEvents === 'function'){
   React.initializeTouchEvents(true);
 }
 
-class Instatype extends React.Component {
+class Instatype extends React.PureComponent {
 
   constructor(props) {
     super(props);
@@ -38,18 +38,6 @@ class Instatype extends React.Component {
     this.clearState = this.clearState.bind(this);
     this.blurInput = this.blurInput.bind(this);
     this.handleBlur = this.handleBlur.bind(this);
-  }
-
-  shouldComponentUpdate(nextProps, nextState){
-
-    // Always update if we don't have the required state to compare
-    if (!this.state || !this.state.resultsQuery || !nextState || !nextState.resultsQuery){
-      return true;
-    }
-
-    return (this.state.resultsQuery !== nextState.resultsQuery ||
-              this.state.loading !== nextState.loading ||
-                this.state.showResults !== nextState.showResults);
   }
 
   componentDidMount() {
@@ -211,13 +199,13 @@ class Instatype extends React.Component {
           }
         </div>
           
-          { showResults && 
-            <Results 
-              data={results} 
-              resultsId={resultsQuery} 
-              handleSelect={this.handleSelect} 
-              thumbStyle={thumbStyle} />
-          }
+        { showResults && 
+          <Results 
+            data={results} 
+            resultsId={resultsQuery} 
+            handleSelect={this.handleSelect} 
+            thumbStyle={thumbStyle} />
+        }
 
       </div>
     );
