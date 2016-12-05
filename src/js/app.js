@@ -186,7 +186,7 @@ class Instatype extends React.PureComponent {
       <div id="instatype" onTouchStart={this.handleTouch}>
 
         <div className="input-wrapper">
-          <InputComponent 
+          <InputComponent
             defaultValue={defaultInputValue}
             placeholder={placeholder} 
             handleChange={this.handleChange} 
@@ -235,7 +235,6 @@ Instatype.defaultProps = {
   // Don't enable unless experiencing this bug
   blurOnTouchStart: false
 };
-
 
 export default Instatype;
 

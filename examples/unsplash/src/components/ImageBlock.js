@@ -1,6 +1,6 @@
 import React from 'react';
 
-const ImageWrapper = ({ heightWidthRatio, children }) => {
+const ImageBlock = ({ heightWidthRatio, children }) => {
 
   const style = { 
     position: 'relative', 
@@ -16,13 +16,13 @@ const ImageWrapper = ({ heightWidthRatio, children }) => {
   );
 }
 
-ImageWrapper.defaultProps = {
+ImageBlock.defaultProps = {
   heightWidthRatio: 1 // Square
 };
 
-ImageWrapper.propTypes = {
+ImageBlock.propTypes = {
   heightWidthRatio: React.PropTypes.number,
   children: React.PropTypes.node
 };
 
-export default ImageWrapper;
+export default ImageBlock;
