@@ -1,5 +1,6 @@
 import React from 'react';
 import Grid from 'react-simple-grid';
+import { nextHighestNumber, elementWidth } from './../util.js';
 
 class ResponsiveGrid extends React.Component {
 
@@ -14,12 +15,11 @@ class ResponsiveGrid extends React.Component {
     this.setup = this.setup.bind(this);
     this.breakPoints = this.breakPoints.bind(this);
     this.columnWidth = this.columnWidth.bind(this);
-    this.getGridWith = this.getGridWith.bind(this);
   }
 
   componentDidMount(){
-    window.addEventListener('resize', this.setup);
     this.setup();
+    window.addEventListener('resize', this.setup);
   }
 
   componentWillUnmount() {
@@ -41,18 +41,9 @@ class ResponsiveGrid extends React.Component {
   }
 
   breakPoints(){
-    const gridWidth = this.getGridWith();
-    let spacing = 4;
-    let columns = 4;
-    
-    if (gridWidth < 500){
-      spacing = 2;
-      columns = 1;
-    }else if (gridWidth < 700){
-      spacing = columns = 2;
-    }else if (gridWidth < 900){
-      spacing = columns = 3;
-    }
+    const { breakPoints } = this.props;
+    const gridWidth = elementWidth(this.el);
+    const { columns, spacing } = nextHighestNumber(breakPoints, gridWidth, 'maxWidth');
 
     this.setState({ 
       spacing: spacing, 
@@ -64,24 +55,16 @@ class ResponsiveGrid extends React.Component {
     const { hideOuterSpacing } = this.props;
     const { spacing, columns } = this.state;
 
-    const gridWidth = this.getGridWith();
-
-    console.log(`Grid Width: ${gridWidth}`);
+    const gridWidth = elementWidth(this.el);
 
     const gutterCount = columns + (hideOuterSpacing ? -1 : 1);
     const totalSpacing = gutterCount * spacing;
     const columnWidth = (gridWidth - totalSpacing) / columns;
 
+    console.log(`Grid Width: ${gridWidth}`);
     console.log(`Column Width: ${columnWidth}`);
 
-    this.setState({ 
-      columnWidth: columnWidth
-    });
-  }
-
-  getGridWith(){
-    // TODO: cross browser test to ensure that clientWidth is correct for all browsers
-    return this.el.clientWidth;
+    this.setState({ columnWidth: columnWidth });
   }
 
   render(){
@@ -113,13 +96,19 @@ ResponsiveGrid.defaultProps = {
   hideOuterSpacing: true
 }
 
-Image.propTypes = {
+ResponsiveGrid.propTypes = {
   spacing: React.PropTypes.number,
-  columns: React.PropTypes.columns,
-  breakPoints: React.PropTypes.object,
+  columns: React.PropTypes.number,
   hideOuterSpacing: React.PropTypes.bool,
   passColumnWidth: React.PropTypes.bool,
-  children: React.PropTypes.node
+  children: React.PropTypes.node,
+  breakPoints: React.PropTypes.arrayOf(
+    React.PropTypes.shape({
+      maxWidth: React.PropTypes.number,
+      columns: React.PropTypes.number,
+      spacing: React.PropTypes.number
+    })
+  )
 };
 
 export default ResponsiveGrid;

@@ -1,5 +1,6 @@
 import React from 'react';
 import Block from './ImageBlock';
+import { nextHighestNumber } from './../util.js';
 
 const Image = ({ src, heightWidthRatio, parseSrc, parseSrcWidth, allowedSrcWidths, children, ...props }) => {
 
@@ -17,7 +18,7 @@ const Image = ({ src, heightWidthRatio, parseSrc, parseSrcWidth, allowedSrcWidth
     // Snap parseSrcWidth to next largest width in allowedSrcWidths (wont upscale)
     // If allowedSrcWidths doesn't contain a larger width then it will be largest available
     if (allowedSrcWidths){
-      parseSrcWidth = getNextHighestNumber(allowedSrcWidths, parseSrcWidth);
+      parseSrcWidth = nextHighestNumber(allowedSrcWidths, parseSrcWidth);
     }
 
     src = src.replace(/\{width\}/g, parseInt(parseSrcWidth))
@@ -53,16 +54,5 @@ Image.propTypes = {
 Image.defaultProps = {
   heightWidthRatio: 1 // Square
 };
-
-function getNextHighestNumber(arr, num){
-    let i = 0;
-    for (i=0; i<arr.length; i++){
-      if (arr[i] >= num){
-        return arr[i];
-      }
-    }
-    // Return last item if none equal or larger
-    return arr[i-1];
-}
 
 module.exports = Image;

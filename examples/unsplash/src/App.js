@@ -86,11 +86,12 @@ class App extends React.Component {
     const { photos, columns, spacing } = this.state;
 
     // Grid options for different size screens
-    const gridBreakPoints = {
-      900:     { columns: 3, spacing: 3 },
-      700:     { columns: 2, spacing: 2 },
-      500:     { columns: 1, spacing: 2 }
-    };
+    const gridBreakPoints = [
+      { maxWidth: 500, columns: 1, spacing: 2 },
+      { maxWidth: 700, columns: 2, spacing: 2 },
+      { maxWidth: 900, columns: 3, spacing: 3 },
+      { maxWidth: 1100, columns: 4, spacing: 4 }
+    ];
 
     return(
       <div>
