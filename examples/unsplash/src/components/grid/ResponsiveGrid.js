@@ -1,6 +1,6 @@
 import React from 'react';
-import Grid from 'react-simple-grid';
-import { nextHighestNumber, elementWidth } from './../util.js';
+//import Grid from 'react-simple-grid';
+import Grid from './Grid.js';
 
 class ResponsiveGrid extends React.Component {
 
@@ -45,7 +45,7 @@ class ResponsiveGrid extends React.Component {
     const { breakPoints } = this.props;
     const gridWidth = elementWidth(this.el);
 
-    const breakPointOptions = nextHighestNumber(breakPoints, gridWidth, 'maxWidth');
+    const breakPointOptions = nextHighestNumber(breakPoints, gridWidth, true, false, 'maxWidth');
 
     if (breakPointOptions){
       columns = breakPointOptions.columns || columns;
@@ -85,10 +85,9 @@ class ResponsiveGrid extends React.Component {
       });
     });
 
-    // TODO: Modify react-simple-grid so that overflow-x is hidden
-    // We can then remove wrapper and apply ref directly to component
+    // Wrap with <div> so we can grab DOM node without needing to import findDOMNode from react-dom
     return(
-      <div style={{ overflowX: 'hidden' }} ref={(el) => { this.el = el; }}>
+      <div ref={(el) => { this.el = el; }}>
         <Grid {...props} blocksPerRow={columns} blockSpacing={spacing} hideOuterSpacing={hideOuterSpacing}>
           {childrenWithProps}
         </Grid>
@@ -117,5 +116,39 @@ ResponsiveGrid.propTypes = {
     })
   )
 };
+
+/**
+ * Find the next equal or higher number within an array
+ * @arr {array} Array to iterate through.
+ * @num {number} Number to compare.
+ * @returnEqual {boolean} Return an equal number if found.
+ * @returnLast {boolean} Return last number if no equal or higher one found.
+ * @prop {string} Indicates @arr contains objects. Get number from object[prop].
+ */
+export function nextHighestNumber(arr, num, returnEqual, returnLast, prop){
+  let i = 0;
+  for (i=0; i<arr.length; i++){
+    let arrNum = (prop ? arr[i][prop] : arr[i]);
+    if (returnEqual && arrNum === num){
+      return arr[i];
+    }else
+    if (arrNum >= num){
+      return arr[i];
+    }
+  }
+  if (returnLast){
+    return arr[i-1];
+  }else{
+    return false;
+  }
+}
+
+/**
+ * Get the width of a DOM element
+ * TODO: Test this in other browsers
+ */
+export function elementWidth(el){
+  return el.clientWidth;
+}
 
 export default ResponsiveGrid;

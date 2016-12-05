@@ -11,43 +11,6 @@ body {
     background-color: #F9FDFF;
 }
 
-#grid .item {
-    position: relative;
-    float: left;
-    width: 25%;
-}
-
-#grid .item .dummyHeight {
-    padding-top: 100%;
-}
-
-#grid .item img {
-    position: absolute;
-    top: 0;
-    width: 100%;
-}
-
-#grid .loadingContainer{
-    position: relative;
-    display: block;
-    width: 3em;
-    margin: 2em auto 2em auto;
-}
-
-/* Override some style */
-#grid .loadingContainer .loading-icon {
-    position: relative;
-    padding: 0;
-    width: 100%;
-    right: 0;
-}
-
-.clearfix:after {
-    content: "";
-    display: table;
-    clear: both;
-}
-
 @media all and (max-width: 500px) {
     body {
         font-size: 8px;

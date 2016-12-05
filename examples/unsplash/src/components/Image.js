@@ -1,6 +1,5 @@
 import React from 'react';
 import Block from './ImageBlock';
-import { nextHighestNumber } from './../util.js';
 
 const Image = ({ src, heightWidthRatio, parseSrc, parseSrcWidth, allowedSrcWidths, children, ...props }) => {
 
@@ -18,7 +17,7 @@ const Image = ({ src, heightWidthRatio, parseSrc, parseSrcWidth, allowedSrcWidth
     // Snap parseSrcWidth to next largest width in allowedSrcWidths (wont upscale)
     // If allowedSrcWidths doesn't contain a larger width then it will be largest available
     if (allowedSrcWidths){
-      parseSrcWidth = nextHighestNumber(allowedSrcWidths, parseSrcWidth, null, true);
+      parseSrcWidth = nextHighestNumber(allowedSrcWidths, parseSrcWidth, true, true);
     }
 
     src = src.replace(/\{width\}/g, parseInt(parseSrcWidth))
@@ -54,5 +53,31 @@ Image.propTypes = {
 Image.defaultProps = {
   heightWidthRatio: 1 // Square
 };
+
+/**
+ * Find the next equal or higher number within an array
+ * @arr {array} Array to iterate through.
+ * @num {number} Number to compare.
+ * @returnEqual {boolean} Return an equal number if found.
+ * @returnLast {boolean} Return last number if no equal or higher one found.
+ * @prop {string} Indicates @arr contains objects. Get number from object[prop].
+ */
+export function nextHighestNumber(arr, num, returnEqual, returnLast, prop){
+  let i = 0;
+  for (i=0; i<arr.length; i++){
+    let arrNum = (prop ? arr[i][prop] : arr[i]);
+    if (returnEqual && arrNum === num){
+      return arr[i];
+    }else
+    if (arrNum >= num){
+      return arr[i];
+    }
+  }
+  if (returnLast){
+    return arr[i-1];
+  }else{
+    return false;
+  }
+}
 
 module.exports = Image;
