@@ -18,7 +18,7 @@ class Results extends React.PureComponent {
           <ul className={'results thumb-' + thumbStyle}>
             
             {data.map((result, i) => (
-              <Result image={result.image} handleSelect={handleSelect} data={result} key={( result.id ? `id-${result.id}` : i )}>
+              <Result image={result.image} handleSelect={handleSelect} data={result} key={`result-${result.id || i}`}>
                 {result.name}
               </Result>
             ))}

@@ -1,9 +1,9 @@
 /**
  * Find the next equal or higher number within an array
- * Return the last number if none
  * @prop {string} get number from arr[i][prop] instead of arr[i]
+ * @returnLast {boolean} Return last number if no equal or higher one found
  */
-export function nextHighestNumber(arr, num, prop){
+export function nextHighestNumber(arr, num, prop, returnLast){
   let i = 0;
   for (i=0; i<arr.length; i++){
   	let arrNum = (prop ? arr[i][prop] : arr[i]);
@@ -11,8 +11,11 @@ export function nextHighestNumber(arr, num, prop){
       return arr[i];
     }
   }
-
-  return arr[i-1];
+  if (returnLast){
+  	return arr[i-1];
+  }else{
+  	return false;
+  }
 }
 
 

@@ -87,10 +87,9 @@ class App extends React.Component {
 
     // Grid options for different size screens
     const gridBreakPoints = [
-      { maxWidth: 500, columns: 1, spacing: 2 },
+      { maxWidth: 400, columns: 1, spacing: 2 },
       { maxWidth: 700, columns: 2, spacing: 2 },
-      { maxWidth: 900, columns: 3, spacing: 3 },
-      { maxWidth: 1100, columns: 4, spacing: 4 }
+      { maxWidth: 1100, columns: 3 }
     ];
 
     return(
@@ -105,14 +104,14 @@ class App extends React.Component {
         </div>
 
         { photos && photos.length > 0 && 
-          <ResponsiveGrid blocksPerRow={4} blockSpacing={4} breakPoints={gridBreakPoints} passColumnWidth={true}>
+          <ResponsiveGrid columns={4} spacing={3} breakPoints={gridBreakPoints} passColumnWidth={true}>
             { photos.map( photo => <Photo data={photo} key={photo.id} /> )}
           </ResponsiveGrid>
         }
       
         { photos && photos.length === 0 &&
-          <div style={{ fontSize: '2em', textAlign: 'center', marginTop: '2em', color: '#6e6e6e' }}>
-            This user has no photos :(
+          <div style={{ marginTop: '2em', textAlign: 'center', fontSize: '2em', color: '#6e6e6e' }}>
+            This user has no photos 🙁
           </div>
         }
       </div>

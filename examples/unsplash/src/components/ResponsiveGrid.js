@@ -8,8 +8,8 @@ class ResponsiveGrid extends React.Component {
     super(props);
 
     this.state = {
-      spacing: this.props.spacing,
-      columns: this.props.columns
+      columns: this.props.columns,
+      spacing: this.props.spacing
     };
 
     this.setup = this.setup.bind(this);
@@ -41,13 +41,20 @@ class ResponsiveGrid extends React.Component {
   }
 
   breakPoints(){
+    let { columns, spacing } = this.props;
     const { breakPoints } = this.props;
     const gridWidth = elementWidth(this.el);
-    const { columns, spacing } = nextHighestNumber(breakPoints, gridWidth, 'maxWidth');
 
-    this.setState({ 
-      spacing: spacing, 
-      columns: columns
+    const breakPointOptions = nextHighestNumber(breakPoints, gridWidth, 'maxWidth');
+
+    if (breakPointOptions){
+      columns = breakPointOptions.columns || columns;
+      spacing = breakPointOptions.spacing || spacing;
+    }
+     
+    this.setState({
+      'columns': columns,
+      'spacing': spacing, 
     });
   }
 

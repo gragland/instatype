@@ -18,7 +18,7 @@ const Image = ({ src, heightWidthRatio, parseSrc, parseSrcWidth, allowedSrcWidth
     // Snap parseSrcWidth to next largest width in allowedSrcWidths (wont upscale)
     // If allowedSrcWidths doesn't contain a larger width then it will be largest available
     if (allowedSrcWidths){
-      parseSrcWidth = nextHighestNumber(allowedSrcWidths, parseSrcWidth);
+      parseSrcWidth = nextHighestNumber(allowedSrcWidths, parseSrcWidth, null, true);
     }
 
     src = src.replace(/\{width\}/g, parseInt(parseSrcWidth))
