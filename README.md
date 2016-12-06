@@ -2,7 +2,7 @@
 A mobile-friendly React autocomplete component
 
 ## Demos
-<a href="https://unsplash-kmsbgdtlnj.now.sh">unsplash-kmsbgdtlnj.now.sh</a> (latest)<br/>
+<a href="https://unsplash-fruzanlqxl.now.sh">unsplash-fruzanlqxl.now.sh</a> (latest)<br/>
 <a href="http://saveyourvines.com">saveyourvines.com</a>
 
 ## Install
