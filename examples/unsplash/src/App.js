@@ -16,6 +16,8 @@ const unsplash = new Unsplash({
   applicationId: '806337d0390512806adf0ab960cb1fbc65b631dfe303a14dcb56432003bd8bfc' 
 });
 
+const USE_LOCAL_DATA = { popular: true };
+
 class App extends React.Component {
 
   constructor(props){
@@ -37,55 +39,67 @@ class App extends React.Component {
   // Our Instatype request handler
   getUsers(query, limit, callback){
 
-    //return callback(this.mapUserProps(data.users)); // Local data
+    if (USE_LOCAL_DATA.users){
+      callback(this.mapUserProps(data.users));
+      return;
+    }
 
     unsplash.search.users(query, 1)
     .then((response) => response.json())
-    .then((users) => this.mapUserProps(users))
+    .then((json) => this.mapUserProps(json.results))
     .then((usersWithProps) => callback(usersWithProps));
   }
 
+  // Give user objects the props expected by Instatype
   mapUserProps(users){
-    return users.results.map((user) => {
-      user.image = user.profile_image.medium;
-      user.name = user.name;
+    return users.map((user) => {
+      user.name = user.name; // Already in object
+      user.image = user.profile_image.medium; // Optional
       return user;
     });
   }
 
   selectedHandler(result){
 
-    //this.setState({ photos: data.photos }); // Local data
+    if (USE_LOCAL_DATA.photos){
+      this.setState({ photos: data.photos });
+      return;
+    }
 
     this.setState({ loading: true });
 
+    // Clear instatype
+    // Todo: Give Instatype a clearOnSelect prop
+    this.refs.instatype.refs.inputComponent.refs.input.value = '';
+
     unsplash.users.photos(result.username)
     .then((response) => response.json())
-    .then((photos) => {
+    .then((json) => {
       this.setState({
-        photos: photos,
+        photos: json,
         loading: false
-      })
+      });
     });
   }
 
   
   getPopular(){
 
-    this.setState({ photos: data.popular }); // Local data
+    if (USE_LOCAL_DATA.popular){
+      this.setState({ photos: data.popular });
+      return;
+    }
 
-    /*
     this.setState({ loading: true });
 
     unsplash.photos.listPhotos(1, 16, "popular")
     .then((response) => response.json())
-    .then((photos) => {
+    .then((json) => {
       this.setState({
-        photos: photos,
+        photos: json,
         loading: false
       })
     });
-    */
   }
 
   render(){
@@ -107,7 +121,8 @@ class App extends React.Component {
             requestHandler={this.getUsersThrottled}
             selectedHandler={this.selectedHandler}
             limit={10} 
-            thumbStyle='circle'/>
+            thumbStyle='circle'
+            ref='instatype'/>
         </div>
 
         { photos && photos.length > 0 && !loading &&

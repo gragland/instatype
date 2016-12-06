@@ -32,7 +32,12 @@ class Results extends React.PureComponent {
 };
 
 Results.propTypes = {
-  data: React.PropTypes.array,
+  data: React.PropTypes.arrayOf(
+    React.PropTypes.shape({
+      image: React.PropTypes.string,
+      name: React.PropTypes.string.isRequired
+    })
+  ),
   handleSelect: React.PropTypes.func.isRequired,
   thumbStyle: React.PropTypes.string.isRequired
 };
