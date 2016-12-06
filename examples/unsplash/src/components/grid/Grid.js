@@ -1,84 +1,81 @@
-var React = require('react');
-var Row = require('./GridRow.js');
-var Block = require('./GridBlock.js');
+import React from 'react';
+import Row from './GridRow.js';
+import Block from './GridBlock.js';
 
-var GridComponent = React.createClass({
+const Grid = ({ columns, spacing, hideOuterSpacing, children }) => {
 
-  getDefaultProps: function() {
-    return {
-      blockSpacing: 10,
-      blocksPerRow: 3,
-      hideOuterSpacing: true
+  const styles = {
+    container: {
+      paddingTop: `${spacing}px`,
+      paddingBottom: `${spacing}px`
+    },
+    containerHideOuterSpacing: {
+      paddingTop: 0,
+      paddingBottom: 0,
+      // Row width width will exceed grid with
+      overflowX: 'hidden'
     }
-  },
+  };
 
-  render: function(){
+  const blockNodes = React.Children.map(children, (child, i) => {
+    return (
+      <Block
+        spacing={spacing} 
+        width={`${100 / columns}%`} 
+        key={`block-${child.key || i}`}> 
 
-    var blockNodes = [];
-    var rowNodes = [];
+        {child}
+        
+      </Block>
+    )
+  });
 
-    var styles = {
-      container: {
-        paddingTop: (this.props.blockSpacing) + 'px',
-        paddingBottom: (this.props.blockSpacing) + 'px'
-      },
-      containerHideOuterSpacing: {
-        paddingTop: 0,
-        paddingBottom: 0,
-        // Row width width will exceed grid with
-        overflowX: 'hidden'
-      }
-    };
+  let rowNodes = [];
 
-    // Put each child in a <BlockComponent/>
-    // Put each <BlockComponent/> into "blockNodes" array (which we slice up into rows below)
-    React.Children.forEach(this.props.children, function(child, i) {
-        blockNodes.push(
-          <Block
-            spacing={this.props.blockSpacing} 
-            width={(100 / this.props.blocksPerRow) + '%'} 
-            handleClick={this.props.handleClick} 
-            data={this.props.data}
-            key={`block-${child.key || i}`}> 
+  // Slice up blockNodes into rows
+  // Each iteration jumps forward the number of columns (i+=columns)
+  for (let i=0; i<blockNodes.length; i+=columns) {
+    
+    let rowStart = i;
+    let rowEnd = i + columns;
 
-            {child}
-          
-          </Block>
-        );
-    }, this);
+    rowNodes.push(
+      <Row 
+        spacing={spacing} 
+        isLastRow={rowEnd >= blockNodes.length}
+        hideGutters={hideOuterSpacing}
+        key={`row-${rowNodes.length}`}>
 
-    // Slice up blockNodes into rows ...
-    // Put each row into "rowNodes" array
-    for (var i=0; i<blockNodes.length; i+=this.props.blocksPerRow) {
-      
-      var rowEndIndex = i + this.props.blocksPerRow;
+          { blockNodes.slice(rowStart, rowEnd) }
 
-      rowNodes.push(
-        <Row 
-          spacing={this.props.blockSpacing} 
-          isLastRow={rowEndIndex >= blockNodes.length}
-          hideGutters={this.props.hideOuterSpacing}
-          key={`row-${rowNodes.length}`}>
-
-            { blockNodes.slice(i, rowEndIndex) }
-
-        </Row>
-      );
-    }
-
-    var style = styles.container;
-    if (this.props.hideOuterSpacing){
-      style = Object.assign(style, styles.containerHideOuterSpacing);
-    }
-
-  	return (
-      <div style={style}>
-        {rowNodes}
-      </div>
-  	);
-	
+      </Row>
+    );
   }
-});
 
+  let style = styles.container;
 
-module.exports = GridComponent; 
+  if (hideOuterSpacing){
+    style = Object.assign(style, styles.containerHideOuterSpacing);
+  }
+
+	return (
+    <div style={style}>
+      {rowNodes}
+    </div>
+	);
+};
+
+Grid.defaultProps = {
+  columns: 3,
+  spacing: 5,
+  hideOuterSpacing: true
+};
+
+Grid.propTypes = {
+  columns: React.PropTypes.number,
+  spacing: React.PropTypes.number,
+  hideOuterSpacing: React.PropTypes.bool,
+  children: React.PropTypes.node.isRequired
+};
+
+export default Grid;

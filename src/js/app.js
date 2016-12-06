@@ -111,8 +111,9 @@ class Instatype extends React.PureComponent {
 
   showResults(){
 
-    if (this.state.showResults === false)
+    if (this.state.showResults === false){
       this.setState({ showResults : true });
+    }
 
     // Cancel any pending hide results timeout
     clearTimeout(window.blurHideResultsTimeout); 
@@ -120,15 +121,15 @@ class Instatype extends React.PureComponent {
 
   hideResults(){
 
-    if (this.state.showResults === true)
+    if (this.state.showResults === true){
       this.setState({ showResults : false });
+    }
 
     // Cancel any pending hide results timeout
     clearTimeout(window.blurHideResultsTimeout); 
   }
 
   handleFocus() {
-
       this.showResults();
   }
 

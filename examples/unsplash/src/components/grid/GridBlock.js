@@ -1,27 +1,31 @@
-var React = require('react');
+import React from 'react';
 
-var Block = React.createClass({
+const Block = ({ width, spacing, children }) => {
 
-  render: function(){
+  const style = {
+    position: 'relative',
+    float: 'left',
+    width: width, // Should be percent
+    paddingLeft: `${spacing/2}px`,
+    paddingRight: `${spacing/2}px`,
+    boxSizing: 'border-box',
+    WebkitBoxSizing: 'border-box',
+    MozBoxSizing: 'border-box'
+  };
 
-    var style = {
-      position: 'relative',
-      float: 'left',
-      width: this.props.width,
-      paddingLeft: (this.props.spacing / 2 ) + 'px',
-      paddingRight: (this.props.spacing / 2 ) + 'px',
-      boxSizing: 'border-box',
-      WebkitBoxSizing: 'border-box',
-      MozBoxSizing: 'border-box'
-    };
+  return (
+    <div style={style}>
+      {children}
+    </div>
+  );
+  
+};
 
-    return (
-      <div className="block"
-        style={style}>
-          {this.props.children}
-      </div>
-    );
-  }
-});
+Block.propTypes = {
+  width: React.PropTypes.string.isRequired,
+  spacing: React.PropTypes.number.isRequired,
+  children: React.PropTypes.node.isRequired
+};
 
-module.exports = Block;
+
+export default Block;

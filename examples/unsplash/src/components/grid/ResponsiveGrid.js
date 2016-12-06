@@ -78,7 +78,9 @@ class ResponsiveGrid extends React.Component {
   render(){
 
     let childrenWithProps;
-    const { children, hideOuterSpacing, ...props } = this.props;
+
+    const { children, hideOuterSpacing } = this.props;
+
     const { columns, spacing, columnWidth } = this.state;
 
     if (columnWidth){
@@ -90,14 +92,13 @@ class ResponsiveGrid extends React.Component {
       });
 
     }else{
-
       childrenWithProps = children;
     }
 
     // Wrap with <div> so we can grab DOM node without needing to import findDOMNode from react-dom
     return(
       <div ref={(el) => { this.el = el; }}>
-        <Grid {...props} blocksPerRow={columns} blockSpacing={spacing} hideOuterSpacing={hideOuterSpacing}>
+        <Grid columns={columns} spacing={spacing} hideOuterSpacing={hideOuterSpacing}>
           {childrenWithProps}
         </Grid>
       </div>
@@ -106,8 +107,8 @@ class ResponsiveGrid extends React.Component {
 };
 
 ResponsiveGrid.defaultProps = {
-  // Should always be same as default value within <Grid>
-  // Column width logic needs to know what this will be
+  columns: 3,
+  spacing: 5,
   hideOuterSpacing: true
 }
 
@@ -116,7 +117,7 @@ ResponsiveGrid.propTypes = {
   columns: React.PropTypes.number,
   hideOuterSpacing: React.PropTypes.bool,
   passColumnWidth: React.PropTypes.bool,
-  children: React.PropTypes.node,
+  children: React.PropTypes.node.isRequired,
   breakPoints: React.PropTypes.arrayOf(
     React.PropTypes.shape({
       maxWidth: React.PropTypes.number,
