@@ -9,17 +9,17 @@ const Photo = ({ data, parentColumnWidth }) => {
 
 	return (
 	  <a href={data.links.html} target='_blank'>
-	    <Image src={`https://source.unsplash.com/${data.id}/{width}x{height}`} parseSrc={true} parseSrcWidth={parentColumnWidth} allowedSrcWidths={allowedSrcWidths} />
+	    <Image src={`https://source.unsplash.com/${data.id}/{width}x{height}`} parseSrc={true} parseSrcWidth={parentColumnWidth} parseSrcAllowedWidths={allowedSrcWidths} />
 	  </a>
 	);
   
 };
 
-Image.propTypes = {
+Photo.propTypes = {
   data: React.PropTypes.shape({
-    links: React.PropTypes.object.required,
-    id: React.PropTypes.string.required
-  }),
+    links: React.PropTypes.object.isRequired,
+    id: React.PropTypes.string.isRequired
+  }).isRequired,
   parentColumnWidth: React.PropTypes.number
 };
 

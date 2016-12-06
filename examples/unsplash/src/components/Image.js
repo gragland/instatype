@@ -1,7 +1,7 @@
 import React from 'react';
 import Block from './ImageBlock';
 
-const Image = ({ src, heightWidthRatio, parseSrc, parseSrcWidth, allowedSrcWidths, children, ...props }) => {
+const Image = ({ src, heightWidthRatio, parseSrc, parseSrcWidth, parseSrcAllowedWidths, children, ...props }) => {
 
   /** If src parsing is enabled ...
     * We replace width and height in src url
@@ -10,18 +10,18 @@ const Image = ({ src, heightWidthRatio, parseSrc, parseSrcWidth, allowedSrcWidth
     * Example valid src urls:
     *  - https://source.unsplash.com/oMpAz-DN-9I/{width}x{height}
     *  - https://example.com/images/logo_{width}.png 
-  */
+    */
 
   if (parseSrc && parseSrcWidth) {
 
     // Snap parseSrcWidth to next largest width in allowedSrcWidths (wont upscale)
     // If allowedSrcWidths doesn't contain a larger width then it will be largest available
-    if (allowedSrcWidths){
-      parseSrcWidth = nextHighestNumber(allowedSrcWidths, parseSrcWidth, true, true);
+    if (parseSrcAllowedWidths){
+      parseSrcWidth = nextHighestNumber(parseSrcAllowedWidths, parseSrcWidth, true, true);
     }
 
     src = src.replace(/\{width\}/g, parseInt(parseSrcWidth))
-    src = src.replace(/\{height\}/g, parseInt(parseSrcWidth*heightWidthRatio));
+    src = src.replace(/\{height\}/g, parseInt(parseSrcWidth * heightWidthRatio));
   }
 
   const style = {
@@ -33,7 +33,7 @@ const Image = ({ src, heightWidthRatio, parseSrc, parseSrcWidth, allowedSrcWidth
 
   return (
     <Block heightWidthRatio={heightWidthRatio}>
-      { !parseSrc || parseSrcWidth && 
+      { (!parseSrc || parseSrcWidth) && 
         <img src={src} style={style} {...props} /> 
       }
       {children}
@@ -47,6 +47,7 @@ Image.propTypes = {
   heightWidthRatio: React.PropTypes.number,
   parseSrc: React.PropTypes.bool,
   parseSrcWidth: React.PropTypes.number,
+  parseSrcAllowedWidths: React.PropTypes.arrayOf(React.PropTypes.number),
   children: React.PropTypes.node
 };
 

@@ -28,11 +28,10 @@ var development = {
   module: {
     loaders: [
       { 
-        test: /\.jsx?$/, 
+        test: /\.js?$/, 
         loaders: ['babel'], 
         include: [
-          path.join(__dirname, 'src'),
-          path.join(__dirname, 'node_modules/react-simple-grid') // Remove once module is fixed
+          path.join(__dirname, 'src')
         ]
       }
     ]
@@ -81,12 +80,11 @@ var dualDevelopment = {
         include: [ path.join(__dirname, '..', '..', 'images') ]
       },
       { 
-        test: /\.jsx?$/, 
+        test: /\.js?$/, 
         loaders: ['babel-loader'], 
         include: [ 
           path.join(__dirname, 'src'),
-          path.join(__dirname, '..', '..', 'src'),
-          path.join(__dirname, 'node_modules/react-simple-grid') // Remove once module is fixed
+          path.join(__dirname, '..', '..', 'src')
         ]
       }
     ]
@@ -110,11 +108,10 @@ var production = {
   module: {
     loaders: [
       { 
-        test: /\.jsx?$/, 
+        test: /\.js?$/, 
         loaders: ['babel'], 
         include: [
-          path.join(__dirname, 'src'),
-          path.join(__dirname, 'node_modules/react-simple-grid') // Remove once module is fixed
+          path.join(__dirname, 'src')
         ]
       }
     ]

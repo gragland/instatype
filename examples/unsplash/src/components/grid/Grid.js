@@ -39,7 +39,7 @@ var GridComponent = React.createClass({
             width={(100 / this.props.blocksPerRow) + '%'} 
             handleClick={this.props.handleClick} 
             data={this.props.data}
-            key={i}> 
+            key={`block-${child.key || i}`}> 
 
             {child}
           
@@ -58,7 +58,7 @@ var GridComponent = React.createClass({
           spacing={this.props.blockSpacing} 
           isLastRow={rowEndIndex >= blockNodes.length}
           hideGutters={this.props.hideOuterSpacing}
-          key={i}>
+          key={`row-${rowNodes.length}`}>
 
             { blockNodes.slice(i, rowEndIndex) }
 
@@ -72,7 +72,7 @@ var GridComponent = React.createClass({
     }
 
   	return (
-      <div className="react-simple-grid" style={style}>
+      <div style={style}>
         {rowNodes}
       </div>
   	);

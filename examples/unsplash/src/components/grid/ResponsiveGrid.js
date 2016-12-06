@@ -1,4 +1,5 @@
 import React from 'react';
+//import findDOMNode from 'react-dom/lib/findDOMNode.js';
 //import Grid from 'react-simple-grid';
 import Grid from './Grid.js';
 
@@ -76,14 +77,22 @@ class ResponsiveGrid extends React.Component {
 
   render(){
 
+    let childrenWithProps;
     const { children, hideOuterSpacing, ...props } = this.props;
     const { columns, spacing, columnWidth } = this.state;
 
-    const childrenWithProps = React.Children.map(children, (child) => {
-      return React.cloneElement(child, {
-        parentColumnWidth: columnWidth
+    if (columnWidth){
+
+      childrenWithProps = React.Children.map(children, (child) => {
+        return React.cloneElement(child, {
+          parentColumnWidth: columnWidth
+        });
       });
-    });
+
+    }else{
+
+      childrenWithProps = children;
+    }
 
     // Wrap with <div> so we can grab DOM node without needing to import findDOMNode from react-dom
     return(
