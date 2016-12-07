@@ -20,7 +20,7 @@ const Row = ({ spacing, isLastRow, hideGutters, children }) => {
     // Note: Gutter spacing is caused by child Block components (not style of row element)
     rowHideGutters: {
       width: `calc(100% + ${spacing}px)`,
-      marginLeft: `calc(-${spacing/2}px`,
+      marginLeft: `calc(-${spacing/2}px)`,
       paddingLeft: 0,
       paddingRight: 0
     },

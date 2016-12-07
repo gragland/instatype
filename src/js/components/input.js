@@ -9,6 +9,8 @@ class Input extends React.Component {
       this.handleBlur = this.handleBlur.bind(this);
     }
 
+    // TODO: Remove shouldComponentUpdate
+    // Make this a controlled input and use PureComponent class
     shouldComponentUpdate(nextProps, nextState){
       return false;
     }

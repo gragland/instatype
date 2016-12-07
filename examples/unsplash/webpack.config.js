@@ -1,10 +1,10 @@
-var path = require('path');
-var webpack = require('webpack');
-var merge = require('webpack-merge');
+const path = require('path');
+const webpack = require('webpack');
+//const merge = require('webpack-merge');
 
 /***** SHARED CONFIG *****/
 
-var common = {
+const common = {
   output: {
     path: path.join(__dirname, 'public/assets'),
     filename: '[name].js',
@@ -14,7 +14,7 @@ var common = {
 
 /***** DEVELOPMENT CONFIG *****/
 
-var development = {
+const development = {
   devtool: 'eval',
   entry: {
     bundle: [
@@ -33,6 +33,13 @@ var development = {
         include: [
           path.join(__dirname, 'src')
         ]
+      },
+      { 
+        test: /\.svg$/,
+        loader: 'url-loader?limit=100000',
+        include: [ 
+          path.join(__dirname, 'src', 'components', 'Infinite')
+        ]
       }
     ]
   }
@@ -40,9 +47,11 @@ var development = {
 
 /***** PRODUCTION CONFIG *****/
 
-var production = {
+const production = {
   entry: {
-    bundle: './src/index.js',
+    bundle: [
+    './src/index.js'
+    ]
   },
   plugins: [
     new webpack.DefinePlugin({
@@ -60,16 +69,23 @@ var production = {
         include: [
           path.join(__dirname, 'src')
         ]
+      },
+      { 
+        test: /\.svg$/,
+        loader: 'url-loader?limit=100000',
+        include: [ 
+          path.join(__dirname, 'src', 'components', 'Infinite')
+        ]
       }
     ]
   }
 }
 
 /***** LOCAL INSTATYPE CONFIG *****/
-/* Will import local instatype project (instead of using node module) */
+/* Merge with prod or dev config to import local instatype source (instead of using node module) */
 /* Allows for easy development of both instatype and example code  */
 
-var localInstatype = {
+const localInstatype = {
   resolve: {
     alias: {
       // Make require('instatype') resolve to src (not node module) ...
@@ -88,6 +104,14 @@ var localInstatype = {
   module: {
     loaders: [
       { 
+        test: /\.js?$/, 
+        loaders: ['babel-loader'], 
+        include: [ 
+          path.join(__dirname, 'src'),
+          path.join(__dirname, '..', '..', 'src')
+        ]
+      },
+      { 
         test: /\.less$/, 
         loader: 'style-loader!css-loader!less-loader',
         include: [ path.join(__dirname, '..', '..', 'src') ]
@@ -95,28 +119,27 @@ var localInstatype = {
       { 
         test: /\.svg$/,
         loader: 'url-loader?limit=100000',
-        include: [ path.join(__dirname, '..', '..', 'images') ]
-      },
-      { 
-        test: /\.js?$/, 
-        loaders: ['babel-loader'], 
         include: [ 
-          path.join(__dirname, 'src'),
-          path.join(__dirname, '..', '..', 'src')
+          path.join(__dirname, '..', '..', 'images'),
+          path.join(__dirname, 'src', 'components', 'Infinite')
         ]
       }
     ]
   }
 }
 
+let config;
+
 if (process.env.NODE_ENV === 'production'){
-  var config = merge(common, production, localInstatype);
+  config = Object.assign(common, production, localInstatype);
 }else{
   if (process.env.DUAL){
-    var config = merge(common, development, localInstatype);
+    config = Object.assign(common, development, localInstatype);
   }else{
-    var config = merge(common, development);
+    config = Object.assign(common, development);
   }
 }
+
+//console.log(config.module.loaders);
 
 module.exports = config;

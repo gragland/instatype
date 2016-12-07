@@ -1,13 +1,15 @@
 import React from 'react';
 import Instatype from 'instatype';
-import Unsplash from 'unsplash-js';
+import Unsplash, { toJson }  from 'unsplash-js';
 import throttle from 'lodash/throttle';
 import ResponsiveGrid from './components/Grid/ResponsiveGrid.js';
 import Photo from './components/Photo.js';
+import Infinite from './components/Infinite/Infinite.js';
 import data from './data.js';
 
-// Polyfill promises
-import 'es6-promise/auto';
+// For Async/Await, Promises, Object.assign, etc
+// For smaller file size we could load specific polyfills
+import 'babel-polyfill';
 
 // Polyfill fetch (used by Unsplash)
 import 'whatwg-fetch';
@@ -16,42 +18,126 @@ const unsplash = new Unsplash({
   applicationId: '806337d0390512806adf0ab960cb1fbc65b631dfe303a14dcb56432003bd8bfc' 
 });
 
+const PHOTOS_PER_PAGE = 16;
+
 const USE_LOCAL_DATA = { 
   users: false,
-  photos: false,
-  popular: true
+  userPhotos: false,
+  popularPhotos: true
 };
 
-class App extends React.Component {
+class App extends React.PureComponent {
 
   constructor(props){
     super(props);
 
     this.state = {
+      section: 'popular',
       photos: null,
-      loading: false
+      username: null,
+      page: 1,
+      loading: false,
+      atEnd: false
     };
 
     this.getUsersThrottled = throttle(this.getUsers.bind(this), 300);
-    this.selectedHandler = this.selectedHandler.bind(this);
+    this.userSelectedHandler = this.userSelectedHandler.bind(this);
+    this.getUserPhotos = this.getUserPhotos.bind(this);
+    this.getPage = this.getPage.bind(this);
   }
 
   componentDidMount(){
-    this.getPopular();
+    this.getPage();
+  }
+
+  async getPage(){
+
+    const { photos, section, username, page, loading } = this.state;
+
+    if (loading){
+      return false;
+    }
+
+    console.log(`[APP] Getting page`);
+
+    // Only show main loader if fetching first page
+    this.setState({ loading: true });
+
+    let response;
+    let nextPhotos;
+    
+    switch (section){
+      case 'popular':
+        response = await this.getPopularPhotos(page);
+        break;
+      case 'user':
+        response = await this.getUserPhotos(username, page);
+    }
+
+    if (typeof response.json === 'function'){
+      nextPhotos = await response.json();
+    }else{
+      nextPhotos = response; // Local data
+    }
+
+    this.setState({
+      section: section,
+      photos: (photos ? photos.concat(nextPhotos) : nextPhotos),
+      username: (section === 'user' ? username : null),
+      page: page + 1,
+      loading: false,
+      atEnd: (nextPhotos.length < PHOTOS_PER_PAGE)
+    });
+  }
+
+  getPopularPhotos(page){
+
+    if (USE_LOCAL_DATA.popularPhotos && page === 1){
+      return data.popular;
+    }
+
+    return unsplash.photos.listPhotos(page, PHOTOS_PER_PAGE, 'popular');
+  }
+
+  getUserPhotos(username, page){
+
+    if (USE_LOCAL_DATA.userPhotos){
+      return data.photos;
+    }
+
+    return unsplash.users.photos(username, page, PHOTOS_PER_PAGE, 'latest')
+  }
+
+  userSelectedHandler(user){
+
+    // Clear instatype
+    // Todo: Give Instatype a clearOnSelect prop
+    this.refs.instatype.refs.inputComponent.refs.input.value = '';
+
+    this.setState({
+      section: 'user',
+      page: 1,
+      photos: null,
+      username: user.username,
+      loading: false
+    },() => {
+      this.getPage();
+    });
   }
 
   // Our Instatype request handler
-  getUsers(query, limit, callback){
+  async getUsers(query, limit, callback){
 
     if (USE_LOCAL_DATA.users){
-      callback(this.mapUserProps(data.users));
+      callback(this.mapUserProps(data.users.results));
       return;
     }
 
-    unsplash.search.users(query, 1)
-    .then((response) => response.json())
-    .then((json) => this.mapUserProps(json.results))
-    .then((usersWithProps) => callback(usersWithProps));
+    const response = await unsplash.search.users(query, 1);
+    const json = await response.json();
+    const usersWithProps = this.mapUserProps(json.results);
+
+    callback(usersWithProps);
   }
 
   // Give user objects the props expected by Instatype
@@ -63,52 +149,9 @@ class App extends React.Component {
     });
   }
 
-  selectedHandler(result){
-
-    if (USE_LOCAL_DATA.photos){
-      this.setState({ photos: data.photos });
-      return;
-    }
-
-    this.setState({ loading: true });
-
-    // Clear instatype
-    // Todo: Give Instatype a clearOnSelect prop
-    this.refs.instatype.refs.inputComponent.refs.input.value = '';
-
-    unsplash.users.photos(result.username)
-    .then((response) => response.json())
-    .then((json) => {
-      this.setState({
-        photos: json,
-        loading: false
-      });
-    });
-  }
-
-  
-  getPopular(){
-
-    if (USE_LOCAL_DATA.popular){
-      this.setState({ photos: data.popular });
-      return;
-    }
-
-    this.setState({ loading: true });
-
-    unsplash.photos.listPhotos(1, 16, "popular")
-    .then((response) => response.json())
-    .then((json) => {
-      this.setState({
-        photos: json,
-        loading: false
-      })
-    });
-  }
-
   render(){
 
-    const { photos, loading } = this.state;
+    const { photos, page, loading, atEnd } = this.state;
 
     // Grid options for different size screens
     const gridBreakPoints = [
@@ -123,25 +166,27 @@ class App extends React.Component {
           <Instatype 
             placeholder='Search Unsplash' 
             requestHandler={this.getUsersThrottled}
-            selectedHandler={this.selectedHandler}
+            selectedHandler={this.userSelectedHandler}
             limit={10} 
             thumbStyle='circle'
             ref='instatype'/>
         </div>
 
-        { photos && photos.length > 0 && !loading &&
-          <ResponsiveGrid columns={4} spacing={3} breakPoints={gridBreakPoints} passColumnWidth={true} hideOuterSpacing={true}>
-            { photos.map( photo => <Photo data={photo} key={photo.id} /> )}
-          </ResponsiveGrid>
+        { photos && photos.length > 0 &&
+          <Infinite requestHandler={this.getPage} atEnd={atEnd}>
+            <ResponsiveGrid columns={4} spacing={3} breakPoints={gridBreakPoints} passColumnWidth={true} hideOuterSpacing={true}>
+              { photos.map( photo => <Photo data={photo} key={photo.id} /> )}
+            </ResponsiveGrid>
+          </Infinite>
         }
       
-        { photos && photos.length === 0 && !loading &&
+        { photos && photos.length === 0 &&
           <div className='message'>
             This user has no photos 🙁
           </div>
         }
 
-        { loading &&
+        { loading && page === 1 &&
           <div className='message'>
             Loading ...
           </div>

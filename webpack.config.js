@@ -1,5 +1,5 @@
-var webpack = require('webpack');
-var merge = require('webpack-merge');
+const webpack = require('webpack');
+const merge = require('webpack-merge');
 
 /* 
   To upgrade to webpack 2:
@@ -66,12 +66,13 @@ const script = {
   ]
 }
 
+let config;
+
 if (process.env.TYPE === 'library'){
-  var config = merge(common, library);
+  config = merge(common, library);
 }else
 if (process.env.TYPE === 'script'){
-  var config = merge(common, script);
+  config = merge(common, script);
 }
-
 
 module.exports = config;

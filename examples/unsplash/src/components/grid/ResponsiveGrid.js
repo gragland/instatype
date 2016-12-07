@@ -1,7 +1,7 @@
 import React from 'react';
 import Grid from './Grid.js';
 
-class ResponsiveGrid extends React.Component {
+class ResponsiveGrid extends React.PureComponent {
 
   constructor(props){
     super(props);
@@ -67,8 +67,8 @@ class ResponsiveGrid extends React.Component {
     const totalSpacing = gutterCount * spacing;
     const columnWidth = (gridWidth - totalSpacing) / columns;
 
-    console.log(`Grid Width: ${gridWidth}`);
-    console.log(`Column Width: ${columnWidth}`);
+    console.log(`[GRID] Grid Width: ${gridWidth}`);
+    console.log(`[GRID] Column Width: ${columnWidth}`);
 
     this.setState({ columnWidth: columnWidth });
   }
