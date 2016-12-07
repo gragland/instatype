@@ -32,12 +32,7 @@ const common = {
     ]
   },
   externals: {
-    "react": {
-      root: 'React',
-      commonjs: 'react',
-      commonjs2: 'react',
-      amd: 'react'
-    }
+    react: 'React'
   }
 };
 
