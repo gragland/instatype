@@ -237,5 +237,7 @@ Instatype.defaultProps = {
   blurOnTouchStart: false
 };
 
-export default Instatype;
+// NOTE: Don't do an ES6 "export default Instatype" 
+// Otherwise our standalone browser script /dist/instatype.js has the component at instatype.default (rather then just instatype)
+module.exports = Instatype;
 

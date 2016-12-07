@@ -16,7 +16,11 @@ const unsplash = new Unsplash({
   applicationId: '806337d0390512806adf0ab960cb1fbc65b631dfe303a14dcb56432003bd8bfc' 
 });
 
-const USE_LOCAL_DATA = { popular: true };
+const USE_LOCAL_DATA = { 
+  users: false,
+  photos: false,
+  popular: true
+};
 
 class App extends React.Component {
 
@@ -115,7 +119,7 @@ class App extends React.Component {
 
     return(
       <div>
-        <div id='navbar'>
+        <div className='navbar'>
           <Instatype 
             placeholder='Search Unsplash' 
             requestHandler={this.getUsersThrottled}
@@ -132,13 +136,13 @@ class App extends React.Component {
         }
       
         { photos && photos.length === 0 && !loading &&
-          <div style={messageStyle}>
+          <div className='message'>
             This user has no photos 🙁
           </div>
         }
 
         { loading &&
-          <div style={messageStyle}>
+          <div className='message'>
             Loading ...
           </div>
         }
@@ -146,12 +150,5 @@ class App extends React.Component {
     )
   }
 };
-
-const messageStyle = {
-  marginTop: '2em', 
-  textAlign: 'center', 
-  fontSize: '2em', 
-  color: '#6e6e6e'
-}
 
 export default App;

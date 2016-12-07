@@ -1,6 +1,4 @@
 import React from 'react';
-//import findDOMNode from 'react-dom/lib/findDOMNode.js';
-//import Grid from 'react-simple-grid';
 import Grid from './Grid.js';
 
 class ResponsiveGrid extends React.Component {

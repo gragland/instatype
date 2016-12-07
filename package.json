@@ -4,7 +4,9 @@
   "description": "Simple React Typeahead",
   "main": "lib/instatype.js",
   "scripts": {
-    "build": "webpack --config webpack.config.js",
+    "build": "npm run build-library && npm run build-script",
+    "build-library": "NODE_ENV=production TYPE=library webpack --config webpack.config.js",
+    "build-script": "NODE_ENV=production TYPE=script webpack --config webpack.config.js",
     "example": "cd examples/unsplash && npm install && npm run start-dev-dual",
     "start": "npm run example",
     "prepublish": "npm run build"
@@ -24,7 +26,8 @@
     "react": "^15.4.1",
     "style-loader": "0.13.1",
     "url-loader": "^0.5.7",
-    "webpack": "1.13.3"
+    "webpack": "1.13.3",
+    "webpack-merge": "^1.0.2"
   },
   "repository": {
     "type": "git",

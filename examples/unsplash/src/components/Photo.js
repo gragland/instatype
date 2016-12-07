@@ -1,7 +1,8 @@
 import React from 'react';
 import Image from './Image/Image.js';
 
-// Must be a direct child of <ResponsiveGrid> to recieve props.parentColumnWidth
+// Must be a direct child of <ResponsiveGrid> to receive props.parentColumnWidth 
+// <Image> won't render without props.parentColumnWidth because parseSrc is enabled
 
 const Photo = ({ data, parentColumnWidth }) => {
 

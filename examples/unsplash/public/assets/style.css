@@ -1,18 +1,25 @@
 body {
-    font-size: 12px;
-    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-    padding: 0;
-    margin: 0;
-}
-
-#navbar {
-    padding: 2em 2.2em;
-    border-bottom: 1px solid #ccc;
-    background-color: #F9FDFF;
+  font-size: 12px;
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  padding: 0;
+  margin: 0;
 }
 
 @media all and (max-width: 500px) {
-    body {
-        font-size: 8px;
-    }
+  body {
+    font-size: 8px;
+  }
+}
+
+.navbar {
+  padding: 2em 2.2em;
+  border-bottom: 1px solid #ccc;
+  background-color: #F9FDFF;
+}
+
+.message {
+  margin-top: 2em;
+  text-align: center;
+  font-size: 2em;
+  color: #6e6e6e;
 }
