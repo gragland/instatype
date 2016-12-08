@@ -175,7 +175,7 @@ class Instatype extends React.PureComponent {
   }
 
   blurInput(){
-    this.refs.inputComponent.refs.input.getDOMNode().blur();
+    this.refs.inputComponent.refs.input.blur();
   }
 
   render(){

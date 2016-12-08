@@ -1,16 +1,22 @@
 import React from 'react';
 import Image from './Image/Image.js';
+import { passGridColumnWidth } from './Grid/ResponsiveGrid.js';
 
-// Must be a direct child of <ResponsiveGrid> to receive props.parentColumnWidth 
-// <Image> won't render without props.parentColumnWidth because parseSrc is enabled
-
-const Photo = ({ data, parentColumnWidth }) => {
+const Photo = ({ data, parentWidth }) => {
 
 	const allowedSrcWidths = [ 200, 300, 400, 500 ];
 
 	return (
 	  <a href={data.links.html} target='_blank' style={{ display: 'block', background: hexToRGB(data.color, 0.7) }}>
-	    <Image src={`https://source.unsplash.com/${data.id}/{width}x{height}`} parseSrc={true} parseSrcWidth={parentColumnWidth} parseSrcAllowedWidths={allowedSrcWidths} />
+	    <Image 
+        src={`https://source.unsplash.com/${data.id}/{width}x{height}`} 
+        parseSrc={true} 
+        parseSrcWidth={parentWidth} 
+        parseSrcAllowedWidths={allowedSrcWidths} 
+        parseSrcDoubleForRetina={true} />
+      <div style={{ position: 'absolute', top: 10, right: 10, backgroundColor: '#fff', color: '#000', padding: '0.3em 0.6em', opacity: '1' }}>
+        {parentWidth}px
+      </div>
 	  </a>
 	);
   
@@ -23,7 +29,8 @@ Photo.propTypes = {
     	html: React.PropTypes.string.isRequired
     }).isRequired
   }).isRequired,
-  parentColumnWidth: React.PropTypes.number
+  width: React.PropTypes.number,
+  parentWidth: React.PropTypes.number
 };
 
 function hexToRGB(hex, alpha) {
@@ -38,4 +45,5 @@ function hexToRGB(hex, alpha) {
     }
 }
 
-export default Photo;
+// HOC that gives us <Grid> column width as the prop parentWidth
+export default passGridColumnWidth(Photo, 'parentWidth');

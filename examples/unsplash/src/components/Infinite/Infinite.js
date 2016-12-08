@@ -59,7 +59,7 @@ class Infinite extends React.PureComponent {
 
   render(){
 
-    const { atEnd, children } = this.props;
+    const { atEnd, children, loadingIcon } = this.props;
 
     var loadingsStyle = {
       display: 'block',
@@ -70,7 +70,7 @@ class Infinite extends React.PureComponent {
     return (
       <div>
         {children}
-        {!atEnd &&
+        {!atEnd && loadingIcon &&
           <img src={loadingIcon} style={loadingsStyle} />
         }
       </div>
@@ -81,7 +81,10 @@ class Infinite extends React.PureComponent {
 
 Infinite.defaultProps = {
   atEnd: false,
-  loading: false
+  loading: false,
+  // Could we do a conditional require of our bundled svg ...
+  // ... so that it gets removed by webpack if user specifies a different icon?
+  loadingIcon: loadingIcon
 }
 
 Infinite.propTypes = {

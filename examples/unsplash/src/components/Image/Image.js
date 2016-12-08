@@ -1,7 +1,7 @@
 import React from 'react';
 import Block from './ImageBlock';
 
-const Image = ({ src, heightWidthRatio, parseSrc, parseSrcWidth, parseSrcAllowedWidths, children, ...props }) => {
+const Image = ({ src, heightWidthRatio, parseSrc, parseSrcWidth, parseSrcAllowedWidths, parseSrcDoubleForRetina, children, ...props }) => {
 
   /** If src parsing is enabled ...
     * We replace width and height in src url
@@ -13,6 +13,11 @@ const Image = ({ src, heightWidthRatio, parseSrc, parseSrcWidth, parseSrcAllowed
     */
 
   if (parseSrc && parseSrcWidth) {
+
+    if (parseSrcDoubleForRetina && isHighDensity()) {
+      // Double image width for high density screens (1.3 or 2dpi)
+      parseSrcWidth = parseSrcWidth * 2;
+    }
 
     // Snap parseSrcWidth to next largest width in allowedSrcWidths (wont upscale)
     // If allowedSrcWidths doesn't contain a larger width then it will be largest available
@@ -36,6 +41,9 @@ const Image = ({ src, heightWidthRatio, parseSrc, parseSrcWidth, parseSrcAllowed
       { (!parseSrc || parseSrcWidth) && 
         <img src={src} style={style} {...props} /> 
       }
+      <div style={{ position: 'absolute', bottom: 10, right: 10, backgroundColor: '#fff', color: '#000', padding: '0.3em 0.6em', opacity: '0.6' }}>
+        Img: {parseSrcWidth}px { parseSrcDoubleForRetina && isHighDensity() && <span>(@2x)</span> }
+      </div>
       {children}
     </Block>
   );
@@ -48,12 +56,21 @@ Image.propTypes = {
   parseSrc: React.PropTypes.bool,
   parseSrcWidth: React.PropTypes.number,
   parseSrcAllowedWidths: React.PropTypes.arrayOf(React.PropTypes.number),
+  parseSrcDoubleForRetina: React.PropTypes.bool,
   children: React.PropTypes.node
 };
 
 Image.defaultProps = {
   heightWidthRatio: 1 // Square
 };
+
+/**
+ * Check whether screen is high density (1.3 or 2dpi)
+ * From http://stackoverflow.com/a/20413768/56976
+ */
+function isHighDensity(){
+    return ((window.matchMedia && (window.matchMedia('only screen and (min-resolution: 124dpi), only screen and (min-resolution: 1.3dppx), only screen and (min-resolution: 48.8dpcm)').matches || window.matchMedia('only screen and (-webkit-min-device-pixel-ratio: 1.3), only screen and (-o-min-device-pixel-ratio: 2.6/2), only screen and (min--moz-device-pixel-ratio: 1.3), only screen and (min-device-pixel-ratio: 1.3)').matches)) || (window.devicePixelRatio && window.devicePixelRatio > 1.3));
+}
 
 /**
  * Find the next equal or higher number within an array

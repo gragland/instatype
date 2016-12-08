@@ -1,9 +1,10 @@
 import React from 'react';
 import Instatype from 'instatype';
 import throttle from 'lodash/throttle';
-import ResponsiveGrid from './components/Grid/ResponsiveGrid.js';
+import Grid, { Block } from './components/Grid/ResponsiveGrid.js';
 import Photo from './components/Photo.js';
 import Infinite from './components/Infinite/Infinite.js';
+import ToTop from './components/ToTop.js';
 import api from './api.js';
 
 class App extends React.PureComponent {
@@ -41,9 +42,7 @@ class App extends React.PureComponent {
 
     this.setState({ loading: true });
 
-    let response;
     let nextPhotos;
-    
     switch (section){
       case 'popular':
         nextPhotos = await api.getPopularPhotos(page);
@@ -66,8 +65,6 @@ class App extends React.PureComponent {
   async getUsers(query, limit, callback){
 
     const users = await api.getUsers(query);
-
-    console.log(query);
 
     // Give each user a 'name' and 'image' for Instatype
     const usersWithProps = users.map((user) => {
@@ -101,17 +98,17 @@ class App extends React.PureComponent {
     const { photos, page, loading, atEnd } = this.state;
 
     // Grid options for different size screens
-    const gridBreakPoints = [
+    const photoGridBreakPoints = [
       { maxWidth: 400, columns: 2, spacing: 1 },
       { maxWidth: 700, columns: 2, spacing: 2 },
-      { maxWidth: 1100, columns: 3 }
+      { maxWidth: 1100, columns: 3, spacing: 3 }
     ];
 
     return(
       <div>
         <div className='navbar'>
           <Instatype 
-            placeholder='Search Unsplash' 
+            placeholder='Search Unsplash'
             requestHandler={this.getUsersThrottled}
             selectedHandler={this.userSelectedHandler}
             limit={10} 
@@ -119,14 +116,34 @@ class App extends React.PureComponent {
             ref='instatype'/>
         </div>
 
+        
+        <div style={{ marginBottom: '30px' }}>
+          <Grid spacing={5} breakPoints={[ { maxWidth: 800, spacing: 1, blockWidth: [ 1/4 ] } ]} hideOuterSpacing={true} blockWidth={[ 1/3, 2/3, 2/3, 1/3 ]}>
+            
+            <Block><div style={{ backgroundColor: 'red', width: '100%', height: '100px' }}></div></Block>
+            <Block><div style={{ backgroundColor: 'red', width: '100%', height: '100px' }}></div></Block>
+            <Block><div style={{ backgroundColor: 'red', width: '100%', height: '100px' }}></div></Block>
+            <Block><div style={{ backgroundColor: 'red', width: '100%', height: '100px' }}></div></Block>
+            <Block><div style={{ backgroundColor: 'red', width: '100%', height: '100px' }}></div></Block>
+            <Block><div style={{ backgroundColor: 'red', width: '100%', height: '100px' }}></div></Block>
+            <Block><div style={{ backgroundColor: 'red', width: '100%', height: '100px' }}></div></Block>
+            <Block><div style={{ backgroundColor: 'red', width: '100%', height: '100px' }}></div></Block>
+      
+          </Grid>
+        </div>
+    
+
+     
         { photos && photos.length > 0 &&
           <Infinite requestHandler={this.getPage} atEnd={atEnd}>
-            <ResponsiveGrid columns={4} spacing={3} breakPoints={gridBreakPoints} passColumnWidth={true} hideOuterSpacing={true}>
+            <Grid columns={4} spacing={5} breakPoints={photoGridBreakPoints} passColumnWidth={true} hideOuterSpacing={true}>
               { photos.map( photo => <Photo data={photo} key={photo.id} /> )}
-            </ResponsiveGrid>
+            </Grid>
           </Infinite>
         }
-      
+     
+     
+
         { photos && photos.length === 0 &&
           <div className='message'>
             This user has no photos 🙁
@@ -138,6 +155,8 @@ class App extends React.PureComponent {
             Loading ...
           </div>
         }
+
+        <ToTop/>
       </div>
     )
   }

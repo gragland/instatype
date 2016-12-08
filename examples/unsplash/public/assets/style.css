@@ -13,8 +13,22 @@ body {
 
 .navbar {
   padding: 2em 2.2em;
-  border-bottom: 1px solid #ccc;
-  background-color: #F9FDFF;
+  background-color: #FFF;
+}
+
+.navbar #instatype .input-typeahead {
+  outline: none;
+  -webkit-appearance: none;
+  border: 1px solid #adadad;
+}
+
+.navbar #instatype .input-typeahead:focus {
+  border: 1px solid #717171;
+}
+
+.navbar #instatype ul.results {
+  border: 1px solid #717171;
+  border-top: none;
 }
 
 .message {

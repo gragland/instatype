@@ -1,5 +1,7 @@
 import React from 'react';
 import Grid from './Grid.js';
+import passGridColumnWidth from './passGridColumnWidth.js';
+import Block from './GridBlock.js';
 import { nextHighestNumber, elementWidth } from './util.js';
 
 class ResponsiveGrid extends React.PureComponent {
@@ -9,13 +11,24 @@ class ResponsiveGrid extends React.PureComponent {
 
     this.state = {
       columns: this.props.columns,
-      spacing: this.props.spacing
+      spacing: this.props.spacing,
+      blockWidth: this.props.blockWidth
     };
 
     this.setup = this.setup.bind(this);
     this.breakPoints = this.breakPoints.bind(this);
     this.columnWidth = this.columnWidth.bind(this);
   }
+
+  /*
+  getChildContext() {
+
+    console.log('[RESPONSIVE GRID - CONTEXT] ' + this.state.columnWidth);
+
+    return { 
+      parentColumnWidth: this.state.columnWidth
+    }
+  }*/
 
   componentDidMount(){
     this.setup();
@@ -41,7 +54,7 @@ class ResponsiveGrid extends React.PureComponent {
   }
 
   breakPoints(){
-    let { columns, spacing } = this.props;
+    let { columns, spacing, blockWidth } = this.props;
     const { breakPoints } = this.props;
     const gridWidth = elementWidth(this.el);
 
@@ -50,55 +63,52 @@ class ResponsiveGrid extends React.PureComponent {
     if (breakPointOptions){
       columns = breakPointOptions.columns || columns;
       spacing = breakPointOptions.spacing || spacing;
+      blockWidth = breakPointOptions.blockWidth || blockWidth;
     }
      
     this.setState({
-      'columns': columns,
-      'spacing': spacing, 
+      columns: columns,
+      spacing: spacing, 
+      blockWidth: blockWidth
     });
   }
 
   columnWidth(){
-    const { hideOuterSpacing } = this.props;
-    const { spacing, columns } = this.state;
+    //const { hideOuterSpacing } = this.props;
+    //const { spacing, columns } = this.state;
 
-    const gridWidth = elementWidth(this.el);
+    const gridWidthPx = elementWidth(this.el);
 
-    const gutterCount = columns + (hideOuterSpacing ? -1 : 1);
-    const totalSpacing = gutterCount * spacing;
-    const columnWidth = (gridWidth - totalSpacing) / columns;
+    //const gutterCount = columns + (hideOuterSpacing ? -1 : 1);
+    //const totalSpacing = gutterCount * spacing;
+    //const columnWidth = (gridWidthPx - totalSpacing) / columns;
 
-    console.log(`[GRID] Grid Width: ${gridWidth}`);
-    console.log(`[GRID] Column Width: ${columnWidth}`);
+    console.log(`[GRID] Grid Width: ${gridWidthPx}`);
+    
+    //console.log(`[GRID] Column Width: ${columnWidth}`);
 
-    this.setState({ columnWidth: columnWidth });
+    this.setState({ 
+      gridWidthPx: gridWidthPx,
+      //columnWidth: columnWidth 
+    });
   }
 
   render(){
 
     let childrenWithProps;
 
-    const { children, hideOuterSpacing } = this.props;
+    const { children, hideOuterSpacing, passColumnWidth } = this.props;
 
-    const { columns, spacing, columnWidth } = this.state;
+    // This state is set from props in constructor
+    const { columns, spacing, blockWidth, gridWidthPx } = this.state;
 
-    if (columnWidth){
-
-      childrenWithProps = React.Children.map(children, (child) => {
-        return React.cloneElement(child, {
-          parentColumnWidth: columnWidth
-        });
-      });
-
-    }else{
-      childrenWithProps = children;
-    }
+    //const showGrid = ((passColumnWidth && !gridWidthPx) ? false : true);
 
     // Wrap with <div> so we can grab DOM node without needing to import findDOMNode from react-dom
     return(
       <div ref={(el) => { this.el = el; }}>
-        <Grid columns={columns} spacing={spacing} hideOuterSpacing={hideOuterSpacing}>
-          {childrenWithProps}
+        <Grid columns={columns} gridWidthPx={gridWidthPx} blockWidth={blockWidth} spacing={spacing} hideOuterSpacing={hideOuterSpacing}>
+          {children}
         </Grid>
       </div>
     )
@@ -108,14 +118,25 @@ class ResponsiveGrid extends React.PureComponent {
 ResponsiveGrid.defaultProps = {
   columns: 3,
   spacing: 5,
-  hideOuterSpacing: true
-}
+  hideOuterSpacing: true,
+  passColumnWidth: true
+};
+
+/*
+ResponsiveGrid.childContextTypes = {
+  parentColumnWidth: React.PropTypes.number
+};
+*/
 
 ResponsiveGrid.propTypes = {
   spacing: React.PropTypes.number,
   columns: React.PropTypes.number,
   hideOuterSpacing: React.PropTypes.bool,
   passColumnWidth: React.PropTypes.bool,
+  blockWidth: React.PropTypes.oneOfType([
+    React.PropTypes.number,
+    React.PropTypes.arrayOf(React.PropTypes.number)
+  ]),
   children: React.PropTypes.node.isRequired,
   breakPoints: React.PropTypes.arrayOf(
     React.PropTypes.shape({
@@ -127,3 +148,4 @@ ResponsiveGrid.propTypes = {
 };
 
 export default ResponsiveGrid;
+export { Block, passGridColumnWidth };
