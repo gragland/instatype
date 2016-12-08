@@ -22,16 +22,9 @@ class Infinite extends React.PureComponent {
     window.removeEventListener('scroll', this.scrollListenerThrottled);
   }
 
-  // Do we need this?
-  /*
-  componentDidUpdate(){
-    this.checkScroll();
-  }*/
-
   addScrollListener(){
     window.addEventListener('scroll', this.scrollListenerThrottled);
   }
-
 
   checkScroll(trailing){
 
@@ -68,29 +61,17 @@ class Infinite extends React.PureComponent {
 
     const { atEnd, children } = this.props;
 
-    var styles = {
-      loadingContainer: {
-        position: 'relative',
-        display: 'block',
-        width: '3em',
-        height: '3em',
-        margin: '2em auto 2em auto'
-      },
-      loadingIcon: {
-        position: 'relative',
-        padding: 0,
-        width: '100%',
-        height: '100%'
-      }
+    var loadingsStyle = {
+      display: 'block',
+      width: '3em',
+      margin: '2em auto 2em auto'
     };
 
     return (
       <div>
         {children}
         {!atEnd &&
-          <div style={styles.loadingContainer}>
-            <img src={loadingIcon} style={styles.loadingIcon} />
-          </div>
+          <img src={loadingIcon} style={loadingsStyle} />
         }
       </div>
     );

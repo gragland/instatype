@@ -1,5 +1,6 @@
 import React from 'react';
 import Grid from './Grid.js';
+import { nextHighestNumber, elementWidth } from './util.js';
 
 class ResponsiveGrid extends React.PureComponent {
 
@@ -124,39 +125,5 @@ ResponsiveGrid.propTypes = {
     })
   )
 };
-
-/**
- * Find the next equal or higher number within an array
- * @arr {array} Array to iterate through.
- * @num {number} Number to compare.
- * @returnEqual {boolean} Return an equal number if found.
- * @returnLast {boolean} Return last number if no equal or higher one found.
- * @prop {string} Indicates @arr contains objects. Get number from object[prop].
- */
-export function nextHighestNumber(arr, num, returnEqual, returnLast, prop){
-  let i = 0;
-  for (i=0; i<arr.length; i++){
-    let arrNum = (prop ? arr[i][prop] : arr[i]);
-    if (returnEqual && arrNum === num){
-      return arr[i];
-    }else
-    if (arrNum >= num){
-      return arr[i];
-    }
-  }
-  if (returnLast){
-    return arr[i-1];
-  }else{
-    return false;
-  }
-}
-
-/**
- * Get the width of a DOM element
- * TODO: Test this in other browsers
- */
-export function elementWidth(el){
-  return el.clientWidth;
-}
 
 export default ResponsiveGrid;

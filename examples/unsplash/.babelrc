@@ -3,6 +3,6 @@
   "plugins": [
   	"transform-async-to-generator",
     "transform-object-rest-spread",
-    "transform-object-assign"
+    "transform-runtime"
   ]
 }

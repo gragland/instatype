@@ -1,4 +1,5 @@
 import React from 'react';
+import { merge } from './util.js';
 
 const Row = ({ spacing, isLastRow, hideGutters, children }) => {
 
@@ -7,7 +8,8 @@ const Row = ({ spacing, isLastRow, hideGutters, children }) => {
       position: 'relative',
       width: '100%',
       marginBottom: `${spacing}px`,
-      paddingLeft: `${spacing/2}px`, // Half spacing because child blocks also have left/right padding
+      // Half outer spacing because child blocks also have left/right padding
+      paddingLeft: `${spacing/2}px`,
       paddingRight: `${spacing/2}px`,
       'boxSizing': 'border-box',
       'WebkitBoxSizing': 'border-box',
@@ -16,11 +18,7 @@ const Row = ({ spacing, isLastRow, hideGutters, children }) => {
     rowLast: {
       marginBottom: 0
     },
-    // Expands row width to hide gutters (spacing to left and right of row)
-    // Note: Gutter spacing is caused by child Block components (not style of row element)
     rowHideGutters: {
-      width: `calc(100% + ${spacing}px)`,
-      marginLeft: `calc(-${spacing/2}px)`,
       paddingLeft: 0,
       paddingRight: 0
     },
@@ -34,11 +32,11 @@ const Row = ({ spacing, isLastRow, hideGutters, children }) => {
   let rowStyle = styles.row;
 
   if (isLastRow){
-    rowStyle = Object.assign(rowStyle, styles.rowLast);
+    rowStyle = merge(rowStyle, styles.rowLast);
   }
 
   if (hideGutters && spacing > 0){
-    rowStyle = Object.assign(rowStyle, styles.rowHideGutters);
+    rowStyle = merge(rowStyle, styles.rowHideGutters);
   }
 
   return (

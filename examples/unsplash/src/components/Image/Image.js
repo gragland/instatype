@@ -81,4 +81,4 @@ export function nextHighestNumber(arr, num, returnEqual, returnLast, prop){
   }
 }
 
-module.exports = Image;
+export default Image;

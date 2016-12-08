@@ -1,19 +1,25 @@
 import React from 'react';
 import Row from './GridRow.js';
 import Block from './GridBlock.js';
+import { merge } from './util.js';
 
 const Grid = ({ columns, spacing, hideOuterSpacing, children }) => {
 
   const styles = {
-    container: {
+    wrapper: {
+      // Prevent horizontal scroll
+      overflowX: 'hidden'
+    },
+    grid: {
       paddingTop: `${spacing}px`,
       paddingBottom: `${spacing}px`
     },
-    containerHideOuterSpacing: {
+    gridHideOuterSpacing: {
+      // Expand grid width to hide outer gutters
+      width: `calc(100% + ${spacing}px)`,
+      marginLeft: `calc(-${spacing/2}px)`,
       paddingTop: 0,
-      paddingBottom: 0,
-      // Row width width will exceed grid with
-      overflowX: 'hidden'
+      paddingBottom: 0
     }
   };
 
@@ -52,15 +58,16 @@ const Grid = ({ columns, spacing, hideOuterSpacing, children }) => {
     );
   }
 
-  let style = styles.container;
-
+  let gridStyle = styles.grid;
   if (hideOuterSpacing){
-    style = Object.assign(style, styles.containerHideOuterSpacing);
+    gridStyle = merge(gridStyle, styles.gridHideOuterSpacing);
   }
 
 	return (
-    <div style={style}>
-      {rowNodes}
+    <div style={styles.wrapper}>
+      <div style={gridStyle}>
+        {rowNodes}
+      </div>
     </div>
 	);
 };

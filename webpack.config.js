@@ -1,12 +1,4 @@
 const webpack = require('webpack');
-const merge = require('webpack-merge');
-
-/* 
-  To upgrade to webpack 2:
-    - npm install 2.1.0-beta.27 --save-dev
-    - Change module.loaders to module.rules
-    - Update .babelrc: { "presets": [ ["es2015", { "modules": false }], "react" ] }
-*/
 
 const common = {
   entry: {
@@ -69,10 +61,10 @@ const script = {
 let config;
 
 if (process.env.TYPE === 'library'){
-  config = merge(common, library);
+  config = Object.assign(common, library);
 }else
 if (process.env.TYPE === 'script'){
-  config = merge(common, script);
+  config = Object.assign(common, script);
 }
 
 module.exports = config;

@@ -26,17 +26,20 @@ const development = {
     new webpack.HotModuleReplacementPlugin()
   ],
   module: {
-    loaders: [
+    rules: [
       { 
         test: /\.js?$/, 
-        loaders: ['babel'], 
+        use: ['babel-loader'], 
         include: [
           path.join(__dirname, 'src')
         ]
       },
       { 
         test: /\.svg$/,
-        loader: 'url-loader?limit=100000',
+        use: 'url-loader',
+        query: {
+          limit: '100000'
+        },
         include: [ 
           path.join(__dirname, 'src', 'components', 'Infinite')
         ]
@@ -60,26 +63,33 @@ const production = {
         NODE_ENV: JSON.stringify('production')
       }
     }),
-    new webpack.optimize.DedupePlugin(), // ~6kb difference
+    //new webpack.optimize.DedupePlugin(), // ~6kb difference
     //new webpack.optimize.OccurrenceOrderPlugin(), // No size difference
+    new webpack.LoaderOptionsPlugin({
+      minimize: true,
+      debug: false
+    }),
     new webpack.optimize.UglifyJsPlugin({ 
       compress: {
         warnings: false
-      } 
+      }
     })
   ],
   module: {
-    loaders: [
+    rules: [
       { 
         test: /\.js?$/, 
-        loaders: ['babel'], 
+        use: ['babel-loader'], 
         include: [
           path.join(__dirname, 'src')
         ]
       },
       { 
         test: /\.svg$/,
-        loader: 'url-loader?limit=100000',
+        use: 'url-loader',
+        options: {
+          limit: '100000'
+        },
         include: [ 
           path.join(__dirname, 'src', 'components', 'Infinite')
         ]
@@ -100,7 +110,7 @@ const localInstatype = {
       'instatype': path.join(__dirname, '..', '..', 'src', 'js', 'app.js'),
       //'instatype': path.join(__dirname, '..', '..', 'lib', 'instatype.js')
     },
-    root: [
+    modules: [
       // Find node module directories in this example and parent instatype project.
       path.join(__dirname, 'node_modules'), 
       path.join(__dirname, '..', '..', 'node_modules')
@@ -109,10 +119,10 @@ const localInstatype = {
   // Because we make require('instatype') resolve to src ...
   // ... we need to include same loaders used by instatype's webpack.config.js
   module: {
-    loaders: [
+    rules: [
       { 
         test: /\.js?$/, 
-        loaders: ['babel-loader'], 
+        use: ['babel-loader'], 
         include: [ 
           path.join(__dirname, 'src'),
           path.join(__dirname, '..', '..', 'src')
@@ -120,12 +130,19 @@ const localInstatype = {
       },
       { 
         test: /\.less$/, 
-        loader: 'style-loader!css-loader!less-loader',
+        use: [
+          'style-loader',
+          'css-loader',
+          'less-loader'
+        ],
         include: [ path.join(__dirname, '..', '..', 'src') ]
       },
       { 
         test: /\.svg$/,
-        loader: 'url-loader?limit=100000',
+        use: 'url-loader',
+        options: {
+          limit: '100000'
+        },
         include: [ 
           path.join(__dirname, '..', '..', 'images'),
           path.join(__dirname, 'src', 'components', 'Infinite')
