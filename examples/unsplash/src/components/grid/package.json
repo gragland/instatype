@@ -1,14 +1,12 @@
 {
-  "name": "instatype",
-  "version": "1.0.15",
-  "description": "Simple React Typeahead",
-  "main": "lib/instatype.js",
+  "name": "react-simple-grid",
+  "version": "1.1.0",
+  "description": "Simple react grid component",
+  "main": "lib/grid.js",
   "scripts": {
     "build": "npm run build-library && npm run build-script",
     "build-library": "NODE_ENV=production TYPE=library webpack --config webpack.config.js",
     "build-script": "NODE_ENV=production TYPE=script webpack --config webpack.config.js",
-    "example": "cd examples/unsplash && npm install && npm run start-dev-dual",
-    "start": "npm run example",
     "prepublish": "npm run build"
   },
   "peerDependencies": {
@@ -19,29 +17,22 @@
     "babel-loader": "6.2.8",
     "babel-preset-es2015": "6.18.0",
     "babel-preset-react": "6.16.0",
-    "css-loader": "^0.23.1",
-    "file-loader": "^0.9.0",
-    "less": "^2.7.1",
-    "less-loader": "^2.2.3",
-    "style-loader": "0.13.1",
-    "url-loader": "^0.5.7",
     "webpack": "1.13.3"
   },
   "repository": {
     "type": "git",
-    "url": "git://github.com/gragland/instatype.git"
+    "url": "git://github.com/gragland/react-simple-grid.git"
   },
   "author": "Gabe Ragland <gabe.ragland@gmail.com>",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/gragland/instatype/issues"
+    "url": "https://github.com/gragland/react-simple-grid/issues"
   },
   "keywords": [
-    "instatype",
-    "autocomplete",
-    "typeahead",
+    "grid",
+    "gallery",
     "react",
     "react-component"
   ],
-  "homepage": "https://github.com/gragland/instatype"
+  "homepage": "https://github.com/gragland/react-simple-grid"
 }

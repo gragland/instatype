@@ -1,7 +1,8 @@
 import React from 'react';
 import Instatype from 'instatype';
 import throttle from 'lodash/throttle';
-import Grid, { Block } from './components/Grid/ResponsiveGrid.js';
+import Grid, { Block } from './components/Grid/src/GridResponsive.js';
+//import Grid, { Block } from './components/Grid/lib/grid.js';
 import Photo from './components/Photo.js';
 import Infinite from './components/Infinite/Infinite.js';
 import ToTop from './components/ToTop.js';
@@ -99,9 +100,9 @@ class App extends React.PureComponent {
 
     // Grid options for different size screens
     const photoGridBreakPoints = [
-      { maxWidth: 400, columns: 2, spacing: 1 },
-      { maxWidth: 700, columns: 2, spacing: 2 },
-      { maxWidth: 1100, columns: 3, spacing: 3 }
+      { maxWidth: 400, blocksPerRow: 2, spacing: 1 },
+      { maxWidth: 700, blocksPerRow: 2, spacing: 2 },
+      { maxWidth: 1100, blocksPerRow: 3, spacing: 3 }
     ];
 
     return(
@@ -116,7 +117,6 @@ class App extends React.PureComponent {
             ref='instatype'/>
         </div>
 
-        
         <div style={{ marginBottom: '30px' }}>
           <Grid spacing={5} breakPoints={[ { maxWidth: 800, spacing: 1, blockWidth: [ 1/4 ] } ]} hideOuterSpacing={true} blockWidth={[ 1/3, 2/3, 2/3, 1/3 ]}>
             
@@ -132,18 +132,14 @@ class App extends React.PureComponent {
           </Grid>
         </div>
     
-
-     
         { photos && photos.length > 0 &&
           <Infinite requestHandler={this.getPage} atEnd={atEnd}>
-            <Grid columns={4} spacing={5} breakPoints={photoGridBreakPoints} passColumnWidth={true} hideOuterSpacing={true}>
+            <Grid blocksPerRow={4} spacing={5} breakPoints={photoGridBreakPoints} passBlockWidth={true} hideOuterSpacing={true}>
               { photos.map( photo => <Photo data={photo} key={photo.id} /> )}
             </Grid>
           </Infinite>
         }
      
-     
-
         { photos && photos.length === 0 &&
           <div className='message'>
             This user has no photos 🙁

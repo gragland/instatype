@@ -1,29 +1,14 @@
 import React from 'react';
 
-//const Block = ({ width, spacing, children }) => {
-
 class Block extends React.PureComponent {
 
   getChildContext() {
     return { 
-      parentColumnWidth: this.props.widthPx
+      parentBlockWidth: this.props.widthPx
     }
   }
-
-  /*
-  // Children won't update if we do this
-  shouldComponentUpdate(nextProps) {
-    const { width, spacing, children } = this.props;
-    if (width !== nextProps.width || spacing != nextProps.spacing || children != nextProps.children){
-      return true;
-    }
-    return false;
-  }
-  */
 
   render(){
-
-    console.log('BLOCK RENDER');
 
     const { width, spacing, children } = this.props;
 
@@ -47,7 +32,7 @@ class Block extends React.PureComponent {
 };
 
 Block.childContextTypes = {
-  parentColumnWidth: React.PropTypes.number
+  parentBlockWidth: React.PropTypes.number
 };
 
 Block.defaultProps = {

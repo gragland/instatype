@@ -26,7 +26,7 @@ export function nextHighestNumber(arr, num, returnEqual, returnLast, prop){
 
 /**
  * Shallow merge two objects
- * We're just merging style objects so no need for a polyfill
+ * We're just merging style objects so no need for object-assign ponyfill
  */
 export function merge(obj1, obj2){
   for (let attrname in obj2) { 

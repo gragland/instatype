@@ -26,6 +26,12 @@ class Infinite extends React.PureComponent {
     window.addEventListener('scroll', this.scrollListenerThrottled);
   }
 
+  componentDidUpdate(nextProps){
+    // If component updated (prop/state change higher in the chain)
+    // We want to check scroll position since DOM may have changed
+    this.checkScroll();
+  }
+
   checkScroll(trailing){
 
     const { loading, atEnd, requestHandler } = this.props;

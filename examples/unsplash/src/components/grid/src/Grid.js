@@ -7,7 +7,6 @@ class Grid extends React.PureComponent {
 
   constructor(props){
     super(props);
-
     this.computeBlockWidthPx = this.computeBlockWidthPx.bind(this);
   }
 
@@ -16,19 +15,19 @@ class Grid extends React.PureComponent {
 
     const { spacing, hideOuterSpacing, gridWidthPx } = this.props;
 
+    // If we don't have a width for the grid then return null width
     if (!gridWidthPx) return null;
 
     const gutterCount = numBlocksInRow + (hideOuterSpacing ? -1 : 1);
     const totalSpacing = gutterCount * spacing;
     const totalBlockSpace = gridWidthPx - totalSpacing;
     const blockWidthPx = totalBlockSpace * (block.width/100);
-    
     return blockWidthPx;
   }
 
   render(){
 
-    const { columns, gridWidthPx, blockWidth, spacing, hideOuterSpacing, children } = this.props;
+    const { blocksPerRow, blockWidth, spacing, hideOuterSpacing, children } = this.props;
 
     const styles = {
       wrapper: {
@@ -48,16 +47,16 @@ class Grid extends React.PureComponent {
       }
     };
 
-    // Get desired blockWidth from <Grid blockWidth> or <Grid columns> (alternate)
+    // Get desired blockWidth from <Grid blockWidth> or based on <Grid blocksPerRow> (alternate)
     // blockWidth can be a number or an array of numbers
     // This will be overridden by an individual <Block width> if specified
-    let blockWidthFromProps = blockWidth || 1/columns;
+    let blockWidthFromProps = blockWidth || 1/blocksPerRow;
+
+    // Normally into an array of widths ([1/4] or [1/4,1/2,1/4])
     const blockWidthArray = setupBlockWidthArray(blockWidthFromProps);
 
+    /**** BUILD OUR <ROWS> OF <BLOCKS> ****/
 
-    /**** CREATE ROWS OF BLOCKS ****/
-
-    let blockNodes = [];
     let rowNodes = [];
     let rowInProgress = [];
     let rowInProgressWidth = 0;
@@ -153,8 +152,6 @@ class Grid extends React.PureComponent {
   }
 };
 
-
-
 // Setup an array of block widths to iterate through
 function setupBlockWidthArray(blockWidth){
   // Normalize value into an array of numbers 
@@ -169,7 +166,7 @@ function isArray(o) {
 }
 
 Grid.propTypes = {
-  columns: React.PropTypes.number,
+  blocksPerRow: React.PropTypes.number,
   spacing: React.PropTypes.number,
   hideOuterSpacing: React.PropTypes.bool,
   children: (props) => {

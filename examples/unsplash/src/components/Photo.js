@@ -1,6 +1,7 @@
 import React from 'react';
 import Image from './Image/Image.js';
-import { passGridColumnWidth } from './Grid/ResponsiveGrid.js';
+import { PassBlockWidth } from './Grid/src/GridResponsive.js';
+//import { passGridColumnWidth } from './Grid/lib/grid.js';
 
 const Photo = ({ data, parentWidth }) => {
 
@@ -46,4 +47,4 @@ function hexToRGB(hex, alpha) {
 }
 
 // HOC that gives us <Grid> column width as the prop parentWidth
-export default passGridColumnWidth(Photo, 'parentWidth');
+export default PassBlockWidth(Photo, 'parentWidth');
