@@ -37,7 +37,7 @@
     "react": "^15.4.1",
     "react-dom": "^15.4.1",
     "react-scroll-up": "^1.1.5",
-    "react-simple-grid": "^1.0.2",
+    "react-simple-grid": "^1.1.0",
     "unsplash-js": "^4.3.1",
     "whatwg-fetch": "^2.0.1"
   }

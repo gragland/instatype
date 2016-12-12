@@ -1,13 +1,12 @@
 var path = require('path');
 var express = require('express');
 var compression = require('compression');
-
 var server = express();
 
 if (process.env.NODE_ENV === 'development'){
 
 	var webpack = require('webpack');
-	var config = require('./webpack.config');
+	var config = require('./webpack.config.js');
 	var compiler = webpack(config);
 
 	server.use(require('webpack-dev-middleware')(compiler, {

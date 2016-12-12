@@ -1,7 +1,6 @@
 import React from 'react';
 import Image from './Image/Image.js';
-import { PassBlockWidth } from './Grid/src/GridResponsive.js';
-//import { passGridColumnWidth } from './Grid/lib/grid.js';
+import { PassBlockWidth } from 'react-simple-grid';
 
 const Photo = ({ data, parentWidth }) => {
 

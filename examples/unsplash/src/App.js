@@ -1,8 +1,7 @@
 import React from 'react';
 import Instatype from 'instatype';
 import throttle from 'lodash/throttle';
-import Grid, { Block } from './components/Grid/src/GridResponsive.js';
-//import Grid, { Block } from './components/Grid/lib/grid.js';
+import Grid, { Block } from 'react-simple-grid';
 import Photo from './components/Photo.js';
 import Infinite from './components/Infinite/Infinite.js';
 import ToTop from './components/ToTop.js';

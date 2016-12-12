@@ -98,7 +98,8 @@ const localInstatype = {
       // Make require('instatype') resolve to src (not node module) ...
       // ... so that we can work on instatype with hot reloading.
       'instatype': path.join(__dirname, '..', '..', 'src', 'js', 'app.js'),
-      //'instatype': path.join(__dirname, '..', '..', 'lib', 'instatype.js')
+      //'instatype': path.join(__dirname, '..', '..', 'lib', 'instatype.js'),
+      //'react-simple-grid': path.join(__dirname, '..', '..', '..', 'react-simple-grid', 'src', 'GridResponsive.js')
     },
     root: [
       // Find node module directories in this example and parent instatype project.
@@ -115,7 +116,8 @@ const localInstatype = {
         loaders: ['babel-loader'], 
         include: [ 
           path.join(__dirname, 'src'),
-          path.join(__dirname, '..', '..', 'src')
+          path.join(__dirname, '..', '..', 'src'),
+          //path.join(__dirname, '..', '..', '..', 'react-simple-grid', 'src')
         ]
       },
       { 
