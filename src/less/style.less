@@ -23,7 +23,7 @@
     border-radius: 0;
   }
 
-  .loading-icon{
+  .loading-icon {
     position: absolute;
     height: 100%;
     padding-top: 1em;
@@ -38,7 +38,7 @@
     margin: 0;
   }
 
-  ul.results{
+  ul.results {
     position: absolute;
     z-index: 9999;
     top: 0;
@@ -56,7 +56,7 @@
     display: none;
   }
 
-  ul.results > li{
+  ul.results > li {
     line-height: 4em;
     padding-top: 0.5em;
     padding-right: 0;
@@ -64,24 +64,24 @@
     padding-left: 1em;
     position: relative;
     cursor: pointer;
+
+    &:hovered {
+      background-color: #FFFEE2;
+    }
   }
 
-  ul.results > li.hovered{
-    background-color: #FFFEE2;
-  }
-
-  ul.results > li > img{
+  ul.results > li > img {
     float: left;
     width: 4em;
     height: 4em;
     margin-right: 1em;
   }
 
-  ul.results.thumb-circle > li > img{
+  ul.results.thumb-circle > li > img {
     border-radius: 4em;
   }
 
-  ul.results > li > div{
+  ul.results > li > div {
     float: left;
     font-size: 2em;
   }
