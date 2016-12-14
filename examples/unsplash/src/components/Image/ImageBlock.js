@@ -1,12 +1,12 @@
 import React from 'react';
 
-const ImageBlock = ({ heightWidthRatio, children }) => {
+const ImageBlock = ({ widthHeightRatio, children }) => {
 
   const style = { 
     position: 'relative', 
     width: '100%', 
     overflow: 'hidden',
-    paddingBottom: heightWidthRatio * 100 + '%' 
+    paddingBottom: 100 / widthHeightRatio + '%' 
   }
 
   return (
@@ -17,11 +17,11 @@ const ImageBlock = ({ heightWidthRatio, children }) => {
 }
 
 ImageBlock.defaultProps = {
-  heightWidthRatio: 1 // Square
+  widthHeightRatio: 1
 };
 
 ImageBlock.propTypes = {
-  heightWidthRatio: React.PropTypes.number,
+  widthHeightRatio: React.PropTypes.number,
   children: React.PropTypes.node
 };
 

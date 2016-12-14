@@ -22,7 +22,6 @@ if (process.env.NODE_ENV === 'development'){
 	server.use(compression());
 }
 
-
 server.use('/assets', express.static(__dirname + '/public/assets'));
 
 server.get('*', function(req, res) {

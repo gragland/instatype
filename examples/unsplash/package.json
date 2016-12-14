@@ -1,11 +1,12 @@
 {
   "description": "Example app using instatype",
   "scripts": {
-    "build": "NODE_ENV=production webpack --config webpack.config.js",
-    "build-dev": "NODE_ENV=development webpack --config webpack.config.js",
-    "start": "NODE_ENV=production node server.js",
-    "start-dev": "NODE_ENV=development node server.js",
-    "start-dev-dual": "NODE_ENV=development DUAL=1 node server.js",
+    "start:dev": "NODE_ENV=development node server.js",
+    "start:prod": "NODE_ENV=production node server.js",
+    "start:prod:iso": "NODE_ENV=production node server-build/server.js",
+    "build:dev": "NODE_ENV=development webpack --config webpack.config.js",
+    "build:prod": "NODE_ENV=production webpack --config webpack.config.js",
+    "build:prod:iso": "npm run build:prod && NODE_ENV=production BUILD_SERVER=1 webpack --config webpack.config.js",
     "now-deploy": "npm run build && now -e NODE_ENV=production",
     "now-build": ""
   },
@@ -14,6 +15,7 @@
     "node": ">=6.9.0"
   },
   "devDependencies": {
+    "babel-cli": "^6.18.0",
     "babel-core": "6.18.2",
     "babel-loader": "6.2.8",
     "babel-plugin-transform-async-to-generator": "^6.16.0",
@@ -24,6 +26,7 @@
     "babel-preset-react": "6.16.0",
     "react-hot-loader": "^3.0.0-beta.0",
     "react-render-visualizer-decorator": "^0.3.0",
+    "url-loader": "^0.5.7",
     "webpack": "1.13.3",
     "webpack-dev-middleware": "^1.6.1",
     "webpack-hot-middleware": "^2.10.0"
@@ -36,9 +39,12 @@
     "lodash": "^4.17.2",
     "react": "^15.4.1",
     "react-dom": "^15.4.1",
+    "react-helmet": "^3.2.3",
+    "react-router": "^3.0.0",
     "react-scroll-up": "^1.1.5",
     "react-simple-grid": "^1.1.0",
     "unsplash-js": "^4.3.1",
+    "webpack-node-externals": "^1.5.4",
     "whatwg-fetch": "^2.0.1"
   }
 }

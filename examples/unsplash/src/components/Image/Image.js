@@ -1,7 +1,7 @@
 import React from 'react';
 import Block from './ImageBlock';
 
-const Image = ({ src, heightWidthRatio, parseSrc, parseSrcWidth, parseSrcAllowedWidths, parseSrcDoubleForRetina, children, ...props }) => {
+const Image = ({ src, widthHeightRatio, parseSrc, parseSrcWidth, parseSrcAllowedWidths, parseSrcDoubleForRetina, children, ...props }) => {
 
   /** If src parsing is enabled ...
     * We replace width and height in src url
@@ -26,7 +26,7 @@ const Image = ({ src, heightWidthRatio, parseSrc, parseSrcWidth, parseSrcAllowed
     }
 
     src = src.replace(/\{width\}/g, parseInt(parseSrcWidth))
-    src = src.replace(/\{height\}/g, parseInt(parseSrcWidth * heightWidthRatio));
+    src = src.replace(/\{height\}/g, parseInt(parseSrcWidth / widthHeightRatio));
   }
 
   const style = {
@@ -37,7 +37,7 @@ const Image = ({ src, heightWidthRatio, parseSrc, parseSrcWidth, parseSrcAllowed
   };
 
   return (
-    <Block heightWidthRatio={heightWidthRatio}>
+    <Block widthHeightRatio={widthHeightRatio}>
       { (!parseSrc || parseSrcWidth) && 
         <img src={src} style={style} {...props} /> 
       }
@@ -52,7 +52,7 @@ const Image = ({ src, heightWidthRatio, parseSrc, parseSrcWidth, parseSrcAllowed
 
 Image.propTypes = {
   src: React.PropTypes.string.isRequired,
-  heightWidthRatio: React.PropTypes.number,
+  widthHeightRatio: React.PropTypes.number,
   parseSrc: React.PropTypes.bool,
   parseSrcWidth: React.PropTypes.number,
   parseSrcAllowedWidths: React.PropTypes.arrayOf(React.PropTypes.number),
@@ -61,7 +61,8 @@ Image.propTypes = {
 };
 
 Image.defaultProps = {
-  heightWidthRatio: 1 // Square
+  widthHeightRatio: 1, // Square
+  parseSrcDoubleForRetina: true
 };
 
 /**
@@ -69,6 +70,7 @@ Image.defaultProps = {
  * From http://stackoverflow.com/a/20413768/56976
  */
 function isHighDensity(){
+    if (typeof window === 'undefined') return false;
     return ((window.matchMedia && (window.matchMedia('only screen and (min-resolution: 124dpi), only screen and (min-resolution: 1.3dppx), only screen and (min-resolution: 48.8dpcm)').matches || window.matchMedia('only screen and (-webkit-min-device-pixel-ratio: 1.3), only screen and (-o-min-device-pixel-ratio: 2.6/2), only screen and (min--moz-device-pixel-ratio: 1.3), only screen and (min-device-pixel-ratio: 1.3)').matches)) || (window.devicePixelRatio && window.devicePixelRatio > 1.3));
 }
 

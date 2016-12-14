@@ -8,7 +8,8 @@ const common = {
     loaders: [
       { 
         test: /\.less$/, 
-        loader: 'style-loader!css-loader!less-loader',
+        //loader: 'style-loader!raw-loader!less-loader',
+        loader: 'raw-loader!less-loader',
         include: __dirname + '/src'
       },
       { 

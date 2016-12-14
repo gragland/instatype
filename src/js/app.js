@@ -2,12 +2,7 @@ import React from 'react';
 import Results from './components/results.js';
 import InputComponent from './components/input.js';
 import Loading from './components/loading.js';
-
-// Ensure we don't run code inserted by style-loader if rendering server-side.
-// We'll get a "window is not defined" error and it's useless on the server anyway.
-if (typeof window !== 'undefined') {
-  require('./../less/style.less');
-}
+import rawStyle from './../less/style.less';
 
 // For older versions of React (deprecated in 0.14)
 if (typeof React.initializeTouchEvents === 'function'){
@@ -42,6 +37,8 @@ class Instatype extends React.PureComponent {
 
   componentDidMount() {
 
+
+
     // Blur the input when the user touches (ontouchstart) anywhere on the screen.
     // This fixes a nasty bug (on ios in phonegap webview) where a natural blur (due to clicking somewhere on screen) ...
     // ... will result in the input's blinking caret not displaying next time the input is in focus.
@@ -63,6 +60,8 @@ class Instatype extends React.PureComponent {
   }
 
   loadResultsFromServer(query) {
+
+
 
     this.setState({ loading: true });
 
@@ -186,6 +185,9 @@ class Instatype extends React.PureComponent {
     return (
       <div id="instatype" onTouchStart={this.handleTouch}>
 
+        {/* Embedded style for server-rendering support */}
+        <style dangerouslySetInnerHTML={{__html: rawStyle}} />
+   
         <div className="input-wrapper">
           <InputComponent
             defaultValue={defaultInputValue}
@@ -207,7 +209,6 @@ class Instatype extends React.PureComponent {
             handleSelect={this.handleSelect} 
             thumbStyle={thumbStyle} />
         }
-
       </div>
     );
   }

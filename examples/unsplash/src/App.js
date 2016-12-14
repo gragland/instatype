@@ -26,8 +26,21 @@ class App extends React.PureComponent {
     this.getPage = this.getPage.bind(this);
   }
 
-  componentDidMount(){
-    this.getPage();
+  componentWillMount(){
+
+    const { serverData } = this.context;
+
+    if (serverData && serverData.path === '/'){
+
+      this.setState({ 
+        section: 'popular',
+        photos: serverData.data, 
+        page: 2
+      });
+
+    }else{
+      this.getPage();
+    }
   }
 
   async getPage(){
@@ -116,7 +129,9 @@ class App extends React.PureComponent {
             ref='instatype'/>
         </div>
 
+     
         <div style={{ marginBottom: '30px' }}>
+
           <Grid spacing={5} breakPoints={[ { maxWidth: 800, spacing: 1, blockWidth: [ 1/4 ] } ]} hideOuterSpacing={true} blockWidth={[ 1/3, 2/3, 2/3, 1/3 ]}>
             
             <Block><div style={{ backgroundColor: 'red', width: '100%', height: '100px' }}></div></Block>
@@ -130,7 +145,8 @@ class App extends React.PureComponent {
       
           </Grid>
         </div>
-    
+        
+      
         { photos && photos.length > 0 &&
           <Infinite requestHandler={this.getPage} atEnd={atEnd}>
             <Grid blocksPerRow={4} spacing={5} breakPoints={photoGridBreakPoints} passBlockWidth={true} hideOuterSpacing={true}>
@@ -155,6 +171,10 @@ class App extends React.PureComponent {
       </div>
     )
   }
+};
+
+App.contextTypes = {
+  serverData: React.PropTypes.object
 };
 
 export default App;

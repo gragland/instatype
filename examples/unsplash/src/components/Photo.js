@@ -13,7 +13,8 @@ const Photo = ({ data, parentWidth }) => {
         parseSrc={true} 
         parseSrcWidth={parentWidth} 
         parseSrcAllowedWidths={allowedSrcWidths} 
-        parseSrcDoubleForRetina={true} />
+        parseSrcDoubleForRetina={true}
+        widthHeightRatio={1/1} />
       <div style={{ position: 'absolute', top: 10, right: 10, backgroundColor: '#fff', color: '#000', padding: '0.3em 0.6em', opacity: '1' }}>
         {parentWidth}px
       </div>

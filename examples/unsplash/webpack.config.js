@@ -1,152 +1,152 @@
 const path = require('path');
 const webpack = require('webpack');
+const nodeExternals = require('webpack-node-externals');
 
-/***** SHARED CONFIG *****/
+const ENV = process.env.NODE_ENV;
+const BUILD_SERVER = process.env.BUILD_SERVER;
+const ALIAS = (process.env.ALIAS === 'false' ? false : true); // Default to true
 
-const common = {
-  output: {
-    path: path.join(__dirname, 'public/assets'),
-    filename: '[name].js',
-    publicPath: '/assets/'
-  }
-};
+const config = {};
 
-/***** DEVELOPMENT CONFIG *****/
+/******** ENTRY ********/
 
-const development = {
-  devtool: 'eval',
-  entry: {
+if (ENV === 'production' && BUILD_SERVER){
+  config.entry = {
+    server: [
+      //'whatwg-fetch',
+      './server-isomorphic.js'
+    ]
+  };
+}else if (ENV === 'production'){
+  config.entry = {
+    bundle: [
+      'whatwg-fetch',
+      './src/index.js'
+    ]
+  };
+}else{
+  config.entry = {
     bundle: [
       'whatwg-fetch', // Fetch polyfill for Unsplash
       'webpack-hot-middleware/client',
       './src/index.js'
     ]
-  },
-  plugins: [
-    new webpack.HotModuleReplacementPlugin()
-  ],
-  module: {
-    loaders: [
-      { 
-        test: /\.js?$/, 
-        loaders: ['babel'], 
-        include: [
-          path.join(__dirname, 'src')
-        ]
-      },
-      { 
-        test: /\.svg$/,
-        loader: 'url-loader?limit=100000',
-        include: [ 
-          path.join(__dirname, 'src', 'components', 'Infinite')
-        ]
-      }
-    ]
-  }
+  };
 }
 
-/***** PRODUCTION CONFIG *****/
+/******** OUTPUT ********/
 
-const production = {
-  entry: {
-    bundle: [
-    'whatwg-fetch',
-    './src/index.js'
-    ]
-  },
-  plugins: [
+if (ENV === 'production' && BUILD_SERVER){
+  config.output = {
+    path: path.join(__dirname, 'server-build'),
+    filename: '[name].js',
+    publicPath: 'assets/'
+  };
+}else{
+  config.output = {
+    path: path.join(__dirname, 'public/assets'),
+    filename: '[name].js',
+    publicPath: '/assets/'
+  };
+}
+
+/******** PLUGINS ********/
+
+if (ENV === 'production'){
+  config.plugins = [
     new webpack.DefinePlugin({
       'process.env': {
         NODE_ENV: JSON.stringify('production')
       }
     }),
-    new webpack.optimize.DedupePlugin(), // ~6kb difference
     //new webpack.optimize.OccurrenceOrderPlugin(), // No size difference
+    new webpack.optimize.DedupePlugin(), // ~6kb difference
     new webpack.optimize.UglifyJsPlugin({ 
       compress: {
         warnings: false
       } 
     })
-  ],
-  module: {
-    loaders: [
-      { 
-        test: /\.js?$/, 
-        loaders: ['babel'], 
-        include: [
-          path.join(__dirname, 'src')
-        ]
-      },
-      { 
-        test: /\.svg$/,
-        loader: 'url-loader?limit=100000',
-        include: [ 
-          path.join(__dirname, 'src', 'components', 'Infinite')
-        ]
-      }
-    ]
-  }
-}
-
-/***** LOCAL INSTATYPE CONFIG *****/
-/* Merge with prod or dev config to import local instatype source (instead of using node module) */
-/* Allows for easy development of both instatype and example code  */
-
-const localInstatype = {
-  resolve: {
-    alias: {
-      // Make require('instatype') resolve to src (not node module) ...
-      // ... so that we can work on instatype with hot reloading.
-      'instatype': path.join(__dirname, '..', '..', 'src', 'js', 'app.js'),
-      //'instatype': path.join(__dirname, '..', '..', 'lib', 'instatype.js'),
-      //'react-simple-grid': path.join(__dirname, '..', '..', '..', 'react-simple-grid', 'src', 'GridResponsive.js')
-    },
-    root: [
-      // Find node module directories in this example and parent instatype project.
-      path.join(__dirname, 'node_modules'), 
-      path.join(__dirname, '..', '..', 'node_modules')
-    ]
-  },
-  // Because we make require('instatype') resolve to src ...
-  // ... we need to include same loaders used by instatype's webpack.config.js
-  module: {
-    loaders: [
-      { 
-        test: /\.js?$/, 
-        loaders: ['babel-loader'], 
-        include: [ 
-          path.join(__dirname, 'src'),
-          path.join(__dirname, '..', '..', 'src'),
-          //path.join(__dirname, '..', '..', '..', 'react-simple-grid', 'src')
-        ]
-      },
-      { 
-        test: /\.less$/, 
-        loader: 'style-loader!css-loader!less-loader',
-        include: [ path.join(__dirname, '..', '..', 'src') ]
-      },
-      { 
-        test: /\.svg$/,
-        loader: 'url-loader?limit=100000',
-        include: [ 
-          path.join(__dirname, '..', '..', 'images'),
-          path.join(__dirname, 'src', 'components', 'Infinite')
-        ]
-      }
-    ]
-  }
-}
-
-let config;
-
-if (process.env.NODE_ENV === 'production'){
-  config = Object.assign(common, production, localInstatype);
+  ];
 }else{
-  if (process.env.DUAL){
-    config = Object.assign(common, development, localInstatype);
-  }else{
-    config = Object.assign(common, development);
+  config.plugins = [
+    new webpack.HotModuleReplacementPlugin()
+  ];
+}
+
+/******** LOADERS ********/
+
+config.module = { 
+  loaders: [
+    { 
+      test: /\.js?$/, 
+      loaders: ['babel'], 
+      include: [
+        path.join(__dirname, 'src')
+      ].concat(( ALIAS ? [
+        path.join(__dirname, '..', '..', 'src'),
+        path.join(__dirname, '..', '..', '..', 'react-simple-grid', 'src')
+      ] : [])).concat(( (ENV === 'production' && BUILD_SERVER) ? [
+        path.join(__dirname, '..', '..') // So we can parse server-isomorphic.js
+      ] : []))
+    },
+    { 
+      test: /\.svg$/,
+      loader: 'url-loader?limit=10000',
+      include: [ 
+        path.join(__dirname, 'src', 'components', 'Infinite')
+      ].concat(( ALIAS ? [
+        path.join(__dirname, '..', '..', 'images'),
+      ] : []))
+    }
+  ].concat(( ALIAS ? [
+    { 
+      test: /\.less$/, 
+      loader: 'raw-loader!less-loader',
+      include: [ path.join(__dirname, '..', '..', 'src') ]
+    },
+  ] : []))
+}
+
+/******** RESOLVE ********/
+
+if (ALIAS){
+  config.resolve = {
+    alias: {
+      'instatype': path.join(__dirname, '..', '..', 'src', 'js', 'app.js'),
+      'react-simple-grid': path.join(__dirname, '..', '..', '..', 'react-simple-grid', 'src', 'GridResponsive.js')
+    },
+    // Include node_modules path for each alias (otherwise parent project must install alias dependencies)
+    root: [
+      path.join(__dirname, 'node_modules'), 
+      //path.join(__dirname, 'src', 'components', 'Infinite', 'node_modules'),
+      path.join(__dirname, '..', '..', 'node_modules'), // Parent instatype project
+      path.join(__dirname, '..', '..', '..', 'react-simple-grid', 'node_modules')
+    ]
+  };
+
+  // Also look for loaders in alias node_module paths
+  config.resolveLoader = {
+    modulesDirectories: config.resolve.root
   }
 }
+
+if ('production' && BUILD_SERVER){
+  config.target = 'node';
+  config.node = {
+    // Prevents webpack from making __dirname relative 
+    // Absolute path is needed by server-isomorphic.js
+    __dirname: false,
+    __filename: false
+  };
+  // We don't want to bundle dependencies into the server-build js
+  // The server should read them directly node_modules
+  // But this will override webpack aliases so also include them here or we'll get the npm version
+  config.externals = nodeExternals({
+    whitelist: ['instatype', 'react-simple-grid']
+  });
+
+}
+
+//console.log(config);
 
 module.exports = config;
