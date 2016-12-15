@@ -41,10 +41,12 @@ const Image = ({ src, widthHeightRatio, parseSrc, parseSrcWidth, parseSrcAllowed
       { (!parseSrc || parseSrcWidth) && 
         <img src={src} style={style} {...props} /> 
       }
-      <div style={{ position: 'absolute', bottom: 10, right: 10, backgroundColor: '#fff', color: '#000', padding: '0.3em 0.6em', opacity: '0.6' }}>
-        Img: {parseSrcWidth}px { parseSrcDoubleForRetina && isHighDensity() && <span>(@2x)</span> }
-      </div>
       {children}
+      { parseSrcWidth && 
+        <div style={{ position: 'absolute', bottom: 10, right: 10, backgroundColor: '#fff', color: '#000', padding: '0.3em 0.6em', opacity: '0.6' }}>
+          Img: {parseSrcWidth}px { parseSrcDoubleForRetina && isHighDensity() && <span>(@2x)</span> }
+        </div>
+      }
     </Block>
   );
   

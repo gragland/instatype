@@ -9,26 +9,20 @@ if (process.env.NODE_ENV === 'development'){
 	var config = require('./webpack.config.js');
 	var compiler = webpack(config);
 
-	server.use(require('webpack-dev-middleware')(compiler, {
-	  publicPath: config.output.publicPath
-	}));
-
-	server.use(require('webpack-hot-middleware')(compiler));
-
-	console.log('Hot Reloading Active');
+	server
+	.use(require('webpack-dev-middleware')(compiler, { publicPath: config.output.publicPath }))
+	.use(require('webpack-hot-middleware')(compiler));
 
 }else{
-
 	server.use(compression());
 }
 
-server.use('/assets', express.static(__dirname + '/public/assets'));
-
-server.get('*', function(req, res) {
+server
+.use('/assets', express.static(__dirname + '/public/assets'))
+.get('*', function(req, res) {
   res.sendFile(path.join(__dirname, 'index.html'));
-});
-
-server.listen(3000, function(err) {
+})
+.listen(3000, function(err) {
   if (err) {
     return console.error(err);
   }

@@ -10,13 +10,14 @@ import Layout from './src/components/Layout.js';
 import DataWrapper from './src/components/DataWrapper.js';
 import api from './src/api.js';
 
-// Fetch data based on route (path, params) here
-async function fetchData(path, params){
-  if (path === '/'){
-    const photos = await api.getPopularPhotos(1);
-    var serverData = { path: path, data: photos };
-    return serverData;
-  }
+async function getInitialProps(renderProps) {
+  const { components, params } = renderProps;
+  const valid = components.filter((component) => component);
+  if (!valid) return null;
+  const withFunction = valid.filter((component) => component.getInitialProps);
+  if (!withFunction[0] || !withFunction[0].getInitialProps) return null;
+  // Return the first one found
+  return await withFunction[0].getInitialProps(params);
 }
 
 var server = express();
@@ -37,7 +38,7 @@ server
         res.status(404).send('Page not found');
       } else {
 
-        const serverData = await fetchData(req.url, renderProps.params);
+        const serverData = await getInitialProps(renderProps);
 
         // Render route as a string
         var markup = renderToString( 

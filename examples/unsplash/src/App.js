@@ -16,7 +16,7 @@ class App extends React.PureComponent {
       section: 'popular',
       photos: null,
       username: null,
-      page: 1,
+      page: 0,
       loading: false,
       atEnd: false
     };
@@ -26,16 +26,26 @@ class App extends React.PureComponent {
     this.getPage = this.getPage.bind(this);
   }
 
+  static async getInitialProps () {
+    return await api.getPopularPhotos(1);
+  }
+
+  static contextTypes = {
+    serverData: React.PropTypes.object
+  };
+
   componentWillMount(){
+
+    console.log('serverData', this.props.serverData);
 
     const { serverData } = this.context;
 
-    if (serverData && serverData.path === '/'){
+    if (serverData){
 
       this.setState({ 
         section: 'popular',
-        photos: serverData.data, 
-        page: 2
+        photos: serverData, 
+        page: 1
       });
 
     }else{
@@ -51,24 +61,26 @@ class App extends React.PureComponent {
       return false;
     }
 
-    console.log(`[APP] Getting page`);
+    const nextPage = page + 1;
+
+    console.log(`[APP] Getting page (${nextPage})`);
 
     this.setState({ loading: true });
 
     let nextPhotos;
     switch (section){
       case 'popular':
-        nextPhotos = await api.getPopularPhotos(page);
+        nextPhotos = await api.getPopularPhotos(nextPage);
         break;
       case 'user':
-        nextPhotos = await api.getUserPhotos(username, page);
+        nextPhotos = await api.getUserPhotos(username, nextPage);
     }
 
     this.setState({
       section: section,
       photos: (photos ? photos.concat(nextPhotos) : nextPhotos),
       username: (section === 'user' ? username : null),
-      page: page + 1,
+      page: nextPage,
       loading: false,
       atEnd: (nextPhotos.length < api.photosPerPage)
     });
@@ -97,7 +109,7 @@ class App extends React.PureComponent {
 
     this.setState({
       section: 'user',
-      page: 1,
+      page: 0,
       photos: null,
       username: user.username,
       loading: false
@@ -128,7 +140,6 @@ class App extends React.PureComponent {
             thumbStyle='circle'
             ref='instatype'/>
         </div>
-
      
         <div style={{ marginBottom: '30px' }}>
 
@@ -161,7 +172,7 @@ class App extends React.PureComponent {
           </div>
         }
 
-        { loading && page === 1 &&
+        { loading && page === 0 &&
           <div className='message'>
             Loading ...
           </div>
@@ -171,10 +182,6 @@ class App extends React.PureComponent {
       </div>
     )
   }
-};
-
-App.contextTypes = {
-  serverData: React.PropTypes.object
 };
 
 export default App;

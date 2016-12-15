@@ -13,21 +13,21 @@ const config = {};
 if (ENV === 'production' && BUILD_SERVER){
   config.entry = {
     server: [
-      //'whatwg-fetch',
+      'isomorphic-fetch',
       './server-isomorphic.js'
     ]
   };
 }else if (ENV === 'production'){
   config.entry = {
     bundle: [
-      'whatwg-fetch',
+      'whatwg-fetch', // Fetch polyfill for Unsplash api
       './src/index.js'
     ]
   };
 }else{
   config.entry = {
     bundle: [
-      'whatwg-fetch', // Fetch polyfill for Unsplash
+      'whatwg-fetch', 
       'webpack-hot-middleware/client',
       './src/index.js'
     ]
@@ -39,8 +39,8 @@ if (ENV === 'production' && BUILD_SERVER){
 if (ENV === 'production' && BUILD_SERVER){
   config.output = {
     path: path.join(__dirname, 'server-build'),
-    filename: '[name].js',
-    publicPath: 'assets/'
+    filename: 'server.js',
+    publicPath: '/assets/'
   };
 }else{
   config.output = {
@@ -129,6 +129,8 @@ if (ALIAS){
     modulesDirectories: config.resolve.root
   }
 }
+
+/******** OTHER ********/
 
 if ('production' && BUILD_SERVER){
   config.target = 'node';
