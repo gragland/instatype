@@ -7,27 +7,17 @@ import { match, RouterContext } from 'react-router';
 import Helmet from 'react-helmet';
 import routes from './src/routes.js';
 import Layout from './src/components/Layout.js';
-import DataWrapper from './src/components/DataWrapper.js';
+
+import ComponentData, { resolve } from './src/components/ComponentData/ComponentData.js';
 import api from './src/api.js';
 
-async function getInitialProps(renderProps) {
-  const { components, params } = renderProps;
-  const valid = components.filter((component) => component);
-  if (!valid) return null;
-  const withFunction = valid.filter((component) => component.getInitialProps);
-  if (!withFunction[0] || !withFunction[0].getInitialProps) return null;
-  // Return the first one found
-  return await withFunction[0].getInitialProps(params);
-}
-
-var server = express();
+const server = express();
 
 server
 .use(compression())
 .use('/assets', express.static(path.join(__dirname, './../public/assets'), { index: false, maxAge: 31536000000 }))
 .use((req, res, next) => {
-  match(
-    { routes: routes, location: req.url }, 
+  match({ routes: routes, location: req.url }, 
     async (error, redirectLocation, renderProps) => {
 
       if (error){
@@ -38,23 +28,23 @@ server
         res.status(404).send('Page not found');
       } else {
 
-        const serverData = await getInitialProps(renderProps);
+        const data = await resolve(renderProps);
 
         // Render route as a string
-        var markup = renderToString( 
-          <DataWrapper serverData={serverData}>
+        const body = renderToString( 
+          <ComponentData data={data}>
             <RouterContext {...renderProps} /> 
-          </DataWrapper>
+          </ComponentData>
         );
 
         // Extract data for page <head> (title, meta, scripts)
         // See: https://github.com/nfl/react-helmet#server-usage
-        var head = Helmet.rewind();
+       const head = Helmet.rewind();
 
         // Render layout and pass in markup, serverData fetched server-side, and head
         // We use renderToStaticMarkup for layout so react-id dom attributes aren't added
         res.send(
-          renderToStaticMarkup( <Layout markup={markup} serverData={serverData} head={head} /> )
+          renderToStaticMarkup( <Layout body={body} head={head} /> )
         );
 
       }

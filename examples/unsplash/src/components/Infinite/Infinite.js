@@ -50,15 +50,16 @@ class Infinite extends React.PureComponent {
     //console.log(`[INFINITE] Total height: ${totalHeight}`);
     //console.log(`[INFINITE] Client height: ${clientHeight}`);
     //console.log(`[INFINITE] Scroll top: ${scrollTop}`);
-    console.log(`[INFINITE] Distance from bottom: ${distanceFromBottom}`);
+    
+    //console.log(`[INFINITE] Distance from bottom: ${distanceFromBottom}`);
 
     const reachedBottom = (distanceFromBottom < minDistanceFromBotton);
 
     if (atEnd){
-      console.log('[INFINITE] No more pages');
+      //console.log('[INFINITE] No more pages');
     }else
     if (reachedBottom && !loading) {
-      console.log('[INFINITE] Requesting next page');
+      //console.log('[INFINITE] Requesting next page');
       requestHandler();
     }
   }

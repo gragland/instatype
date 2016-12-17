@@ -6,6 +6,7 @@ import Photo from './components/Photo.js';
 import Infinite from './components/Infinite/Infinite.js';
 import ToTop from './components/ToTop.js';
 import api from './api.js';
+import { Link } from 'react-router';
 
 class App extends React.PureComponent {
 
@@ -13,12 +14,10 @@ class App extends React.PureComponent {
     super(props);
 
     this.state = {
-      section: 'popular',
-      photos: null,
-      username: null,
-      page: 0,
-      loading: false,
-      atEnd: false
+      photos: props.photos || null,
+      section: props.section || 'popular',
+      page: props.page || 0,
+      loading: (props.photos ? false : true)
     };
 
     this.getUsersThrottled = throttle(this.getUsers.bind(this), 300);
@@ -27,30 +26,12 @@ class App extends React.PureComponent {
   }
 
   static async getInitialProps () {
-    return await api.getPopularPhotos(1);
-  }
-
-  static contextTypes = {
-    serverData: React.PropTypes.object
-  };
-
-  componentWillMount(){
-
-    console.log('serverData', this.props.serverData);
-
-    const { serverData } = this.context;
-
-    if (serverData){
-
-      this.setState({ 
-        section: 'popular',
-        photos: serverData, 
-        page: 1
-      });
-
-    }else{
-      this.getPage();
-    }
+    return { 
+      photos: await api.getPopularPhotos(2),
+      section: 'popular',
+      page: 1,
+      loading: false
+    };
   }
 
   async getPage(){
@@ -63,7 +44,7 @@ class App extends React.PureComponent {
 
     const nextPage = page + 1;
 
-    console.log(`[APP] Getting page (${nextPage})`);
+    //console.log(`[APP] Getting page (${nextPage})`);
 
     this.setState({ loading: true });
 
@@ -140,7 +121,10 @@ class App extends React.PureComponent {
             thumbStyle='circle'
             ref='instatype'/>
         </div>
+
+        <Link to={`/about`}>About</Link>
      
+        {/*
         <div style={{ marginBottom: '30px' }}>
 
           <Grid spacing={5} breakPoints={[ { maxWidth: 800, spacing: 1, blockWidth: [ 1/4 ] } ]} hideOuterSpacing={true} blockWidth={[ 1/3, 2/3, 2/3, 1/3 ]}>
@@ -156,6 +140,7 @@ class App extends React.PureComponent {
       
           </Grid>
         </div>
+        */}
         
       
         { photos && photos.length > 0 &&
