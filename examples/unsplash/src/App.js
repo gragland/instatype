@@ -1,4 +1,5 @@
 import React from 'react';
+import Helmet from "react-helmet";
 import Instatype from 'instatype';
 import throttle from 'lodash/throttle';
 import Grid, { Block } from 'react-simple-grid';
@@ -8,67 +9,69 @@ import ToTop from './components/ToTop.js';
 import api from './api.js';
 import { Link } from 'react-router';
 
+import Test from './components/Test.js';
+
 class App extends React.PureComponent {
 
   constructor(props){
     super(props);
 
-    this.state = {
-      photos: props.photos || null,
-      section: props.section || 'popular',
-      page: props.page || 0,
-      loading: (props.photos ? false : true)
-    };
+    this.state = props;
 
     this.getUsersThrottled = throttle(this.getUsers.bind(this), 300);
     this.userSelectedHandler = this.userSelectedHandler.bind(this);
-    this.getPage = this.getPage.bind(this);
+    this.getNextPage = this.getNextPage.bind(this);
+    this.resetPage = () => this.setState(App.defaultProps);
   }
 
+  static displayName = 'App';
+
+  // Get initial page data as props
+  // Component will re-mount
   static async getInitialProps () {
-    return { 
-      photos: await api.getPopularPhotos(2),
-      section: 'popular',
-      page: 1,
-      loading: false
+    return await App.getPage('popular', 2);
+  }
+
+  static async getPage(section, page, username, currPhotos){
+
+    let nextPhotos;
+    switch (section){
+      case 'popular':
+        nextPhotos = await api.getPopularPhotos(page);
+        break;
+      case 'user':
+        nextPhotos = await api.getUserPhotos(username, page);
+    }
+
+    return {
+      section: section,
+      photos: (currPhotos ? currPhotos.concat(nextPhotos) : nextPhotos),
+      username: (section === 'user' ? username : null),
+      page: page,
+      loading: false,
+      atEnd: (nextPhotos.length < api.photosPerPage)
     };
   }
 
-  async getPage(){
+  async getNextPage(){
 
-    const { photos, section, username, page, loading } = this.state;
+    const { section, page, username, photos, loading } = this.state;
 
     if (loading){
       return false;
     }
 
-    const nextPage = page + 1;
-
-    //console.log(`[APP] Getting page (${nextPage})`);
-
     this.setState({ loading: true });
 
-    let nextPhotos;
-    switch (section){
-      case 'popular':
-        nextPhotos = await api.getPopularPhotos(nextPage);
-        break;
-      case 'user':
-        nextPhotos = await api.getUserPhotos(username, nextPage);
-    }
+    const pageData = await App.getPage(section, page+1, username, photos);
 
-    this.setState({
-      section: section,
-      photos: (photos ? photos.concat(nextPhotos) : nextPhotos),
-      username: (section === 'user' ? username : null),
-      page: nextPage,
-      loading: false,
-      atEnd: (nextPhotos.length < api.photosPerPage)
-    });
+    this.setState(pageData);
   }
 
   // Instatype request handler
   async getUsers(query, limit, callback){
+
+    this.setState({ loadingUsers: true });
 
     const users = await api.getUsers(query);
 
@@ -79,29 +82,24 @@ class App extends React.PureComponent {
       return user;
     });
 
+    this.setState({ loadingUsers: false });
+
     callback(usersWithProps);
   }
 
+  // Instatype selected handler
+  async userSelectedHandler(user){
 
-  userSelectedHandler(user){
+    this.resetPage();
 
-    // Clear instatype
     this.refs.instatype.refs.inputComponent.refs.input.value = '';
-
-    this.setState({
-      section: 'user',
-      page: 0,
-      photos: null,
-      username: user.username,
-      loading: false
-    },() => {
-      this.getPage();
-    });
+    const pageData = await App.getPage('user', 1, user.username);
+    this.setState(pageData);
   }
 
   render(){
 
-    const { photos, page, loading, atEnd } = this.state;
+    const { photos, page, atEnd, loading, loadingUsers } = this.state;
 
     // Grid options for different size screens
     const photoGridBreakPoints = [
@@ -112,6 +110,15 @@ class App extends React.PureComponent {
 
     return(
       <div>
+        <Helmet title="Unsplash Demo" />
+
+        { photos && photos.length &&
+          <span>
+            <Test parentCount={photos.length}/>
+            <Test parentCount={photos.length}/>
+          </span>
+        }
+
         <div className='navbar'>
           <Instatype 
             placeholder='Search Unsplash'
@@ -121,9 +128,13 @@ class App extends React.PureComponent {
             thumbStyle='circle'
             ref='instatype'/>
         </div>
+        
+        { !loadingUsers && 
+          <div style={{ position: 'absolute', top: '3.6em', right: '4em' }}>
+            <Link to={`/about`} style={{ textDecoration: 'none', color: '#87b8b9', fontSize: '1.3em' }}>About</Link>
+          </div>
+        }
 
-        <Link to={`/about`}>About</Link>
-     
         {/*
         <div style={{ marginBottom: '30px' }}>
 
@@ -144,7 +155,7 @@ class App extends React.PureComponent {
         
       
         { photos && photos.length > 0 &&
-          <Infinite requestHandler={this.getPage} atEnd={atEnd}>
+          <Infinite requestHandler={this.getNextPage} atEnd={atEnd}>
             <Grid blocksPerRow={4} spacing={5} breakPoints={photoGridBreakPoints} passBlockWidth={true} hideOuterSpacing={true}>
               { photos.map( photo => <Photo data={photo} key={photo.id} /> )}
             </Grid>
@@ -157,7 +168,7 @@ class App extends React.PureComponent {
           </div>
         }
 
-        { loading && page === 0 &&
+        { loading && !page &&
           <div className='message'>
             Loading ...
           </div>
@@ -167,6 +178,15 @@ class App extends React.PureComponent {
       </div>
     )
   }
+};
+
+App.defaultProps = {
+  section: null,
+  photos: null,
+  username: null,
+  page: null,
+  loading: true,
+  atEnd: null
 };
 
 export default App;

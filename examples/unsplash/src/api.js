@@ -26,13 +26,13 @@ class api {
     return json.results;
   }
 
-  async getPopularPhotos(page){
+  async getPopularPhotos(page, count){
 
     if (this.localDataFor.popularPhotos && page === 1){
       return localData.popularPhotos;
     }
 
-    const response = await unsplash.photos.listPhotos(page, this.photosPerPage, 'popular');
+    const response = await unsplash.photos.listPhotos(page, count||this.photosPerPage, 'popular');
     return await response.json();
   }
 

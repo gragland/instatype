@@ -1,16 +1,15 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { Router, browserHistory } from 'react-router';
+import ComponentData from 'react-component-data';
 import routes from './routes';
 import App from './App.js';
 
-import ComponentData from './components/ComponentData/ComponentData.js';
-
 ReactDOM.render(
-	<ComponentData>
+  <ComponentData>
     <Router history={browserHistory} routes={routes} />
   </ComponentData>,
- 	document.getElementById('app')
+  document.getElementById('app')
 );
 
 if (module.hot) {

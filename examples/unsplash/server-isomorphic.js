@@ -8,8 +8,9 @@ import Helmet from 'react-helmet';
 import routes from './src/routes.js';
 import Layout from './src/components/Layout.js';
 
-import ComponentData, { resolve } from './src/components/ComponentData/ComponentData.js';
-import api from './src/api.js';
+import App from './src/App.js';
+
+import ComponentData, { resolve } from 'react-component-data';
 
 const server = express();
 
@@ -28,18 +29,26 @@ server
         res.status(404).send('Page not found');
       } else {
 
-        const data = await resolve(renderProps);
+        // No data
+        //const data = null;
 
-        // Render route as a string
+        // Render App
+        //const data = await resolve(App);
+
+        // Render Route component
+        const data = await resolve(RouterContext, renderProps);
+
+        console.log('DATA FETCHED VIA RESOLVE()');
+
         const body = renderToString( 
           <ComponentData data={data}>
             <RouterContext {...renderProps} /> 
           </ComponentData>
         );
-
+        
         // Extract data for page <head> (title, meta, scripts)
         // See: https://github.com/nfl/react-helmet#server-usage
-       const head = Helmet.rewind();
+        const head = Helmet.rewind();
 
         // Render layout and pass in markup, serverData fetched server-side, and head
         // We use renderToStaticMarkup for layout so react-id dom attributes aren't added

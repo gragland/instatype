@@ -54,6 +54,7 @@ if (ENV === 'production' && BUILD_SERVER){
 
 if (ENV === 'production'){
   config.plugins = [
+    /*
     new webpack.DefinePlugin({
       'process.env': {
         NODE_ENV: JSON.stringify('production')
@@ -65,7 +66,7 @@ if (ENV === 'production'){
       compress: {
         warnings: false
       } 
-    })
+    })*/
   ];
 }else{
   config.plugins = [
@@ -84,7 +85,8 @@ config.module = {
         path.join(__dirname, 'src')
       ].concat(( ALIAS ? [
         path.join(__dirname, '..', '..', 'src'),
-        path.join(__dirname, '..', '..', '..', 'react-simple-grid', 'src')
+        path.join(__dirname, '..', '..', '..', 'react-simple-grid', 'src'),
+        path.join(__dirname, '..', '..', '..', 'react-component-data', 'src')
       ] : [])).concat(( (ENV === 'production' && BUILD_SERVER) ? [
         path.join(__dirname, '..', '..') // So we can parse server-isomorphic.js
       ] : []))
@@ -113,14 +115,15 @@ if (ALIAS){
   config.resolve = {
     alias: {
       'instatype': path.join(__dirname, '..', '..', 'src', 'js', 'app.js'),
-      'react-simple-grid': path.join(__dirname, '..', '..', '..', 'react-simple-grid', 'src', 'GridResponsive.js')
+      'react-simple-grid': path.join(__dirname, '..', '..', '..', 'react-simple-grid', 'src', 'GridResponsive.js'),
+      'react-component-data': path.join(__dirname, '..', '..', '..', 'react-component-data', 'src', 'index.js')
     },
     // Include node_modules path for each alias (otherwise parent project must install alias dependencies)
     root: [
       path.join(__dirname, 'node_modules'), 
-      //path.join(__dirname, 'src', 'components', 'Infinite', 'node_modules'),
       path.join(__dirname, '..', '..', 'node_modules'), // Parent instatype project
-      path.join(__dirname, '..', '..', '..', 'react-simple-grid', 'node_modules')
+      path.join(__dirname, '..', '..', '..', 'react-simple-grid', 'node_modules'),
+      path.join(__dirname, '..', '..', '..', 'react-component-data', 'node_modules')
     ]
   };
 
@@ -144,7 +147,7 @@ if ('production' && BUILD_SERVER){
   // The server should read them directly node_modules
   // But this will override webpack aliases so also include them here or we'll get the npm version
   config.externals = nodeExternals({
-    whitelist: ['instatype', 'react-simple-grid']
+    whitelist: ['instatype', 'react-simple-grid', 'react-component-data']
   });
 
 }

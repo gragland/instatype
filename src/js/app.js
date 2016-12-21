@@ -9,6 +9,8 @@ if (typeof React.initializeTouchEvents === 'function'){
   React.initializeTouchEvents(true);
 }
 
+const EMPTY_ARRAY = [];
+
 class Instatype extends React.PureComponent {
 
   constructor(props) {
@@ -18,7 +20,7 @@ class Instatype extends React.PureComponent {
       inputValue: '', // Current value of input
       showResults: false, // Show or hide results
       loading: false, // Are we currently loading data from server?
-      results: [], // Data populating the results dropdown
+      results: EMPTY_ARRAY, // Data populating the results dropdown
       resultsQuery: null // Search string for displayed results
     };
     
@@ -166,7 +168,7 @@ class Instatype extends React.PureComponent {
 
   clearState() {
     this.setState({
-      results: [], 
+      results: EMPTY_ARRAY, 
       resultsQuery: null, 
       inputValue: '', 
       loading: false
