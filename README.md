@@ -2,7 +2,7 @@
 A mobile-friendly React autocomplete component
 
 ## Demos
-<a href="https://unsplash-gxkbfkpppt.now.sh">unsplash-gxkbfkpppt.now.sh</a> (latest)<br/>
+<a href="https://unsplash.now.sh">unsplash.now.sh</a> (latest)<br/>
 <a href="http://saveyourvines.com">saveyourvines.com</a>
 
 ## Install
@@ -12,15 +12,17 @@ A mobile-friendly React autocomplete component
 `npm run example` to run the example app with hot loading of instatype source for easy development.
 
 ## Usage
-    import React from 'react';
-    import Instatype from 'instatype';
+```jsx
+import React from 'react';
+import Instatype from 'instatype';
 
-    class Component extends React.Component {
+class Component extends React.Component {
 
-      render() {
-        return <Instatype requestHandler={myRequestHandler} selectedHandler={mySelectedHandler}/>;
-      }
-    }
+  render() {
+    return <Instatype requestHandler={myRequestHandler} selectedHandler={mySelectedHandler}/>;
+  }
+}
+```
 
 ## Props
 
@@ -34,7 +36,7 @@ Prop                       |    Description
 `selectedHandler`              | Required function that is called when a dropdown result is clicked. This will be passed the full object initially used to populate that result in the dropdown.
 
 ## Example requestHandler
-```
+```js
 requestHandlerUsers: function(query, limit, callback){
 
   $.ajax({
