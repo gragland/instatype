@@ -3,13 +3,11 @@ import Helmet from "react-helmet";
 import Instatype from 'instatype';
 import throttle from 'lodash/throttle';
 import Grid, { Block } from 'react-simple-grid';
+import Infinite from 'react-infinite';
 import Photo from './components/Photo.js';
-import Infinite from './components/Infinite/Infinite.js';
 import ToTop from './components/ToTop.js';
 import api from './api.js';
 import { Link } from 'react-router';
-
-import Test from './components/Test.js';
 
 class App extends React.PureComponent {
 
@@ -27,9 +25,9 @@ class App extends React.PureComponent {
   static displayName = 'App';
 
   // Get initial page data as props
-  // Component will re-mount
-  static async getInitialProps () {
-    return await App.getPage('popular', 2);
+  // Powered by React Component Data
+  static async getData () {
+    return await App.getPage('popular', 1);
   }
 
   static async getPage(section, page, username, currPhotos){
@@ -93,7 +91,9 @@ class App extends React.PureComponent {
     this.resetPage();
 
     this.refs.instatype.refs.inputComponent.refs.input.value = '';
+
     const pageData = await App.getPage('user', 1, user.username);
+    
     this.setState(pageData);
   }
 
@@ -112,13 +112,6 @@ class App extends React.PureComponent {
       <div>
         <Helmet title="Unsplash Demo" />
 
-        { photos && photos.length &&
-          <span>
-            <Test parentCount={photos.length}/>
-            <Test parentCount={photos.length}/>
-          </span>
-        }
-
         <div className='navbar'>
           <Instatype 
             placeholder='Search Unsplash'
@@ -131,35 +124,17 @@ class App extends React.PureComponent {
         
         { !loadingUsers && 
           <div style={{ position: 'absolute', top: '3.6em', right: '4em' }}>
-            <Link to={`/about`} style={{ textDecoration: 'none', color: '#87b8b9', fontSize: '1.3em' }}>About</Link>
+            <Link to={`/about`} style={{ textDecoration: 'none', color: '#FFF', fontSize: '1.3em', backgroundColor: '#ee5459', padding: '5px 9px', borderRadius: '10px' }}>About</Link>
           </div>
         }
 
-        {/*
-        <div style={{ marginBottom: '30px' }}>
-
-          <Grid spacing={5} breakPoints={[ { maxWidth: 800, spacing: 1, blockWidth: [ 1/4 ] } ]} hideOuterSpacing={true} blockWidth={[ 1/3, 2/3, 2/3, 1/3 ]}>
-            
-            <Block><div style={{ backgroundColor: 'red', width: '100%', height: '100px' }}></div></Block>
-            <Block><div style={{ backgroundColor: 'red', width: '100%', height: '100px' }}></div></Block>
-            <Block><div style={{ backgroundColor: 'red', width: '100%', height: '100px' }}></div></Block>
-            <Block><div style={{ backgroundColor: 'red', width: '100%', height: '100px' }}></div></Block>
-            <Block><div style={{ backgroundColor: 'red', width: '100%', height: '100px' }}></div></Block>
-            <Block><div style={{ backgroundColor: 'red', width: '100%', height: '100px' }}></div></Block>
-            <Block><div style={{ backgroundColor: 'red', width: '100%', height: '100px' }}></div></Block>
-            <Block><div style={{ backgroundColor: 'red', width: '100%', height: '100px' }}></div></Block>
-      
-          </Grid>
-        </div>
-        */}
-        
-      
         { photos && photos.length > 0 &&
-          <Infinite requestHandler={this.getNextPage} atEnd={atEnd}>
+          <span>
             <Grid blocksPerRow={4} spacing={5} breakPoints={photoGridBreakPoints} passBlockWidth={true} hideOuterSpacing={true}>
               { photos.map( photo => <Photo data={photo} key={photo.id} /> )}
             </Grid>
-          </Infinite>
+            <Infinite requestHandler={this.getNextPage} atEnd={atEnd} />
+          </span>
         }
      
         { photos && photos.length === 0 &&

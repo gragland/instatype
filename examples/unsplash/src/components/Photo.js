@@ -1,5 +1,5 @@
 import React from 'react';
-import Image from './Image/Image.js';
+import Image from 'react-perfect-image';
 import { PassBlockWidth } from 'react-simple-grid';
 
 const Photo = ({ data, parentWidth }) => {
@@ -14,6 +14,7 @@ const Photo = ({ data, parentWidth }) => {
         parseSrcWidth={parentWidth} 
         parseSrcAllowedWidths={allowedSrcWidths} 
         parseSrcDoubleForRetina={true}
+        displaySrcWidth={true}
         widthHeightRatio={1/1} />
       { parentWidth && 
         <div style={{ position: 'absolute', top: 10, right: 10, backgroundColor: '#fff', color: '#000', padding: '0.3em 0.6em', opacity: '1' }}>

@@ -8,7 +8,6 @@ const common = {
     loaders: [
       { 
         test: /\.less$/, 
-        //loader: 'style-loader!raw-loader!less-loader',
         loader: 'raw-loader!less-loader',
         include: __dirname + '/src'
       },
@@ -19,7 +18,7 @@ const common = {
       },
       { 
         test: /\.svg$/, 
-        loader: 'url-loader?limit=100000',
+        loader: 'url-loader?limit=10000',
         include: __dirname + '/images'
       }
     ]
