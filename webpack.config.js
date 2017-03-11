@@ -24,7 +24,12 @@ const common = {
     ]
   },
   externals: {
-    react: 'React'
+    'react': {
+      'root': 'React',
+      'commonjs2': 'react',
+      'commonjs': 'react',
+      'amd': 'react'
+    }
   }
 };
 
@@ -60,11 +65,10 @@ const script = {
 
 let config;
 
-if (process.env.TYPE === 'library'){
-  config = Object.assign(common, library);
-}else
 if (process.env.TYPE === 'script'){
   config = Object.assign(common, script);
+}else{
+  config = Object.assign(common, library);
 }
 
 module.exports = config;
