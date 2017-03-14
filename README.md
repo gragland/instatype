@@ -2,8 +2,7 @@
 A mobile-friendly React autocomplete component
 
 ## Demos
-<a href="https://unsplash.now.sh">unsplash.now.sh</a> (latest)<br/>
-<a href="http://saveyourvines.com">saveyourvines.com</a>
+<a href="https://unsplash.now.sh">unsplash.now.sh</a> ([source](https://github.com/gragland/unsplash-demo/blob/master/src/App.js#L116))
 
 ## Install
 `npm install instatype --save`
