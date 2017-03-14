@@ -1,7 +1,7 @@
 # instatype
 A mobile-friendly React autocomplete component
 
-## Demos
+## Demo
 <a href="https://unsplash.now.sh">unsplash.now.sh</a> ([source](https://github.com/gragland/unsplash-demo))
 
 ## Install
