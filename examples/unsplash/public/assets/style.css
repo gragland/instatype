@@ -12,12 +12,10 @@ body {
 }
 
 a {
-  color: #000;
+  color: #0366d6;
 }
 
-a:visited {
-  color: inherit;
-}
+
 
 .navbar {
   padding: 2em 2.2em;
@@ -47,7 +45,7 @@ a:visited {
 }
 
 
-/* GITHUB BUTTONS */
+/**** GITHUB BUTTONS ****/
 
 .github-btn {
   font: bold 11px/14px 'Helvetica Neue', Helvetica, Arial, sans-serif;

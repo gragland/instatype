@@ -5,12 +5,10 @@ import React from 'react';
 import { renderToStaticMarkup, renderToString } from 'react-dom/server';
 import { match, RouterContext } from 'react-router';
 import Helmet from 'react-helmet';
+import ComponentData, { resolve } from 'react-component-data';
 import routes from './src/routes.js';
 import Layout from './src/components/Layout.js';
-
 import App from './src/App.js';
-
-import ComponentData, { resolve } from 'react-component-data';
 
 const server = express();
 
@@ -29,16 +27,8 @@ server
         res.status(404).send('Page not found');
       } else {
 
-        // No data
-        //const data = null;
-
-        // Render App
-        //const data = await resolve(App);
-
         // Render Route component
         const data = await resolve(RouterContext, renderProps);
-
-        console.log('DATA FETCHED VIA RESOLVE()');
 
         const body = renderToString( 
           <ComponentData data={data}>
@@ -67,4 +57,4 @@ server
   console.log('Server started');
 });
 
-module.exports = server
+module.exports = server;

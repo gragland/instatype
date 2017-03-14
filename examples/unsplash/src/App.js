@@ -3,7 +3,7 @@ import Helmet from "react-helmet";
 import Instatype from 'instatype';
 import throttle from 'lodash/throttle';
 import Grid, { Block } from 'react-simple-grid';
-import Infinite from 'react-infinite';
+import Infinite from 'react-scroll-loader';
 import Photo from './components/Photo.js';
 import ToTop from './components/ToTop.js';
 import api from './api.js';

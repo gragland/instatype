@@ -28,6 +28,11 @@ class About extends React.PureComponent {
         description: 'Ensures that images take up a desired aspect ratio before the image has finished loading (no page reflow). Also allows us to dynamically change the image source url at different container widths. In conjuction with the React Simple Grid HOC we can ensure we\'re never loading images at a higher resolution than needed.'
       },
       {
+        name: 'React Scroll Loader',
+        repo: 'react-scroll-loader',
+        description: 'Efficient infinite scroll component used to load more images once we\'ve reached the bottom of the page.'
+      },
+      {
         name: 'React Component Data',
         repo: 'react-component-data',
         description: 'Async data fetching logic is specified in the component, resolved automagically on server-render, and then passed to the component as props. No more duplication of data fetching logic between client and server.'
@@ -38,31 +43,48 @@ class About extends React.PureComponent {
       <div style={{ marginTop: '3em', textAlign: 'center' }}>
         <Helmet title="About" />
         
-        <div style={{ maxWidth: '800px', padding: '0 2em', margin: '2em auto 0 auto', fontSize: '1.6em', lineHeight: '1.5em' }}>
-          
-          <div style={{ fontSize: '4em', lineHeight: '2em' }}>👋</div>
+        <div style={{ maxWidth: '700px', padding: '0 2em', margin: '2em auto 0 auto',  }}>
 
-          <div style={{ padding: '0 2em' }}>
+          <div style={{ marginBottom: '2em' }}>
+            <span style={{ fontSize: '6em' }}>👋</span>
+          </div>
+
+          <div style={{ padding: '0 2em', fontSize: '1.6em', lineHeight: '1.5em', marginBottom: '2em' }}>
             This is a simple demo app that displays images from <a target="_blank" href="https://unsplash.com">Unsplash</a> and uses the following React components built by <a href="https://github.com/gragland" target="_blank">Gabe Ragland</a>.
           </div>
 
-          {projects.map((project) => (
-            <div style={{ position: 'relative', border: '1px solid #efefef', borderBottom: '1px solid #d9d9d9', marginTop:'1.5em', padding: '1.5em'}}>
-              <div style={{fontWeight: 'bold' }}><a target="blank" href={`https://github.com/gragland/${project.repo}`}>{project.name}</a></div>
-              <div style={{ marginTop: '0.5em', fontSize: '0.9em', lineHeight: '1.2em' }}>{project.description}</div>
-              
-              <div style={{ clear: 'both', position: 'absolute', top: '0.4em', right: '0.4em' }}>
-                <GitHubButton type="stargazers" size="small" namespace="gragland" repo={project.repo} />
+          {projects.map((project, i) => (
+            <div style={{ 
+              position: 'relative', 
+              textAlign: 'left', 
+              fontSize: '1.4em', 
+              borderBottom: '1px solid #e8e8e8', 
+              padding: '2em 0 2em 0'}}
+              key={i}>
+
+              <div style={{fontWeight: 'bold' }}>
+                <a target="blank" href={`https://github.com/gragland/${project.repo}`}>
+                  {project.name}
+                </a>
               </div>
+              <div style={{ marginTop: '0.8em' }}>
+                {project.description}
+              </div>
+
+              {/*
+              <div style={{ clear: 'both', position: 'absolute', top: '2em', right: '0em' }}>
+                <GitHubButton type="stargazers" size="default" namespace="gragland" repo={project.repo} />
+              </div>
+              */}
+              
             </div>
           ))}
-
         </div>
-
-        <div style={{ margin: '5em 0' }}>
-          <Link to={`/`} style={{ textDecoration: 'none', color: '#FFF', fontSize: '3em', padding: '5px 9px', borderRadius: '10px' }}>🏠</Link>
-        </div>
-
+      
+        <Link to={`/`} style={{ display: 'block', margin: '1.5em 0', fontSize: '3em', textDecoration: 'none' }}>
+          🏠
+        </Link>
+    
       </div>
     )
   }
